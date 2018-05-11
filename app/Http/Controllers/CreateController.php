@@ -1,0 +1,478 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\StoreListing;
+use App\Mail\NewListing;
+use App\Models\ListingAdditionalOption;
+use App\Models\ListingBookedDate;
+use App\Models\ListingShippingOption;
+use App\Models\ListingVariant;
+use App\Models\PricingModel;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+
+use App\Models\Filter;
+use App\Models\Listing;
+use App\Models\Category;
+use Grimzy\LaravelMysqlSpatial\Types\Point;
+use Location;
+use Setting;
+use Storage;
+use Image;
+use GeoIP;
+use DB;
+use Validator;
+use Mail;
+use function BenTools\CartesianProduct\cartesian_product;
+
+class CreateController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     * @return Response
+     */
+    public function index()
+    {
+        $data = [];
+        $data['listings_form'] = Setting::get('listings_form', []);
+
+        $listing = new Listing();
+        $data['listing'] = $listing;
+        $categories = Category::nested()->get();
+        $categories = flatten($categories, 0);
+        $list = [];
+        foreach($categories as $category) {
+            $list[''] = '';
+            $list[$category['id']] = str_repeat("&mdash;", $category['depth']+1) . " " .$category['name'];
+        }
+        $data['categories'] = $list;
+        $data['pricing_models'] = PricingModel::pluck('seller_label', 'id');
+
+        $selected_category = null;
+        if(request('category')) {
+            $selected_category = Category::find(request('category'));
+            $pricing_models = $selected_category->pricing_models->pluck('seller_label', 'id');
+            if(count($pricing_models)) {
+                $data['pricing_models'] = $pricing_models;
+            }
+        } else {
+            if( count($data['categories']) == 1 ) {
+                $category = Category::first();
+                return redirect(route('create.index', ['category' => $category->id]));
+            }
+        }
+
+        $selected_pricing_model = null;
+        if(request('pricing_model')) {
+            #dd($selected_category->pricing_models);
+            $selected_pricing_model = $data['pricing_models'][request('pricing_model')];
+        } else {
+            if(request('category')) {
+                if( $data['pricing_models']->count() == 1 ) {
+                    $first_key = $data['pricing_models']->keys()->first();
+                    return redirect(route('create.index', ['category' => request('category'), 'pricing_model' => $first_key]));
+                }
+            }
+        }
+
+        $data['selected_category'] = $selected_category;
+        $data['selected_pricing_model'] = $selected_pricing_model;
+        $data['form'] = 'create';
+
+        $view = 'listing.create.pricing_model';
+
+        return view($view, $data);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     * @param  Request $request
+     * @return Response
+     */
+    #public function store(StoreListing $request)
+    public function store(Request $request)
+    {
+
+        $params = $request->all();
+        #return response('OK', 200)->header('X-IC-Redirect', '/create/r4W0J7ObQJ/edit#images_section');
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|min:5|max:255',
+            'description_new' => 'required|min:5',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect(route('create.index', ['category' => $request->get('category'), 'pricing_model' => $request->get('pricing_model') ]))
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+
+        $params['category_id'] = $request->get('category');
+        $params['pricing_model_id'] = $request->get('pricing_model');
+        $params['user_id'] = auth()->user()->id;
+        $params['title'] = $request->get('title');
+        $params['description'] = $request->get('description_new');
+
+        //set a default city - let user fine tune later
+
+        $city = GeoIP::getCity();
+        $params['lat'] = (float) GeoIP::getLatitude();
+        $params['lng'] = (float) GeoIP::getLongitude();
+        $params['location'] = new Point($params['lat'], $params['lng']);
+        $params['city'] = $city;
+        $params['country'] = GeoIP::getCountryCode();
+
+        $params['currency'] = Setting::get('currency', config('marketplace.currency'));
+        $params['is_published'] = false;
+
+        $listing = Listing::create($params);
+        #dd($listing);
+        #$listing->save();
+
+        //redirect to success page
+        return response('OK', 200)->header('X-IC-Redirect', $listing->edit_url.'#images_section');
+    }
+
+    /**
+     * Show the specified resource.
+     * @return Response
+     */
+    public function show()
+    {
+        return view('create::show');
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     * @return Response
+     */
+    public function edit($listing)
+    {
+        $this->authorize('update', $listing);
+
+        #dd($listing->variants);
+
+        $data = [];
+        $data['listing'] = $listing;
+        $filters = Filter::get();
+        $listings_form = [];
+
+        foreach($filters as $element) {
+            if($element->form_input_meta) {
+                $form_input_meta = $element->form_input_meta;
+                $form_input_meta['name'] = 'filters['.$element->form_input_meta['name'].']';
+                $form_input_meta['value'] = (@$listing->meta[$element->form_input_meta['name']]);
+
+                if(isset($form_input_meta['values']) && is_array($form_input_meta['value'])) {
+                    foreach ($form_input_meta['values'] as $k => $v) {
+                        $form_input_meta['values'][$k]['selected'] = in_array($v['value'], $form_input_meta['value']);
+                    }
+                }
+
+                $listings_form[] = $form_input_meta;
+            }
+        }
+
+        $data['listings_form'] = $listings_form;
+        return view('create.edit', $data);
+    }
+
+    public function images($listing)
+    {
+        return view('create.images', compact('listing'));
+    }
+
+    public function additional($listing)
+    {
+        $data = [];
+        $data['listing'] = $listing;
+        $listings_form = json_decode(Setting::get('listings_form', []));
+        foreach($listings_form as $k => $element) {
+            $listings_form[$k]->value = (@$listing->meta[$element->name]);
+        }
+        $data['listings_form'] = $listings_form;
+        return view('create.additional', $data);
+    }
+
+    public function pricing($listing)
+    {
+        return view('create.pricing', compact('listing'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     * @param  Request $request
+     * @return Response
+     */
+    public function update($listing, Request $request)
+    {
+        $this->authorize('update', $listing);
+
+        $params = $request->all();
+        $filters = Filter::orderBy('position', 'ASC')->where('is_hidden', 0)->where('is_default', 0)->get();
+        if($request->input('tags_string')) {
+            $listing->tags = explode(",", $request->input('tags_string'));
+            $listing->tags_string = $request->input('tags_string');
+        }
+        if($request->input('filters')) {
+            $meta = [];
+            foreach($filters as $filter) {
+                if(isset($params['filters'][$filter->field])) {
+                    $value = $params['filters'][$filter->field];
+                    if($filter->search_ui == 'rangeSlider' || $filter->search_ui == 'priceRange') {
+                        $value = (float) $value;
+                    }
+                    $meta[$filter->field] = $value;
+                }
+            }
+
+            $listing->meta = $meta;
+            $listing->save();
+        }
+
+        if($request->input('variations')) {
+            $variant_options = [];
+            foreach($params['variations'] as $variant) {
+                if($variant['options'])
+                    $variant_options[$variant['name']] = explode(",", $variant['options']);
+            }
+            $listing->variant_options = $variant_options;
+            $listing->save();
+
+
+            //now create the variants
+            $matrix = collect();
+            if($listing->variant_options) {
+                $matrix = collect(cartesian_product($listing->variant_options)->asArray());
+            }
+
+            #delete the ones we no longer need
+            foreach($listing->variants as $variant) {
+                $delete = true;
+                foreach($matrix as $item) {
+                    if(($variant->meta == $item)) {
+                        $delete = false;
+                        }
+                    }
+                if($delete) {
+                    $variant->delete();
+                }
+            }
+
+            #insert it in db, if not exists
+            foreach($matrix as $item) {
+                $listing_variant = new ListingVariant();
+
+                foreach($item as $field => $value) {
+                    $listing_variant = $listing_variant->where('meta->' . $field, $value);
+                }
+
+                $listing_variant = $listing_variant->first();
+                if(!$listing_variant) {
+                    $listing_variant = new ListingVariant();
+                    $listing_variant->listing_id = $listing->id;
+                    $listing_variant->stock = 999;
+                    $listing_variant->meta = $item;
+                    $listing_variant->save();
+                }
+            }
+
+        }
+
+        if($request->input('variants')) {
+            foreach($params['variants'] as $variant_id => $variant) {
+                $listing_variant = ListingVariant::find($variant_id);
+                if($listing_variant) {
+                    $listing_variant->price = (float)$variant['price'];
+                    $listing_variant->stock = (int)$variant['stock'];
+                    $listing_variant->save();
+                }
+
+            }
+        }
+
+        //set dates we don't want them to book
+        if($request->input('blocked_dates')) {
+            $table = (new ListingBookedDate())->getTable();
+            DB::table($table)->where('listing_id', $listing->id)->update(['is_available' => true]);
+            $blocked_dates = explode(",", $params['blocked_dates']);
+            foreach($blocked_dates as $blocked_date) {
+                $blocked_date = Carbon::parse($blocked_date);
+                $listing_booked_date = ListingBookedDate::updateOrCreate([
+                    'booked_date'   => $blocked_date,
+                    'listing_id'    => $listing->id
+                ], ['is_available'  => false]);
+
+            }
+        }
+
+        //shipping stuff
+        if($request->input('shipping')) {
+            $count = 0;
+            foreach($params['shipping'] as $position => $shipping) {
+                if(!$shipping['name'])
+                    continue;
+                $listing_shipping_option = ListingShippingOption::updateOrCreate([
+                    'position'   => $position,
+                    'listing_id'    => $listing->id
+                ], ['name'  => $shipping['name'], 'price'  => $shipping['price']]);
+                $count++;
+            }
+
+            //delete the ones that were removed
+            foreach($listing->shipping_options as $position => $shopping_option) {
+                if($position >= $count) {
+                    $shopping_option->delete();
+                }
+            }
+        }
+
+        if($request->input('additional')) {
+            $count = 0;
+            foreach($params['additional'] as $position => $additional_option) {
+                if(!$additional_option['name'])
+                    continue;
+                $listing_shipping_option = ListingAdditionalOption::updateOrCreate([
+                    'position'   => $position,
+                    'listing_id'    => $listing->id
+                ], ['name'  => $additional_option['name'], 'price'  => $additional_option['price']]);
+                $count++;
+            }
+
+            //delete the ones that were removed
+            foreach($listing->additional_options as $position => $additional_option) {
+                if($position >= $count) {
+                    $additional_option->delete();
+                }
+            }
+        }
+
+        $listing->fill($request->only(['title', 'description', 'stock', 'lat', 'lng', 'city', 'country', 'session_duration', 'min_duration', 'max_duration']));
+        if($request->input('photos') && is_array($request->input('photos'))) {
+            $listing->photos = $request->input('photos');
+        }
+
+        if($request->get('lat') && $request->get('lng')) {
+            $point= new Point($request->get('lat'), $request->get('lng'));
+            $listing->location = \DB::raw("GeomFromText('POINT(".$point->getLng()." ".$point->getLat().")')");
+        }
+        if($request->has('publish')) {
+
+            if(!$listing->is_admin_verified && !setting('listings_require_verification')) {
+                $listing->is_admin_verified = Carbon::now();
+            }
+
+            if(!$listing->is_published && !$listing->is_admin_verified) {
+                Mail::to(config('mail.from.address'))->send(new NewListing($listing));
+            }
+            $listing->is_published = true;
+        }
+        if($request->has('price_per_unit_display')) {
+            $listing->price_per_unit_display = $request->input('price_per_unit_display');
+            if($listing->pricing_model->widget == 'request') {
+                $listing->price_per_unit_display = $listing->price_per_unit_display;
+            }
+        }
+        if($request->has('draft'))
+            $listing->is_published = false;
+        if($request->has('price'))
+            $listing->price = (float) $request->get('price');
+
+        $listing->save();
+
+        alert()->success(__('Successfully saved.'));
+        return back();
+    }
+    protected function asWKT(GeometryInterface $geometry)
+    {
+        return $this->getQuery()->raw("ST_GeomFromText('".$geometry->toWKT()."')");
+    }
+
+    public function deleteUpload($listing, $uuid, Request $request) {
+        $photos = (array) $listing->photos;
+        unset($photos[$uuid]);
+        $listing->photos = $photos;
+        $listing->save();
+        return ['success' => true];
+    }
+
+    public function session($listing, Request $request) {
+        $files = [];
+        if($listing->photos) {
+            foreach($listing->photos as $i => $photo) {
+                $tmp = [
+                    "name" => 'photo_'.($i+1).'.jpg',
+                    "uuid" => $i,
+                    "thumbnailUrl" => $photo,
+                ];
+                $files[] = $tmp;
+            }
+        }
+        return $files;
+    }
+
+    public function upload(Request $request) {
+        $path = 'images/'.date('Y/m/d') .'/'. md5_file($request->qqfile->getRealPath()).'.jpg';
+        $img = Image::make($request->qqfile);
+
+        $img->fit(680, 460, function ($constraint) {
+            $constraint->upsize();
+        });
+        $img->resizeCanvas(680, 460, 'center', false, '#000000');
+        $img = (string) $img->encode('jpg', 90);
+        $thumb = Storage::cloud()->put($path, $img, 'public');
+        return ['success' => true, 'path' => Storage::cloud()->url($path)];
+    }
+
+
+    public function getTimes($listing) {
+        $this->authorize('update', $listing);
+
+        $data = [];
+        $data['listing'] = $listing;
+
+        $slots = [];
+        if($listing->timeslots) {
+            foreach($listing->timeslots as $timeslot) {
+                $slots[$timeslot['day']][(int) $timeslot['start_time']] = 1;
+            }
+        }
+
+        /**
+         * Timeslots
+         */
+        $days = range(1, 7);
+        $hours = range(0, 23);
+        $matrix = [];
+        foreach($days as $day) {
+            foreach($hours as $hour) {
+                $matrix[$day][$hour] = array_get($slots, $day.'.'.$hour, 0);
+            }
+        }
+
+        $data['matrix'] = $matrix;
+        $data['slots'] = $slots;
+
+        return view('create.times', $data);
+
+    }
+
+    public function postTimes($listing, Request $request) {
+        $this->authorize('update', $listing);
+
+        $times = $request->get('selection');
+
+        $slots = [];
+        foreach($times as $day => $times) {
+            foreach($times as $hour => $value) {
+                $slots[] = ['day' => $day, 'start_time' => $hour.':00', 'end_time' => ($hour+1).':00'];
+            }
+        }
+        $listing->timeslots = $slots;
+        $listing->save();
+        return redirect(url()->current());
+        return $listing;
+
+    }
+}

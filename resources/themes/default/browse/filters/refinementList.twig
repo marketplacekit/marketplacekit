@@ -1,0 +1,28 @@
+<div class="card-body pl-0  pr-0 pr-sm-5">
+    <h6 class="mt-0 text-capitalize">{{ _l(facet.name) }}</h6>
+<div class="row">
+
+	{% if facet.options and facet.options|length >= 5 %}
+        <div style="height: 150px; width: 100%; border: 1px solid #fff; overflow-y:scroll; overflow-x: hidden;">
+    {% else %}
+        <div>
+    {% endif %}
+
+    {% if facet.options %}
+		{% for option in facet.options %}
+            <div class="col-sm-12">
+                <div class="pretty p-icon  p-smooth">
+                    {{ form_checkbox(facet.field ~ '[' ~ option.value ~ ']', 1, input_get(option.name) == option.name) }}
+                    <div class="state  p-primary">
+                      <i class="icon mdi mdi-check"></i>
+                      <label>{{ option.name |trim('"') }}</label>
+                    </div>
+                 </div>
+             </div>
+        {% endfor %}
+    {% endif %}
+
+    </div>
+</div>
+</div>
+    <hr class=" pl-0 mr-0 mr-sm-5 mt-0 mb-0"/>

@@ -1,0 +1,18 @@
+{% if errors.any() %}
+    <div class="alert alert-danger">
+        {% for error in errors.all() %}
+            {{ error }}<br/>
+        {% endfor %}
+    </div>
+{% else %}
+    {% if session_has('alert.message') %}
+    <div class="alert alert-{{ session_get('alert.style') }} alert-dismissible fade in show" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button><!-- /close -->
+
+        {{ session_get('alert.message') }}
+    </div><!-- /alert -->
+    {% endif %}
+
+{% endif %}

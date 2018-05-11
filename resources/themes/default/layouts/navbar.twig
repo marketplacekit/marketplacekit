@@ -1,0 +1,77 @@
+<nav class="navbar navbar-expand-md bg-transparent navbar-light navbar-fixed border-bottom">
+        <div class="container-fluid">
+    <!-- Branding Image -->
+    <a class="navbar-brand" href="/{{ LaravelLocalization.getCurrentLocale() != LaravelLocalization.getDefaultLocale()?LaravelLocalization.getCurrentLocale():'' }}">
+        <img src="/storage/images/{{ setting('site_logo', '../../logo.png') }}" title="{{ setting('site_title') }}" class="logo"/>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <!-- Left Side Of Navbar -->
+         <ul class="navbar-nav mr-auto">
+             {% if LaravelLocalization.getSupportedLocales()|length > 1 %}
+           <li class="nav-item">
+               <div class="dropdown">
+                   <button class="btn btn-link language-selector dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                       <i class="fa fa-language" aria-hidden="true"></i> {{ LaravelLocalization.getCurrentLocaleNative() }}
+                   </button>
+                   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                       {% for localeCode, properties in LaravelLocalization.getSupportedLocales() %}
+                            {% if localeCode == LaravelLocalization.getCurrentLocale() %}
+                                <span class="dropdown-item text-muted" rel="alternate" hreflang="{{ localeCode }}" href="#">
+                                   {{ properties.native | capitalize  }}
+                               </span>
+                            {% else %}
+                                <a class="dropdown-item" rel="alternate" hreflang="{{ localeCode }}" href="{{ LaravelLocalization.getLocalizedURL(localeCode, null, [], (localeCode != LaravelLocalization.getDefaultLocale())) }}">
+                                    {{ properties.native | capitalize }}
+                                </a>
+                            {% endif %}
+                       {% endfor %}
+                   </div>
+               </div>
+           </li>
+             {% endif %}
+
+             {% for item in menu() %}
+             <li class="nav-item {{ active([item.url|trim('/')]) }}">
+                <a class="nav-link" href="{{ item.url }}">{{ item.title }}</a>
+             </li>
+             {% endfor %}
+         </ul>
+
+
+        <!-- Right Side Of Navbar -->
+        <ul class="navbar-nav">
+            {% if auth_guest() %}
+                <li class="nav-item">
+                    <a class="nav-link text-s btn btn-secondary" href="{{ route('create.index') }}">{{ __("Post a listing") }}</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link  text-s" href="{{ route('register') }}">{{ __("Register") }}</a>
+                </li>
+                <li class="nav-item"><a class="nav-link text-s" href="{{ route('login') }}">{{ __("Sign in") }}</a></li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link text-s  btn btn-secondary" href="{{ route('create.index') }}" data-toggle="modal" data-target="#postModal">{{ __("Post a listing") }}</a>
+                </li>
+                <li class="nav-item"><a class="nav-link text-s" href="{{ route('account.edit_profile.index') }}">{{ __("Welcome :name", {'name': auth_user().first_name()}) }}</a></li>
+                <li class="nav-item" style="position: relative">
+                    <a class="nav-link text-s {% if not is_active('inbox*') %}InboxDirectMessage{% endif %}" data-url="{{ route('inbox.index') }}" href="{{ route('inbox.index') }}">
+                        <i class="mdi mdi-email-open-outline mr-1" aria-hidden="true"></i>
+                        {% if auth_user().unread_messages %}
+                            <span class="inbox-count text-center text-white">{{auth_user().unread_messages?:""}}</span>
+                        {% endif %}
+                    </a>
+                </li>
+                <li class="nav-item"><a class="nav-link text-s" href="{{ route('logout') }}"  onclick="event.preventDefault(); document.getElementById('logout-form').submit();">{{ __("Logout") }}</a></li>
+               <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                   {{ csrf_field() }}
+               </form>
+            {% endif %}
+        </ul>
+    </div>
+    </div>
+</nav>

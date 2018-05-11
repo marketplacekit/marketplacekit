@@ -1,0 +1,218 @@
+// Litera 4.0.0
+// Bootswatch
+
+
+// Variables ===================================================================
+
+//$web-font-path: "https://fonts.googleapis.com/css?family=IBM+Plex+Serif" !default;
+//$web-font-path: "https://fonts.googleapis.com/css?family=Oswald" !default;
+//@import url($web-font-path);
+
+// Fonts
+@import url("https://fonts.googleapis.com/css?family=IBM+Plex+Sans|Lato");
+@import url("https://cdn.jsdelivr.net/npm/font-proxima-nova@1.0.1/style.css");
+
+$font-family-serif:      "Proxima Nova Rg", Cambria, "Times New Roman", Times, serif !default;
+
+// Navbar ======================================================================
+
+.navbar {
+  font-size: 0.875em;
+  font-size: 0.9375rem;
+}
+
+.bg-dark {
+  background-color: $success !important;
+}
+
+.bg-light {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+
+  &.navbar-fixed-top {
+    border-width: 0 0 1px 0;
+  }
+
+  &.navbar-fixed-bottom {
+    border-width: 1px 0 0 0;
+  }
+}
+
+// Buttons =====================================================================
+
+.btn {
+  border-radius: 1.078em;
+  font-family: $font-family-sans-serif;
+  /*font-size: 0.875em;*/
+
+  &-lg {
+    /*border-radius: 2.688em;*/
+    font-size: 1em;
+  }
+
+  &-sm {
+    border-radius: 0.844em;
+    font-size: 0.688em;
+  }
+
+  &-warning,
+  &-warning:hover {
+    color: $white;
+  }
+
+
+}
+
+.btn-outline-secondary {
+  color: $gray-700;
+}
+
+// Typography ==================================================================
+
+p {
+  font-family: $font-family-serif;
+}
+
+blockquote {
+  font-style: italic;
+}
+
+footer {
+  font-size: 0.875em;
+}
+
+.lead {
+  color: $gray-600;
+  font-family: $font-family-sans-serif;
+}
+
+// Tables ======================================================================
+
+table,
+.table {
+  font-size: 0.9375em;
+
+  &-success,
+  &-info,
+  &-warning,
+  &-danger {
+    color: #fff;
+  }
+}
+
+.table {
+
+  &-success {
+    &, > th, > td {
+      background-color: $success;
+    }
+  }
+
+  &-info {
+    &, > th, > td {
+      background-color: $info;
+    }
+  }
+
+  &-danger {
+    &, > th, > td {
+      background-color: $danger;
+    }
+  }
+
+  &-warning {
+    &, > th, > td {
+      background-color: $warning;
+    }
+  }
+
+  &-hover {
+
+    .table-success:hover {
+      &, > th, > td {
+        background-color: darken($success, 5%);
+      }
+    }
+
+    .table-info:hover {
+      &, > th, > td {
+        background-color: darken($info, 5%);
+      }
+    }
+
+    .table-danger:hover {
+      &, > th, > td {
+        background-color: darken($danger, 5%);
+      }
+    }
+
+    .table-warning:hover {
+      &, > th, > td {
+        background-color: darken($warning, 5%);
+      }
+    }
+
+  }
+}
+
+// Forms =======================================================================
+
+// Navs ========================================================================
+
+.dropdown-menu {
+  font-size: 0.875em;
+}
+
+// Indicators ==================================================================
+
+.alert {
+  border: none;
+  color: $white;
+  font-size: 0.875em;
+
+  &, p {
+    font-family: $font-family-sans-serif;
+  }
+
+  a, .alert-link {
+    color: #fff;
+    font-weight: normal;
+    text-decoration: underline;
+  }
+
+  @each $color, $value in $theme-colors {
+    &-#{$color} {
+      background-color: $value;
+    }
+  }
+
+  &-light {
+    &,
+    & a,
+    & .alert-link {
+      color: $body-color;
+    }
+  }
+}
+
+.badge {
+  vertical-align: bottom;
+
+  &-warning {
+    color: $white;
+  }
+}
+
+.tooltip {
+  font-size: 11px;
+}
+
+// Progress bars ===============================================================
+
+// Containers ==================================================================
+
+.list-group-item-primary {
+  background-color: #EAF2FA;
+}
+.list-group-item a {
+  font-size: 13.5px;
+}

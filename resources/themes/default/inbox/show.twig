@@ -1,0 +1,76 @@
+{% extends "inbox.master" %}
+
+{% block inner %}
+
+    <div id="inbox-conversation">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="inboxModal">
+                    <a href="#" data-turbolinks="false" ic-indicator="#inbox-spinner" ic-target="#inbox-main" ic-select-from-response="#inbox-main" ic-get-from="{{  route('inbox.index') }}" ic-trigger-on="click"><i class="mdi mdi-chevron-left mr-1" ></i></a>
+                    {{recipient.display_name}}
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-sm-0" style="min-height: 400px" >
+
+                <div class="progress rounded-0 bg-white" id="inbox-spinner" style="position: absolute; width: 100%; margin-top: -10px; display: none">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        {% include 'notifications' %}
+                    </div>
+                </div>
+
+                <div id="chat_scroll" class="pr-1" style="height: 400px; overflow-x: hidden; overflow-y: scroll;">
+                <div class="row">
+                    <div class="col-12">
+                        {% for k, msg in messages %}
+
+                            <div class="pt-0 pb-2 pt-3 ">
+                                <div class="col-12">
+                                    <div class="row ">
+                                        {% if recipient.id == msg.sender.id %}
+                                        <div class="col-2 text-right  p-0">
+                                            <img src="{{msg.sender.avatar }}" style="width: 50px" class="rounded-circle" style="width: 42px"/>
+                                        </div>
+                                        {% endif %}
+
+                                                <div class="col-7 {{ (recipient.id == msg.sender.id )?'':'offset-3' }}">
+                                                    <div class="bg-{{ (recipient.id == msg.sender.id )?'light':'white border' }} p-3 rounded">
+                                                        <p>
+                                                            {{msg.message}}
+                                                        </p>
+                                                    </div>
+                                                    <small class="text-muted text-align-right">{{msg.created_at.toDayDateTimeString()}}</small>
+                                                </div>
+                                        {% if recipient.id != msg.sender.id %}
+                                        <div class="col-2 text-left p-0">
+                                            <img src="{{msg.sender.avatar }}" style="width: 50px" class="rounded-circle" style="width: 42px"/>
+                                        </div>
+                                        {% endif %}
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            </div>
+            <script>
+                $("#chat_scroll").scrollTop($("#chat_scroll")[0].scrollHeight);
+            </script>
+            <div class="modal-footer">
+
+                <button ic-indicator="#inbox-spinner" ic-get-from="{{  route('inbox.create', {'user_id': recipient.id}) }}" ic-select-from-response="#inbox-main" ic-target="#inbox-main" class="btn btn-primary"><i class="mdi mdi-share mr-1" ></i> {{ __("Post Reply") }}</button >
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

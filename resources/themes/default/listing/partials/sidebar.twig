@@ -1,0 +1,137 @@
+{% if listing.user.can_accept_payments and listing.pricing_model.widget != 'request' %}
+<script>
+
+    var alert_message = false;
+    var handler = StripeCheckout.configure({
+        key: '{{ setting('stripe_publishable_key') }}',
+        image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+        locale: 'auto',
+        token: function (token) {
+            // You can access the token ID with `token.id`.
+            // Get the token ID to your server-side code for use.
+            HoldOn.open({
+                theme: "sk-falding-circle",
+                message: '{{ __("Please wait...") }}',
+                backgroundColor: "#000",
+                textColor: "white"
+            });
+
+            console.log(token);
+            var params = {
+                token: token,
+                email: token.email,
+                card: token.card
+            };
+            $.each($('.checkout-form').serializeArray(), function () {
+                params[this.name] = this.value;
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "{{ route('checkout.process', listing) }}",
+                data: params,
+                success: function (result) {
+                    console.log('result', result);
+                    window.location.href = result.url;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.log(XMLHttpRequest, textStatus, errorThrown);
+                    //alert("some error");
+                    HoldOn.close();
+                    alertify.alert(errorThrown);
+
+                },
+                dataType: 'json'
+            });
+
+        }
+    });
+
+    function setup_stripe() {
+        $('.paypal-btn').on('click', function (e) {
+            if(!$('.checkout-form')[0].checkValidity()) {
+                $('.checkout-form').find(':submit').click();
+                return false;
+            }
+            return true;
+        });
+
+        $('.checkout-form').on('submit', function (e) {
+            e.preventDefault();  //prevent form from submitting
+
+            if (alert_message) {
+                alert(alert_message);
+            } else {
+                handler.open({
+                    email: '{{ listing.user.email }}',
+                    image: '{{ listing.user.avatar|raw }}',
+                    name: "{{ __('Payment to') }} {{ listing.user.display_name }}",
+                    description: '{{ listing.title }}',
+                    zipCode: true,
+                    billingAddress: billingAddress,
+                    shippingAddress: shippingAddress,
+                    currency: '{{ listing.currency }}',
+                    amount: (total * 100).toFixed(2)
+                });
+            }
+        });
+    }
+
+    // Close Checkout on page navigation:
+    window.addEventListener('popstate', function () {
+        handler.close();
+    });
+</script>
+{% endif %}
+
+<div class="row">
+    <div class="col-sm-12" data-turbolinks="true">
+
+        {{ Widget.run('Order.RequestWidget', {}, listing) | raw }}
+
+        {% include 'listing.partials.favorite' %}
+
+        {% if has_map %}
+            <div class="row mt-4">
+                <div class="col-sm-12">
+                    <h6>{{ __('Map view') }}
+                        <a href="https://www.google.com/maps/?q={{ listing.lat }},{{ listing.lng }}" target="_blank" class="small float-right"><i class="mdi mdi-magnify-plus-outline"></i>{{ __("View in fullscreen") }}
+                        </a></h6>
+
+                    <div style="width: 100%; height: 12em;">
+                        {{ Mapper.render() | raw }}
+                    </div>
+
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <br>
+                <h6>{{ __('Share this') }}</h6>
+
+
+                <a href="https://www.facebook.com/sharer/sharer.php?u={{ url_current() }}" class="text-center" style="float: left; border: 0px solid #eee; border-radius: 15px; width: 20px; height: 20px; line-height: 20px;     display: block;">
+                    <img src="/images/social/facebook.png" class="img-fluid"/>
+                </a>
+
+                <a href="https://twitter.com/intent/tweet?text={{ listing.title }}&amp;url={{ url_current() }}" class="text-center ml-2" style="float: left; border: 0px solid #eee; border-radius: 15px; width: 20px; height: 20px; line-height: 20px;     display: block;">
+                    <img src="/images/social/twitter.png" class="img-fluid"/>
+                </a>
+
+                <a href="https://plus.google.com/share?url={{ url_current() }}" class="text-center ml-2" style="float: left; border: 0px solid #eee; border-radius: 15px; width: 20px; height: 20px; line-height: 20px;     display: block;">
+                    <img src="/images/social/google-plus.png" class="img-fluid"/>
+                </a>
+                <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url={{ url_current() }}&amp;title={{ listing.title }}&amp;summary={{ listing.user.display_name }}" class="text-center ml-2" style="float: left; border: 0px solid #eee; border-radius: 15px; width: 20px; height: 20px; line-height: 20px;     display: block;">
+                    <img src="/images/social/linkedin.png" class="img-fluid"/>
+                </a>
+
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+	

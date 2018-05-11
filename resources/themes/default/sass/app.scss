@@ -1,0 +1,409 @@
+// Variables
+@import "variables";
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+@import "bootswatch";
+
+
+.cell-active {
+  background: #ffc
+}
+input[type="text"], input[type="search"], textarea {
+  outline: none;
+  box-shadow:none !important;
+
+}
+
+.window-height {
+  min-height: calc(100vh);
+}
+.border-lr {
+  border-left: 1px solid rgba(0, 0, 0, 0.1); border-right: 1px solid rgba(0, 0, 0, 0.1)
+}
+.btn.btn-facebook {
+  color: #fff;
+  border-color: #2d5073;
+  background-color: #3b5998;
+}
+.close-btn {
+  text-decoration: none !important;
+}
+
+.navbar-light .navbar-nav .nav-link {
+  color: rgba(0,0,0,0.8);
+}
+body {
+  /* Turn on custom 8px wide scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px; /* 1px wider than Lion. */
+    /* This is more usable for users trying to click it. */
+    background-color: rgba(0, 0, 0, 0);
+    -webkit-border-radius: 100px;
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  /* hover effect for both scrollbar area, and scrollbar 'thumb' */
+  ::-webkit-scrollbar:hover {
+    background-color: rgba(0, 0, 0, 0.09);
+  }
+
+  /* The scrollbar 'thumb' ...that marque oval shape in a scrollbar */
+  ::-webkit-scrollbar-thumb:vertical {
+    /* This is the EXACT color of Mac OS scrollbars.
+       Yes, I pulled out digital color meter */
+    background: rgba(0, 0, 0, 0.3);
+    -webkit-border-radius: 100px;
+    background-clip: padding-box;
+    border: 2px solid rgba(0, 0, 0, 0);
+    min-height: 10px; /*Prevent it from getting too small */
+  }
+  ::-webkit-scrollbar-thumb:vertical:active {
+    background: rgba(0, 0, 0, 0.61); /* Some darker color when you click it */
+    -webkit-border-radius: 100px;
+  }
+}
+
+ul.category-list {
+  list-style-type: none;
+}
+.container-fluid {
+  max-width: 1170px;
+}
+
+.btn-default {
+  color: #000;
+}
+.truncate {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+footer{
+  border-top: 1px solid #E5E5E5;
+  padding-top: 19px;
+  font-size: small;
+  padding-bottom: 20px;
+}
+
+
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+.info-window {
+  width: 300px;
+  overflow-x: hidden;
+}
+.image-wrappers {
+  overflow: hidden;
+  /*width: 250px;
+  height: 250px;*/
+  display: block;
+}
+
+._image-wrapper:after, .loading {
+  content: ' ';
+  background-size : auto 50%;
+  width: 100%;
+  height: 100%;
+  float: left;
+  display: block;
+}
+._image-thumbnail {
+  background: transparent;
+  transition: unset;
+  -webkit-transition: unset;
+  border: 1px solid #eee;
+}
+.card-img-top {
+  max-width: 100%;
+  width: auto;
+  text-align: center;
+}
+.turbolinks-progress-bar { height: 5px; background-color: #2299dd; }
+
+.img-grid {
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
+}
+
+.fa.fa-star {
+  color: #F6B026;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: #D19B2E;
+}
+.fa.fa-star-o {
+  color: #D19B2E;
+}
+
+.clickable {
+  cursor: pointer
+}
+
+.hoverable {
+  &:hover {
+    background: $gray-100;
+  }
+}
+
+#app {
+  min-height: 78vh;
+}
+/*
+.arrow_box {
+  position: relative;
+  border-radius: 4px;
+  border: 1px solid #fff;
+  margin-bottom: 20px;
+  display: block;
+  text-decoration: none;
+
+  &:after {
+    left: 100%;
+    top: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+
+  }
+
+  &.active:after {
+    border-color: rgba(255, 255, 255, 0);
+    border-left-color: #fff;
+    border-radius: 18px;
+    border-width: 18px;
+    margin-top: -18px;
+  }
+  h6 {
+    color: $gray-600;
+  }
+  &.active {
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    h6 {
+      color: $primary;
+    }
+  }
+  &:hover {
+    background: darken(#F7F9FA, 1%);
+    border: 4px solid darken(#F7F9FA, 1%);
+    text-decoration: none;
+    &:after {
+      border-color: rgba(238, 238, 238, 0);
+      border-left-color: #F5F5F5;
+      border-radius: 18px;
+      border-width: 18px;
+      margin-top: -18px;
+    }
+
+  }
+}
+*/
+.arrow_box {
+  position: relative;
+  background: #fff;
+  border: 1px solid #868e96;
+}
+.arrow_box:after, .arrow_box:before {
+  left: 100%;
+  top: 50%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+
+.arrow_box:after {
+  border-color: rgba(255, 255, 255, 0);
+  border-left-color: #fff;
+  border-width: 30px;
+  margin-top: -30px;
+}
+.arrow_box:before {
+  border-color: rgba(134, 142, 150, 0);
+  border-left-color: #868e96;
+  border-width: 31px;
+  margin-top: -31px;
+}
+
+.pac-container {
+  z-index: 10000 !important;
+}
+
+a:hover   {
+  text-decoration:  none !important;
+}
+.language-selector {
+  color: #64B5F6  !important;
+  text-transform: capitalize;
+}
+.language-selector:hover, .language-selector:focus   {
+  text-decoration:  none !important;
+}
+
+.card-body.clickable {
+  color: $gray-600;
+  &:hover {
+    background: #F4F9FD;
+  }
+  &.active {
+    background: darken(#F4F9FD, 2%);
+  }
+}
+
+.loader,
+.loader:before,
+.loader:after {
+  border-radius: 50%;
+  width: 2.5em;
+  height: 2.5em;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation: load7 1.8s infinite ease-in-out;
+  animation: load7 1.8s infinite ease-in-out;
+}
+.loader {
+  color: #0084df;
+  font-size: 10px;
+  margin: 80px auto;
+  position: relative;
+  text-indent: -9999em;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+}
+.loader:before,
+.loader:after {
+  content: '';
+  position: absolute;
+  top: 0;
+}
+.loader:before {
+  left: -3.5em;
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+}
+.loader:after {
+  left: 3.5em;
+}
+@-webkit-keyframes load7 {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 2.5em 0 -1.3em;
+  }
+  40% {
+    box-shadow: 0 2.5em 0 0;
+  }
+}
+@keyframes load7 {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 2.5em 0 -1.3em;
+  }
+  40% {
+    box-shadow: 0 2.5em 0 0;
+  }
+}
+
+
+.ribbon {
+  position: absolute;
+  left: -5px; top: -5px;
+  z-index: 1;
+  overflow: hidden;
+  width: 75px; height: 75px;
+  text-align: right;
+}
+.ribbon span {
+  font-size: 10px;
+  font-weight: bold;
+  color: #FFF;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 20px;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  width: 100px;
+  display: block;
+  background: #79A70A;
+  background: linear-gradient(#9BC90D 0%, #79A70A 100%);
+  box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
+  position: absolute;
+  top: 19px; left: -21px;
+}
+.ribbon span::before {
+  content: "";
+  position: absolute; left: 0px; top: 100%;
+  z-index: -1;
+  border-left: 3px solid #79A70A;
+  border-right: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+  border-top: 3px solid #79A70A;
+}
+.ribbon span::after {
+  content: "";
+  position: absolute; right: 0px; top: 100%;
+  z-index: -1;
+  border-left: 3px solid transparent;
+  border-right: 3px solid #79A70A;
+  border-bottom: 3px solid transparent;
+  border-top: 3px solid #79A70A;
+}
+
+.inbox-count {
+position: absolute;
+top: 0;
+right: 0;
+min-width: 15px;
+  padding: 2px;
+min-height: 15px;
+border-radius: 7.5px;
+font-size: 10px;
+  font-weight: bold;
+  background: #00C853;
+}
+.logo {
+  max-height: 24px;
+  max-width: 165px;
+  vertical-align: unset;
+}
+
+.paypal-btn {
+  background: #FFC439;
+  color: #333;
+  border: 0px solid #FEAF01;
+  &:hover {
+    color: #333 !important;
+    background: darken(#FFC439, 10) !important;
+  }
+}
+.webui-popover {
+  box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4)
+}
+
+@media (min-width: 576px) {
+  .collapse.dont-collapse-sm {
+    display: block;
+    height: auto !important;
+    visibility: visible;
+  }
+}

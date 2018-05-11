@@ -1,0 +1,23 @@
+<footer class="bg-white mt-0 border-0">
+
+    <div class="container-fluid">
+
+        <div class="row mt-5">
+
+            <div class="col-12 text-center">
+                <p class="mb-3">
+                    <a href="{{route('page', 'terms-and-conditions')}}" class="text-muted mr-1">{{ __("Terms & Conditions") }}</a>
+                    &#8226;
+                    <a href="{{route('page', 'privacy-policy')}}" class="text-muted ml-1">{{ __("Privacy Policy") }}</a>
+                </p>
+            </div>
+
+
+            <div class="col-12 text-center">
+                <p class="mb-0"><span class="text-muted">{{ __("Copyright :name, :date &#8226; All rights reserved", {'name' : config('app.name'), 'date': "now"|date("Y")}) | raw }}</span> &#8226; <a href="https://marketplacekit.com" class="text-muted">Powered By MarketplaceKit</a></p>
+            </div>
+
+
+        </div>
+    </div>
+</footer>

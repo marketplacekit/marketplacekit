@@ -1,0 +1,59 @@
+<div class="pt-3 pb-3 mb-4 border-right-0 border-right-0 border-left-0 border-top-0 bg-light">
+    <div class="container-fluid">
+
+        <form method="GET" action="{{  route(setting('marketplace_index')) }}" id="top-search" accept-charset="UTF-8" class="form-vertical">
+
+            <div class="row">
+
+                <div class="col-9">
+
+
+                    <div class="row">
+
+                        <div class="col-12 {{ setting('enable_geo_search')?'col-sm-8':'col-sm-12' }} pr-0">
+                            <div class="input-group mb-0">
+                                <div class="input-group-prepend ">
+                                    <span class="input-group-text bg-white"><i class="fa fa-search" aria-hidden="true"></i></span>
+                                </div>
+                                <input class="form-control" placeholder="{{ __("Search marketplace...") }}" name="q" type="text" value="{{ input_get('q') }}" autocomplete="off">
+                            </div>
+
+
+                        </div>
+
+                        {% if setting('enable_geo_search') %}
+                        <div class="col-4 pl-1 d-none d-sm-block">
+                            {{ form_input('text', 'location', input_get('location', session_get('location')), {'class' : 'form-control', 'id' : 'location-search', 'placeholder' : __('London, England')}) }}
+                            {{ form_hidden('lat', input_get('lat', session_get('lat')), {'class': 'lat'}) }}
+                            {{ form_hidden('lng', input_get('lng', session_get('lng')), {'class': 'lng'}) }}
+                            {{ form_hidden('bounds', input_get('bounds', session_get('bounds')), {'class': 'bounds'}) }}
+                            {{ form_hidden('distance', input_get('distance', session_get('distance')), {'class': 'distance'}) }}
+                            <script>
+                                var autocomplete = new google.maps.places.Autocomplete($("#location-search")[0], {});
+
+                                google.maps.event.addListener(autocomplete, 'place_changed', function() {
+                                    var place = autocomplete.getPlace();
+                                    $(".lat").val(place.geometry.location.lat());
+                                    $(".lng").val(place.geometry.location.lng());
+
+
+                                    console.log(place.geometry.viewport.getSouthWest().lat());
+                                    $('.bounds').val(place.geometry.viewport.getSouthWest().lat() + "," + place.geometry.viewport.getSouthWest().lng() + ','+ place.geometry.viewport.getNorthEast().lat() + "," + place.geometry.viewport.getNorthEast().lng());
+                                    $('.distance').val(1);
+
+                                    $("#top-search").submit();
+                                });
+                            </script>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-3">
+                    <button class="btn btn-primary btn-block " type="submit">{{ __("Go!") }}</button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>

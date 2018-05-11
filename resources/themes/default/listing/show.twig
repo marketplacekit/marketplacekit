@@ -1,0 +1,65 @@
+{% extends "layouts.app" %}
+
+{% block content %}
+<div class="container-fluid inner mt-3">
+    <div class="row">
+		<div class="col-sm-12">
+            
+			<nav aria-label="breadcrumb" role="navigation">
+			  <ol class="breadcrumb bg-transparent pt-3 pl-0 mb-0">
+			  	<li class="breadcrumb-item small">
+                    <a href="{{route('home')}}" class="text-muted">{{ __("Home") }}</a>
+                </li>
+				{% for breadcrumb in breadcrumbs %}
+				<li class="breadcrumb-item small">
+                    <a href="{{ route(setting('marketplace_index'), {'category': breadcrumb.id}) }}" class="text-muted">{{ _l(breadcrumb.name) }}</a>
+                </li>
+				{% endfor %}
+				<li class="breadcrumb-item active small" aria-current="page">
+                    <a href="{{ route(setting('marketplace_index'), {'category': breadcrumb.id}) }}" class="text-muted">{{_l(listing.category.name)}}</a>
+                </li>
+			  </ol>
+			</nav>
+	</div>
+</div>
+
+
+	<div class="row" id="listing-panel">
+		<div class="col-sm-12 mx-auto">
+
+            {% include 'notifications' %}
+
+            <h1 class="h3 mt-0 pb-2">{{listing.title}}</h1>
+
+            {% if auth_check() and (listing.user_id == auth_user().id or auth_user().is_admin) %}
+                <div class="mb-3">
+                <strong class="badge badge-info">{{ (listing.is_published)?__('Published'):__('Unpublished') }}</strong>
+                <a class="badge badge-secondary" href="{{listing.edit_url}}">{{ __("Edit listing") }}</a>
+
+                {% if auth_user().is_admin %}
+                    <a data-turbolinks="false" ic-indicator="#listing-panel-indicator" class="badge badge-{{ (listing.is_verified)?'secondary':'danger'}}" id="verify-listing" ic-get-from="{{ route('listing.verify', [listing, listing.slug]) }}" ic-target="#listing-panel" ic-select-from-response="#listing-panel" href="#">{{ (listing.is_verified)?__('Disable listing'):__('Approve listing')}}</a>
+                {% endif %}
+
+
+                <i id="listing-panel-indicator" class="fa fa-spinner fa-spin" style="display: none"></i>
+                </div>
+            {% endif %}
+
+		</div>
+    </div>
+
+	<div class="row mb-5">
+		<div class="col-sm-8">
+            {% include 'listing.partials.overview' %}
+		</div>
+		<div class="col-sm-4">
+            {% include 'listing.partials.sidebar' %}
+		</div>
+	</div>
+</div>
+
+
+<script>
+$('.carousel').carousel()
+</script>
+{% endblock %}

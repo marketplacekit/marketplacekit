@@ -1,0 +1,21 @@
+{% if level_categories|length > 1 %}
+    <div class="card-body pl-0  pr-0 pr-sm-5">
+        <h6 class="mt-0 text-capitalize">{{ _l(facet.name) }}</h6>
+
+        <div class="row" id="category_filter">
+            <div class="col-sm-12">
+                {% for parent_category in parent_categories %}
+                <a data-category="{{ parent_category.parent_id }}" href="#{{ request().fullUrlWithQuery({"category" : parent_category.parent_id}) }}" class="category-link text-capitalize"><i class="icon mdi mdi-chevron-left"></i>{{ _l(parent_category.name)}}</a><br />
+                {% endfor %}
+                <ul class="list-unstyled pl-3">
+                    {% for level_category in level_categories %}
+                        <li><a data-category="{{ level_category.id }}" href="{{ request().fullUrlWithQuery({"category" : level_category.id}) }}" class="category-link text-capitalize text-{{ (category and level_category.id == category.id)?'primary':'muted' }}">{{ _l(level_category.name) }}</a></li>
+                    {% endfor %}
+                </ul>
+                {{ form_hidden( 'category',  category_id) }}
+            </div>
+        </div>
+
+    </div>
+    <hr class=" pl-0 mr-0 mr-sm-5 mt-0 mb-0"/>
+{% endif %}

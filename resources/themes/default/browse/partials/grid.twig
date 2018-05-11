@@ -1,0 +1,34 @@
+<div class="infinite-scroll">
+
+        <div class="row grid-row">
+            {% for item in listings %}
+            <div class="{{ setting('show_search_sidebar') ? 'col-6 col-sm-4 col-md-4' : 'col-6 col-sm-3 col-md-3' }} mb-3">
+                <div class="card border-0">
+                    <div style="position: relative">
+
+                        <a href="{{item.url}}" class="rounded  border-top image-wrappers  text-center">
+                            <img class="img-grid-loaders rounded img-grid" src="{{ item.thumbnail }}?w=300&h=255" alt="{{item.title}}">
+                        </a>
+                    </div>
+
+
+                  <div class="card-body pt-3 pb-4 p-0">
+                      <a href="{{item.url}}" style="max-height: 40px; display: block; font-style: normal;" class="h6 card-subtitle mb-2 text-dark" >{{ item.title }}</a>
+                      <p class="card-text row mt-0">
+                          <span class="col-sm-12 text-danger truncate mb-1">{{ item.price_formatted }}</span>
+
+                          <small class="col-sm-12 text-muted truncate">{{ item.short_address }} {% if request('sort') == 'distance' %}({{ item.human_distance }}){% endif %}</small>
+                          <small class="col-sm-6 text-muted truncate">{{ item.user.display_name }}</small>
+                          <!--<small class="col-sm-6 text-muted text-right"><?= item.created_at->diffForHumans() ?></small>-->
+                      </p>
+                  </div>
+
+
+                </div>
+            </div>
+{% endfor %}
+
+    </div>
+
+    {{ listings.appends(request().query()).links() | raw }}
+</div>
