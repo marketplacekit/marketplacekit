@@ -28,8 +28,6 @@ class ProfileController extends Controller
     {
         $data = [];
         $data['listings'] = $user->listings()->with('user')->with('pricing_model')->orderBy('created_at', 'DESC')->active()->limit(5)->get();
-        $data['comments'] = $user->comments()->with('commenter')->orderBy('created_at', 'DESC')->limit(5)->get();
-        $data['rating'] = $user->averageRate();
         $data['profile'] = $user;
 
         MetaTag::set('title', $user->display_name);

@@ -31,6 +31,10 @@ class AppServiceProvider extends ServiceProvider
                 config(['googlmapper.key' => ""]);
             }
 
+            if(env("DEMO")) {
+                setting(['google_maps_key' => env("DEMO_GOOGLE_MAPS_KEY")]);
+                config(['googlmapper.key' => env("DEMO_GOOGLE_MAPS_KEY")]);
+            }
         }
 
     }

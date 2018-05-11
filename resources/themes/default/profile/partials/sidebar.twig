@@ -29,9 +29,6 @@
                     <div class="col-sm-12 mx-auto text-center">
 
                         <p class="small mb-3 text-muted">{{ __("Joined") }} {{ profile.created_at.format('F Y') }}</p>
-
-                        {{ include('components.star_rating', {rating: profile.averageRate()}) }}
-                        <p class="small mt-0 mb-0 text-muted">{{profile.count_reviews()}} {{ __("reviews") }}</p><br />
                         <p class=" text-muted">{{profile.listings.count()}} {{ __("listings") }}</p>
 
                     </div>
