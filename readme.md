@@ -1,4 +1,9 @@
-<p align="center"><img src="http://marketplace-kit.s3.amazonaws.com/logo.png"></p>
+<p align="center"><img src="https://marketplace-kit.s3.amazonaws.com/logo.png"></p>
+<p align="center">..:: Open source Marketplace Software ::..</p>
+<p align="center">
+<a href="https://preview.marketplacekit.com/">Interactive Demo</a> |
+<a href="https://www.behance.net/gallery/65481549/MarketplaceKit">Screenshots</a>
+</p>
 
 ## About MarketplaceKit
 
@@ -11,6 +16,8 @@ MarketplaceKit is a platform for building different types of online marketplaces
 - Direct messaging between users
 - Multilingual functionality
 
+<table><tr><td><p align="center"><img src="https://marketplace-kit.s3.amazonaws.com/preview.png"></p>
+</td></tr></table>
 
 
 MarketplaceKit uses popular, well documented packages without too much overhead to simplify a developers/designers life. Therefore, the following choices were made:
