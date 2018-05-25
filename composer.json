@@ -1,6 +1,6 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
+    "name": "marketplacekit/marketplacekit",
+    "description": "Open source Marketplace Software",
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
