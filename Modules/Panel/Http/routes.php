@@ -9,9 +9,7 @@ Route::group(['as' => 'panel.', 'prefix' => 'panel', 'middleware' => ['web', 'au
     Route::resource('pages', 'PagesController');
     Route::resource('menu', 'MenuController');
     Route::resource('settings', 'SettingsController');
-    Route::resource('orders', 'OrdersController');
     Route::resource('home', 'HomeController');
-    Route::resource('pricing-models', 'PricingModelsController');
     Route::resource('fields', 'FieldsController');
 
 });

@@ -34,7 +34,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => 'jai
     Route::get('/pages/{slug}', 'PageController@index')->name('page');
 	Route::get('/contact', 'ContactController@index')->name('contact');
 	Route::post('/contact', 'ContactController@postIndex')->name('contact.post');
-	Route::get('/sitemap', 'SitemapController@index')->name('sitemap');
+	//Route::get('/sitemap', 'SitemapController@index')->name('sitemap');
 
 	Route::get('/profile/{user}', 'ProfileController@index')->name('profile'); //PROFILE
 	Route::get('/profile/{user}/reviews', 'ProfileController@reviews')->name('profile.reviews');
@@ -49,7 +49,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => 'jai
 		Route::get('/{listing}/{slug}/edit', 'ListingController@edit');
 		Route::any('/{id}/update', 'ListingController@update')->name('listing.update');
 
-		Route::resource('/{listing}/{slug}/reviews', 'ReviewsController');
+		#Route::resource('/{listing}/{slug}/reviews', 'ReviewsController');
 		#Route::get('/{listing}/{slug}/times', 'ListingController@getTimes');
 		#Route::post('/{listing}/{slug}/times', 'ListingController@postTimes');
 	});
@@ -87,20 +87,6 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => 'jai
 
         #Route::delete('/uploads/delete/{id}', array('as' => 'upload', 'uses' => 'CreateController@deleteUpload'))->name('create.delete-image');;
 		#Route::get('/listings/{id}/session', array('as' => 'create', 'uses' => 'CreateController@session'));
-
-		//CHECKOUT
-		Route::get('/checkout/{listing}', 'CheckoutController@index')->name('checkout');
-		Route::any('/checkout/process/{listing}', 'CheckoutController@process')->name('checkout.process');
-		#Route::any('/checkout/test', 'CheckoutController@test')->name('checkout.test');
-		Route::resource('stripe', 'StripeController');
-		Route::any('/stripe/connect', 'StripeController@connect')->name('stripe.connect');
-
-        Route::any('/paypal/{listing}/start', 'PaypalController@start')->name('paypal.start');
-        Route::any('/paypal/cancel', 'PaypalController@cancel')->name('paypal.cancel');
-        Route::any('/paypal/callback', 'PaypalController@callback')->name('paypal.callback');
-        Route::any('/paypal/confirm', 'PaypalController@confirm')->name('paypal.confirm');
-        #Route::any('/paypal/create_agreement', 'PaypalController@create_agreement')->name('paypal.create_agreement');
-
 
     });
 	Route::get('login/facebook', 'Auth\LoginController@redirectToProvider');

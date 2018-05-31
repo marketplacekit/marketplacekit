@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
 use Illuminate\Http\Request;
-use App\Models\Listing;
-use App\Models\Widget;
 use Location;
 use Setting;
 use MetaTag;
@@ -37,7 +34,7 @@ class HomeController extends Controller
         return redirect('/home?'.$url);
     }
 
-    public function redirect(Request $request)
+    public function redirect()
     {
         return redirect('/');
     }
@@ -45,6 +42,8 @@ class HomeController extends Controller
     public function index(Request $request)
     {
 
+        return app('App\Http\Controllers\BrowseController')->listings($request);
+        /*
         if(!setting('custom_homepage')) {
             return app('App\Http\Controllers\BrowseController')->listings($request);
         }
@@ -56,7 +55,7 @@ class HomeController extends Controller
         MetaTag::set('title', Setting::get('home_title'));
         MetaTag::set('description', Setting::get('home_description'));
 
-        return view('home.index', $data);
+        return view('home.index', $data);*/
 		
     }
 
