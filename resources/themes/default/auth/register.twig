@@ -1,0 +1,88 @@
+{% extends "layouts.app" %}
+
+{% block content %}
+    <div class="container">
+        <div class="row flex-column pt-5  pb-5 align-items-center">
+            <div class="col-md-8 mx-auto" style="width: 360px;">
+
+                <h5>{{ __("Register") }}</h5>
+                <div class="card card-block">
+                    <div class="card-body">
+                        <form method="POST" action="{{ route('register') }}">
+                            {{ csrf_field() }}
+
+                            <a href="/login/facebook" data-turbolinks="false" class="btn btn-md btn-facebook btn-block mt-3"><i class="fa fa-facebook fa-fw"></i> {{ __("Register with Facebook") }}</a>
+
+                            <div class="col-12 text-center text-muted mb-4 mt-4">
+                                — {{ __("or") }} —
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-control-label" for="name">{{ __("Name") }}</label>
+                                <input class="form-control{{ errors.has('name') ? ' is-invalid' : '' }}" type="text"
+                                       id="name" name="name" value="{{ old('name') }}"
+                                       placeholder="e.g. Jack Sparrow" required autofocus>
+                                {% if errors.has('name') %}
+                                    <small class="form-control-feedback invalid-feedback">{{ errors.first('name') }}</small>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-control-label" for="email">{{ __("Email address") }}</label>
+                                <input class="form-control{{ errors.has('email') ? ' is-invalid' : '' }}" type="email"
+                                       id="email" name="email" value="{{ old('email') }}"
+                                       placeholder="e.g. something@example.com" required>
+                                {% if errors.has('email') %}
+                                    <small class="form-control-feedback invalid-feedback">{{ errors.first('email') }}</small>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-control-label" for="password">{{ __("Password") }}</label>
+                                <input class="form-control{{ errors.has('password') ? ' is-invalid' : '' }}"
+                                       placeholder="{{ __("Something secure") }}" type="password" id="password" name="password" required
+                                       aria-describedby="passwordHelp">
+                                {% if errors.has('password') %}
+                                    <div class="form-control-feedback invalid-feedback">{{ errors.first('password') }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <input id="password-confirm" type="password" class="form-control"
+                                       name="password_confirmation" placeholder="{{ __("Confirm your password") }}" required>
+                                <small class="form-text text-muted" id="passwordHelp">{{ __("Keep your password from prying
+                                    eyes.") }}
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-md btn-success btn-block">{{ __("Sign Up") }}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <br/>
+                <br/>
+                <div class="form-group row">
+                    <div class="col text-center">
+                        <a href="{{ route('login') }}" class="text-muted mb-3">{{ __("Already have an account? Log in") }}</a><br/>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block navbar %}
+    <a href="{{ url_previous(route('login')) }}" class="close-btn" style="position: absolute; top: 20px; right: 20px;"><i
+                class="mdi mdi-close text-muted" style="font-size: 30px;"></i></a>
+{% endblock %}
+
+{% block footer %}
+    <footer class="bg-white border-0">
+    </footer>
+{% endblock %}
+
+{% block search_bar %}
+{% endblock %}

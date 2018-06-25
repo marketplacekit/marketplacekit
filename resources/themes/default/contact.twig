@@ -1,0 +1,71 @@
+{% extends "layouts.app" %}
+
+{% block search_bar %}
+    {% include 'layouts.search_bar.twig' %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid narrow pt-0 pb-5">
+
+        <div class="row">
+
+            <div class="col-md-6 offset-md-3">
+
+
+                <div class="page-header">
+                    <h1>{{ __('Contact us') }}</h1>
+                </div>
+                <br/>
+
+                {{ form_open( {'url' :  url_current(), 'class' : 'form', 'method':'post'}) }}
+                {% include 'notifications.twig' %}
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label>{{ __('Name') }}</label>
+                                        {{ form_text('name', input_get('first_name') ? input_get('first_name') : first_name, {'class' : 'form-control'})  }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label>{{ __('Email') }}</label>
+                                        {{ form_text('email_address', input_get('email') ? input_get('email') : email, {'class' : 'form-control'}) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label>{{ __('Your comments') }}</label>
+                                        {{ form_textarea('comment', default_message, {'class' : 'form-control', 'rows': 5}) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        {{ form_submit(__('Send message'), {'class' : 'btn btn-primary pull-right'}) }}
+                    </div>
+                </div>
+
+                {{ form_close() }}
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+{% endblock %}

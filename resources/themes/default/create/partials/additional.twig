@@ -1,0 +1,19 @@
+<div class="card mb-4">
+    <h6 class="card-header bg-white">{{ __("Additional Information") }}</h6>
+    <div class="card-body">
+        <div class="render-form"></div>
+    </div>
+</div>
+
+
+<script>
+var formData = {{ listings_form | json_encode() | raw }};
+
+document.addEventListener("turbolinks:load", function() {
+    var formRenderOpts = {
+            dataType: 'json',
+            formData: {{ listings_form | json_encode() | raw  }}
+    };
+    $('.render-form').formRender(formRenderOpts);
+});
+</script>

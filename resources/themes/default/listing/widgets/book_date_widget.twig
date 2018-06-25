@@ -1,0 +1,181 @@
+<div class="card " id="form-selector" >
+    <form method="GET" class="checkout-form" ic-get-from="{{ url_current() }}" ic-target="#form-selector" ic-select-from-response="#form-selector" ic-replace-target="false" ic-trigger-on="changes" ic-trigger-delay="50ms" ic-indicator="#indicator">
+	{{ csrf_field() }}
+	<div class="card-header">
+        {{ __("Select your dates") }}
+    </div>
+	<div class="card-body">
+
+
+		<div class="row ">
+			<div class="col-sm-12">
+
+                <div class="row ">
+                    <div class="col-sm-12">
+                        <h4 class="mb-0"><i id="indicator" class="fa fa-spinner fa-spin text-muted" style="display:none"></i> {{format_money(listing.price, listing.currency)}} <small>{{ __("per") }} {{listing.price_display == 'unit'?listing.pricing_model.unit_name:listing.pricing_model.duration_name}}</small></h4>
+                        <small class="text-muted">{{ __("VAT included") }}</small>
+                    </div>
+                </div>
+                <div class="calendar row">
+                    <div class="col-sm-12 mt-3">
+                        <input type="text" required name="range" id="calendar_range" value="{{ request('range') }}" placeholder="{{ __("Start date - End date") }}" class="form-control text-center" />
+                        <input type="hidden" name="start_date" id="start_date" value="{{ request('start_date') }}"/>
+						<input type="hidden" name="end_date" id="end_date" value="{{ request('end_date') }}"/>
+                        {% if error and input_get('range') %}
+                            <p class="text-danger text-left small">{{ error }}</p>
+                        {% else %}
+                            <p class="text-muted text-left small">{{ __('Select a date range') }}</p>
+                        {% endif %}
+					</div>
+
+                </div>
+                {% if listing.stock > 1 %}
+                    <div class="row mb-1">
+                        <div class="col-sm-12">
+                            {{ __('Quantity') }}
+                        </div>
+                        <div class="col-sm-4">
+                            {{ form_select('quantity', array_combine(range(1, listing.stock), range(1, listing.stock)), null, {'class' : 'form-control form-control-sm', 'required' : 'required'}) }}
+                        </div>
+                    </div>
+                {% else %}
+                    {{ form_hidden('quantity', 1) }}
+                {% endif %}
+
+                {% if listing.additional_options|length > 0 %}
+                    <div class="row mt-3 mb-3">
+                        <div class="col-sm-12">
+                            <label class="small text-muted">{{ __('Additional options') }}</label>
+                            {% for k, additional_option in listing.additional_options  %}
+                                <div class="form-check">
+
+                                    <input class="form-check-input" required id="additional_option_{{ additional_option.id }}" {{ (input_has('additional_option.'~additional_option.id))?'checked=checked':'' }} name="additional_option[{{ additional_option.id }}]" type="checkbox" value="1">
+                                    <label class="form-check-label" for="additional_option_{{ additional_option.id }}">
+                                        {{ additional_option.name }} <span class="text-muted">({{ format_money(additional_option.price, listing.currency) }})</span>
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if price_items and units %}
+                    <hr />
+                    {% for item in price_items %}
+                    <div class="row">
+                        <div class="col-8 mt-1">
+                            <span>{{item.label}}</span>
+                        </div>
+                        <div class="col-4 mt-1 text-right">
+                            <span>{{item.price}}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+				{% endif %}
+
+                {% if units %}
+
+                <div class="row">
+                    <div class="col-8 mt-1">
+                        <span>{{ __('Total') }}</span>
+                    </div>
+                    <div class="col-4 mt-1 text-right">
+                        <span>{{format_money(total, listing.currency)}}</span>
+                    </div>
+                </div>
+                {% endif %}
+				
+				
+				
+			</div>
+		</div>
+		</div>
+
+		<div class="card-footer">
+
+            {% if listing.user.can_accept_payments  %}
+                {% if auth_check() and listing.user.can_accept_payments  %}
+                    <button type="submit" {{error?'disabled':''}} class="btn btn-primary btn-block book"> {{ __("Buy now") }} <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+
+                    {% if listing.user.paypal_email and setting('paypal_enabled') %}
+                        <br />
+                        <a href="{{ route("paypal.start", {'listing': listing}) }}?{{ qs }}" class="btn btn-secondary btn-block paypal-btn {{ error?'disabled':'' }}" data-turbolinks="false"> <strong class="small font-weight-bold">{{ __("Check out with") }}</strong> <img class="img-fluid" style="height: 18px" src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_100x26.png" /></a>
+                    {% endif %}
+
+                {% else %}
+                    <a href="{{route('login', {'action' : 'checkout'})}}" class="btn btn-primary btn-block pop"><i class="mdi mdi-share mr-1" ></i> {{ __("Buy now") }} <i class="mdi mdi-chevron-right" aria-hidden="true"></i></a >
+
+                    <div class="webui-popover-content">
+                        <p class="h6">{{ __('Want to checkout?') }}</p>
+                        <p>{{ __('Sign in to make a payment.') }}</p>
+                        <hr />
+                        <a href="{{ route('login') }}" class="btn btn-link text-danger font-weight-bold text-uppercase pl-0">{{ __("Sign in") }}</a>
+                    </div>
+
+                {% endif %}
+            {% else %}
+                {% if auth_check() %}
+                    <button type="submit" {{error?'disabled':''}} class="btn btn-primary btn-block InboxDirectMessage" data-url="{{ route('inbox.create', {'user_id': listing.user_id, 'direct':true, 'listing_id':listing.id}) }}"> {{ __("Ask about availability") }} <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+                {% else %}
+                    <a href="{{route('login', {'action' : 'checkout'})}}" class="btn btn-primary btn-block pop"><i class="mdi mdi-share mr-1" ></i> {{ __("Ask about availability") }} <i class="mdi mdi-chevron-right" aria-hidden="true"></i></a >
+                    <div class="webui-popover-content">
+                        <p class="h6">{{ __('Want to know about availability?') }}</p>
+                        <p>{{ __('Sign in to send the seller a message.') }}</p>
+                        <hr />
+                        <a href="{{ route('login') }}" class="btn btn-link text-danger font-weight-bold text-uppercase pl-0">{{ __("Sign in") }}</a>
+                    </div>
+                {% endif %}
+                <p class="small text-muted text-center mb-0">{{ __("This automatically sends a message to the seller.") }}</p>
+            {% endif %}
+
+		</div>
+	</form>
+
+<script>
+	var range = "{{ input_get('range') }}";
+	var start_date = "{{ input_get('start_date') }}";
+	var end_date = "{{ input_get('end_date') }}";
+	var total = "{{ total }}";
+	var booked_dates = {{ booked_dates|json_encode()|raw }};
+    var billingAddress =  Boolean({{ listing.pricing_model.requires_billing_address }});
+    var shippingAddress =  Boolean({{ listing.pricing_model.requires_shipping_address }});
+</script>
+</div>
+
+<script>
+
+	function setup_calendar() {
+		var nowDate = new Date();
+		var today = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate(), 0, 0, 0, 0);
+        flatpickr("#calendar_range", {
+            locale: '{{ LaravelLocalization.getCurrentLocale() }}',
+            minDate: "today",
+            allowInput: false,
+            mode: "range",
+            dateFormat:"d-m-Y",
+            disable: booked_dates,
+            {% if input_get('start_date') and input_get('end_date') %}
+            defaultDate: [start_date, end_date],
+            {% endif %}
+            onChange: function(selectedDates, dateStr, instance) {
+                if(selectedDates.length == 2) {
+                    $('#start_date').val(moment(selectedDates[0]).format('DD-MM-YYYY'));
+                    $('#end_date').val(moment(selectedDates[1]).format('DD-MM-YYYY'));
+                    Intercooler.refresh($(".checkout-form"), function(){
+
+                    })
+                }
+
+            },
+        });
+	}
+
+    $('#form-selector').on('elementAdded.ic', function(){
+        setup_calendar();
+        setup_stripe();
+    });
+
+    setup_calendar();
+    setup_stripe();
+
+</script>

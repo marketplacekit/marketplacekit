@@ -1,0 +1,34 @@
+{% if setting('enable_geo_search') %}
+<div class="">
+    <h6 class="mt-0 text-capitalize">{{ _l(facet.name) }}</h6>
+
+    <div class="row">
+        <div class="col-sm-12">
+            {% set distance_unit = 'mile' %}
+            {% set distance_unit_plural = 'miles' %}
+            {% if setting('distance_unit') == 'km' %}
+                {% set distance_unit = 'km' %}
+                {% set distance_unit_plural = 'km' %}
+            {% endif %}
+
+            {{ form_select('distance', {
+                '-1'  :  __('Anywhere'),
+                '0'  :  __('This area only'),
+                '1'  :  '+ 1 ' ~ distance_unit,
+                '3'  :  '+ 3 ' ~ distance_unit_plural,
+                '5'  :  '+ 5 ' ~ distance_unit_plural,
+                '10'  :  '+ 10 ' ~ distance_unit_plural,
+                '15'  :  '+ 15 ' ~ distance_unit_plural,
+                '30'  :  '+ 30 ' ~ distance_unit_plural,
+                '50'  :  '+ 50 ' ~ distance_unit_plural,
+                '75'  :  '+ 75 ' ~ distance_unit_plural,
+                '100'  :  '+ 100 ' ~ distance_unit_plural,
+            },  input_get('distance'), {'class' : 'distance form-control'}) }}
+
+        </div>
+    </div>
+</div>
+
+    <hr class=""/>
+
+{% endif %}

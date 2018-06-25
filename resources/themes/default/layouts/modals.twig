@@ -1,0 +1,46 @@
+<!-- Modal -->
+<div class="modal fade" id="inboxModal" tabindex="-1" role="dialog" aria-labelledby="inboxModal" aria-hidden="true">
+
+    <div class="modal-dialog" role="document" id="inbox-wrapper" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">{{ __("Inbox") }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body pt-5 pb-5">
+                <div class="text-center">
+                    <div class="fa fa-spinner fa-spin fa-2x text-muted"></div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="postModal" aria-hidden="true">
+
+    <div class="modal-dialog" role="document" ic-trigger-on="scrolled-into-view" id="post-wrapper" ic-target="#post-wrapper" ic-select-from-response="#create-content-outer" ic-get-from="{{  route('create.index') }}" ic-replace-target="true">
+        <div id="create-wrapper">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">{{ __('Post a listing') }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="create-spinner" class="text-center">
+                        <div class="fa fa-spinner fa-spin fa-2x text-muted"></div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

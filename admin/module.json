@@ -1,0 +1,16 @@
+{
+    "name": "Panel",
+    "alias": "panel",
+    "description": "",
+    "keywords": [],
+    "active": 1,
+    "order": 0,
+    "providers": [
+        "Modules\\Panel\\Providers\\PanelServiceProvider"
+    ],
+    "aliases": {},
+    "files": [
+        "start.php"
+    ],
+    "requires": []
+}

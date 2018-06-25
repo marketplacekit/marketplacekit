@@ -1,0 +1,18 @@
+{% if auth_check() %}
+    <button id="star-listing" type="button" class="btn btn-outline-secondary mt-3 btn-block" ic-get-from="{{ route('listing.star', [listing, listing.slug]) }}" ic-target="#star-listing" ic-replace-target="true">
+        {% if listing.isFavorited() %}
+            <span class="fa fa-heart text-left mr-1 text-danger"></span> {{ __("Remove from favorites") }}
+        {% else %}
+            <span class="fa fa-heart-o text-left mr-1 text-danger"></span> {{ __("Save to favorites") }}
+        {% endif %}
+    </button>
+{% else %}
+    <a href="{{route('login')}}" class="btn btn-secondary mt-3 btn-block pop" data-width="300"><span class="fa fa-star-o text-left mr-1"></span> {{ __("Save to favorites") }}</a >
+
+    <div class="webui-popover-content">
+        <p class="h6">{{ __('Like this listing?') }}</p>
+        <p>{{ __('Sign in to save it to your favorites.') }}</p>
+        <hr />
+        <a href="{{ route('login') }}" class="btn btn-link text-danger font-weight-bold text-uppercase pl-0">{{ __("Sign in") }}</a>
+    </div>
+{% endif %}

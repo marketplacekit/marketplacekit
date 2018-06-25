@@ -1,0 +1,29 @@
+<div class="row mb-0">
+
+    <div class="col-12">
+        <h4 class="text-{{ widget.alignment }} pb-5">{{ widget.title }}</h4>
+    </div>
+</div>
+<div class="row mt-0">
+    <div class="col-12">
+
+        <div class="pl-sm-5 pr-sm-5">
+            <div class="row">
+                {% for category in categories %}
+
+                    {% if category.categories | length %}
+
+                        <div class="col-sm-3 col-6 mb-5">
+                            <a href="{{ route(setting('marketplace_index'), {'category' : category}) }}"><h6 class="text-muted">{{ _l(category.name) }}</h6></a>
+                            {% for child_category in category.categories %}
+                                <a href="{{ route(setting('marketplace_index'), {'category' : child_category.id}) }}">{{ _l(child_category.name) }}</a>
+                                <br/>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+</div>

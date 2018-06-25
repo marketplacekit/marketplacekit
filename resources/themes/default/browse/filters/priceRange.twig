@@ -1,0 +1,16 @@
+<div class="">
+    <h6 class="mt-0 text-capitalize">{{ _l(facet.name) }}</h6>
+    <div class="row">
+        <div class="col-5  pr-0 ">
+            <input type="text" class="form-control form-control-sm" name="{{facet.field}}_min" value="{{input_get(facet.field ~ '_min')}}" />
+        </div>
+        <div class="col-2 pl-0 pr-0 text-center">
+            <p class="form-control-plaintext">{{ __("to") }}</p>
+        </div>
+        <div class="col-5  pl-0">
+            <input type="text" class="form-control form-control-sm" name="{{facet.field}}_max" value="{{input_get(facet.field ~ '_max')}}" />
+        </div>
+    </div>
+
+</div>
+<hr class=""/>

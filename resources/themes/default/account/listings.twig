@@ -1,0 +1,34 @@
+{% extends "account.master" %}
+
+{% block user_area %}
+
+    <div class="card panel-default">
+        <h6 class="card-header bg-white"><i class="mdi mdi-account mr-2"></i> {{ __('Listings') }}</h6>
+        <div class="card-body">
+
+
+            <table class="table table-sm border-top-0">
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col">{{ __('Title') }}</th>
+                    <th scope="col" class="d-none d-sm-block">{{ __('Date Created') }}</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for i, item in listings %}
+                    <tr>
+                        <td><a href="{{ item.url }}" class="text-dark">{{ item.title | str_limit(40) }}</a></td>
+                        <td class="d-none d-sm-block">{{ item.created_at.toFormattedDateString() }}</td>
+                        <td class="text-right"><a href="{{ item.edit_url }}">{{ __('edit') }}&nbsp;<i class="mdi mdi-chevron-double-right"></i></a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {{ listings.links() | raw }}
+        </div>
+    </div>
+
+
+{% endblock %}
+

@@ -1,0 +1,37 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+
+class CreateListingShippingOptionsTable extends Migration {
+
+	/**
+	 * Run the migrations.
+	 *
+	 * @return void
+	 */
+	public function up()
+	{
+		Schema::create('listing_shipping_options', function(Blueprint $table)
+		{
+			$table->integer('id', true);
+			$table->integer('listing_id')->nullable();
+			$table->decimal('price', 11)->nullable();
+			$table->string('name')->nullable();
+			$table->integer('position')->nullable()->default(0);
+			$table->timestamps();
+		});
+	}
+
+
+	/**
+	 * Reverse the migrations.
+	 *
+	 * @return void
+	 */
+	public function down()
+	{
+		Schema::drop('listing_shipping_options');
+	}
+
+}

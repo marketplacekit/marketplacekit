@@ -1,0 +1,94 @@
+{% extends "account.master" %}
+
+{% block user_area %}
+    <div class="card">
+        <h6 class="card-header bg-white"><i class="mdi mdi-account mr-2"></i> {{ __("My Profile") }}</h6>
+        <div class="card-body">
+
+
+            {{ form_model(user, {'url' :  route('account.edit_profile.store'), 'files': true, 'id':'edit_profile', 'class' : 'form-vertical mb-5'}) }}
+
+            {% include 'notifications' %}
+
+            <div class="form-group row">
+                <label for="example-text-input" class="col-4 col-sm-3 col-form-label">{{ __('Display Name') }}</label>
+                <div class="col-12 col-sm-9">
+                    {{ form_text('display_name', null, {'class' : 'form-control'}) }}
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="example-tel-input" class="col-4 col-sm-3 col-form-label">{{ __('Username') }}</label>
+                <div class="col-12 col-sm-9">
+                    {{ form_text('username', null, {'class' : 'form-control'}) }}
+                    <small id="passwordHelpBlock" class="form-text text-muted">
+                        {{ __("This will be used as your profile page URL.") }}
+                    </small>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="example-email-input" class="col-3 col-md-3 col-form-label">{{ __('Bio') }}</label>
+                <div class="col-12 col-sm-9">
+                    {{ form_textarea('bio', null, {'class' : 'form-control', 'rows' : 3}) }}
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label">{{ __('Avatar') }}</label>
+                <div class="col-sm-8">
+                    <img style="width: 100px" class="rounded-circle" src="{{ user.avatar }}?t={{ date().timestamp }}"/>
+                    <br/><br/>{{ form_file('image') }}<br/>
+                </div>
+            </div>
+
+
+            <div class="form-group row mt-5 mb-0">
+                <label class="col-sm-3 col-form-label"></label>
+                <div class="col-sm-8">
+                    <h6 class="text-muted">{{ __('Private information') }}</h6>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="example-text-input" class="col-3 col-md-3 col-form-label">{{ __('Email') }}</label>
+                <div class="col-12 col-sm-9">
+                    {{ form_text('email', user.email, {'class' : 'form-control', 'disabled' : true}) }}
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="example-email-input" class="col-3 col-md-3 col-form-label">{{ __('Phone') }}</label>
+                <div class="col-12 col-sm-9">
+
+                    <div class="input-group">
+
+                        {{ form_text('phone', null, {'class' : 'form-control  border-right-0', 'placeholder':"+44"}) }}
+
+                        <div class="input-group-prepend ">
+                            <span class="input-group-text bg-white  border-left-0 " id="basic-addon1"><i class="mdi mdi-phone"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label">{{ __('Gender') }}</label>
+                <div class="col-sm-8">
+                    {{ form_select('gender', {'M' : 'Male', 'F' : 'Female', '' : 'Not specified'}, null, {'class' : 'form-control'}) }}
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label">&nbsp;</label>
+                <div class="col-sm-8">
+                    {{ form_submit(__('Save profile'), {'class' : 'btn btn-primary'}) }}
+
+                </div>
+            </div>
+
+
+            {{ form_close() }}
+
+        </div>
+    </div>
+{% endblock %}

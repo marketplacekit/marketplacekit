@@ -1,0 +1,47 @@
+{% extends "account.master" %}
+
+{% block user_area %}
+
+    <div class="card panel-default">
+        <h6 class="card-header bg-white"><i class="mdi mdi-account mr-2"></i> {{ __('Orders') }}</h6>
+        <div class="card-body">
+            <div class="table-responsive">
+            <table class="table  border-top-0">
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col">{{ __('Listing') }}</th>
+                    <th scope="col"  class="d-none d-sm-table-cell">{{ __('Buyer') }}</th>
+                    <th scope="col">{{ __('Order number') }}</th>
+                    <th scope="col">{{ __('Amount') }}</th>
+                    <th scope="col"  class="d-none d-sm-table-cell">{{ __('Date Ordered') }}</th>
+                    <th scope="col">{{ __('Status') }}</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for i, item in orders %}
+                    <tr>
+                        <td class="align-middle">
+                            <a href="{{ route('account.orders.show', item) }}" class="text-dark" data-toggle="tooltip" data-placement="left" title="{{ item.listing.title }}"><img src="{{ item.listing.thumbnail }}" style="width: 75px"/></a>
+                        </td>
+                        <td class="align-middle d-none d-sm-table-cell">
+                            <a href="#" class="InboxDirectMessage" data-url="{{ route('inbox.create', {'user_id': item.user.id, 'direct':true}) }}">{{ item.user?str_limit(item.user.display_name, 40):__('Guest') }}</a>
+                        </td>
+                        <td class="align-middle">{{ item.hash }}</td>
+                        <td class="align-middle">{{ item.amount }}&nbsp;{{ item.currency }}</td>
+                        <td class="align-middle d-none d-sm-table-cell">{{ item.created_at.toFormattedDateString() }}</td>
+                        <td class="align-middle">{{ _l(item.status) }}</td>
+                        <td class="align-middle text-right d-none d-sm-table-cell"><a
+                                    href="{{ route('account.orders.show', item) }}">{{ __('View') }}&nbsp;<i
+                                        class="mdi mdi-chevron-double-right"></i></a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            </div>
+            {{ orders.links() |raw }}
+
+        </div>
+    </div>
+
+{% endblock %}

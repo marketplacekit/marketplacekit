@@ -1,0 +1,54 @@
+<footer class="bg-white mt-0 border-0">
+
+    <div class="container-fluid">
+
+        <div class="row">
+
+            <div class="col-12 text-center mt-1 mb-3">
+
+
+                <div class="d-flex justify-content-center">
+                    {% if setting('facebook_url') %}
+                    <a href="{{ setting('facebook_url') }}" class="text-center" style="float: left; border: 1px solid #eee; border-radius: 15px; width: 30px; height: 30px; line-height: 30px;     display: block;">
+                        <i class="fa fa-facebook text-muted" aria-hidden="true"></i>
+                    </a>
+                    {% endif %}
+
+                    {% if setting('twitter_url') %}
+                    <a href="{{ setting('twitter_url') }}" class="text-center ml-2" style="float: left; border: 1px solid #eee; border-radius: 15px; width: 30px; height: 30px; line-height: 30px;     display: block;">
+                        <i class="fa fa-twitter text-muted" aria-hidden="true"></i>
+                    </a>
+                    {% endif %}
+
+                    {% if setting('instagram_url') %}
+                    <a href="{{ setting('instagram_url') }}" class="text-center ml-2" style="float: left; border: 1px solid #eee; border-radius: 15px; width: 30px; height: 30px; line-height: 30px;     display: block;">
+                        <i class="fa fa-instagram text-muted" aria-hidden="true"></i>
+                    </a>
+                    {% endif %}
+
+                    {% if setting('linkedin_url') %}
+                    <a href="{{ setting('linkedin_url') }}" class="text-center ml-2" style="float: left; border: 1px solid #eee; border-radius: 15px; width: 30px; height: 30px; line-height: 30px;     display: block;">
+                        <i class="fa fa-linkedin text-muted" aria-hidden="true"></i>
+                    </a>
+                    {% endif %}
+
+                </div>
+
+            </div>
+            <div class="col-12 text-center">
+                <p class="mb-3">
+                    <a href="{{route('page', 'terms-and-conditions')}}" class="text-muted mr-1">{{ __("Terms & Conditions") }}</a>
+                    &#8226;
+                    <a href="{{route('page', 'privacy-policy')}}" class="text-muted ml-1">{{ __("Privacy Policy") }}</a>
+                </p>
+            </div>
+
+
+            <div class="col-12 text-center">
+                <p class="mb-0"><span class="text-muted">{{ __("Copyright :name, :date &#8226; All rights reserved", {'name' : config('app.name'), 'date': "now"|date("Y")}) | raw }}</span> &#8226; <a href="https://marketplacekit.com" class="text-muted">Powered By MarketplaceKit</a></p>
+            </div>
+
+
+        </div>
+    </div>
+</footer>
