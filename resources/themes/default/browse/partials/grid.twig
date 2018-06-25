@@ -1,0 +1,29 @@
+<div class="">
+
+        <div class="row">
+            {% for item in listings %}
+            <div class="{{ setting('show_search_sidebar') ? 'col-6 col-sm-4 col-md-4' : 'col-6 col-sm-3 col-md-3' }} mb-3">
+                <div class="card">
+                    <a href="{{item.url}}"  >
+                        <img class="card-img-top" src="{{ item.thumbnail }}" alt="{{item.title}}">
+                    </a>
+                  <div class="card-body">
+                      <a href="{{item.url}}" style="max-height: 40px; display: block; font-style: normal;" class="h6 card-subtitle mb-2 text-dark" >{{ item.title }}</a>
+                      <p class="card-text row mt-0">
+                          <span class="col-sm-12 text-danger truncate mb-1">{{ item.price_formatted }}</span>
+
+                          <small class="col-sm-12 text-muted truncate">{{ item.short_address }} {% if request('sort') == 'distance' %}({{ item.human_distance }}){% endif %}</small>
+                          <small class="col-sm-6 text-muted truncate">{{ item.user.display_name }}</small>
+                          <!--<small class="col-sm-6 text-muted text-right"><?= item.created_at->diffForHumans() ?></small>-->
+                      </p>
+                  </div>
+
+
+                </div>
+            </div>
+{% endfor %}
+
+    </div>
+
+    {{ listings.appends(request().query()).links() | raw }}
+</div>

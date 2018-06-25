@@ -1,0 +1,203 @@
+{% extends "account.master" %}
+
+{% block user_area %}
+
+    <div class="card panel-default">
+        <h6 class="card-header bg-white"><i class="mdi mdi-account mr-2"></i> {{ __('Payments') }}</h6>
+        <div class="card-body">
+
+            {% include 'notifications' %}
+
+            <p>{{ __('Please Enter your bank account details below to accept payments.') }}</p>
+<a href="" class="btn btn-secondary btn-block text-left">Bank account details <i class="float-right mdi mdi-chevron-double-right"></i><br /><p class="small mb-0 text-muted">Enter the bank account where you want to payments</p></a>
+<a href="" class="btn btn-secondary btn-block text-left">Identity verification <i class="float-right mdi mdi-chevron-double-right"></i><br /><p class="small mb-0 text-muted">We also need to verify your identity</p></a>
+
+            <div id="bank_account_vue">
+                <!--<h1>${ msg }</h1>-->
+
+
+                <form action="" method="POST" id="payment-form">
+
+                    <h6 class="text-muted">Personal information</h6>
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label for="inputEmail4">First name</label>
+                        <input type="text" class="form-control" v-model="legal_entity.first_name">
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="inputPassword4">Last name</label>
+                        <input type="text" class="form-control" v-model="legal_entity.last_name" >
+                      </div>
+                    </div>
+
+                    <div class="form-row">
+                      <div class="form-group col-md-4">
+                        <label for="inputEmail4">Date of Birth</label>
+                        <select v-model="legal_entity.dob.day" class="form-control">
+                            <option value="">DD</option>
+                            <option v-for="option in days" v-bind:value="option">
+                                ${ option }
+                            </option>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label for="inputPassword4">&nbsp;</label>
+                        <select v-model="legal_entity.dob.month" class="form-control">
+                            <option value="">MM</option>
+                            <option v-for="option in months" v-bind:value="option.key">
+                                ${ option.label }
+                            </option>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label for="inputPassword4">&nbsp;</label>
+                        <select v-model="legal_entity.dob.year" class="form-control">
+                            <option value="">YYYY</option>
+                            <option v-for="option in years" v-bind:value="option">
+                                ${ option }
+                            </option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label class="" v-bind:text="msg">Country of bank</label>
+                            <select v-model="country" class="form-control" v-on:change="countryChange">
+                                <option v-for="option in countries" v-bind:value="option.id">
+                                    ${ option.label }
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label class="" v-bind:text="msg">Address</label>
+                            <input type="text" class="form-control" v-model="legal_entity.address.line1" >
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                      <div class="form-group col-md-4">
+                        <label for="inputEmail4">Postal code</label>
+                        <input type="text" class="form-control" v-model="legal_entity.address.postal_code" >
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label for="inputPassword4">City</label>
+                        <input type="text" class="form-control" v-model="legal_entity.address.city" >
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label for="inputPassword4">State</label>
+                        <input type="text" class="form-control" v-model="legal_entity.address.state" >
+                      </div>
+                    </div>
+
+
+                    <!--<div class="form-group">
+                      <label for="inputAddress">Address</label>
+                      <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+                    </div>
+
+                    <div class="form-row">
+                      <div class="form-group col-md-4">
+                        <label for="inputEmail4">City</label>
+                        <input type="email" class="form-control" id="inputEmail4" placeholder="Email">
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label for="inputPassword4">State</label>
+                        <input type="password" class="form-control" id="inputPassword4" placeholder="Password">
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label for="inputPassword4">Postal code</label>
+                        <input type="password" class="form-control" id="inputPassword4" placeholder="Password">
+                      </div>
+                  </div>-->
+<hr />
+                    <h6 class="text-muted">Banking information</h6>
+                    <div class="form-row">
+                      <div class="form-group col-md-12">
+                        <label for="inputEmail4">Routing number</label>
+                        <input type="email" class="form-control" id="inputEmail4" placeholder="Email">
+                      </div>
+                    </div>
+                    <div class="form-row">
+
+                        <div class="form-group col-md-12">
+                            <label class="">Account number</label>
+                            <input class="form-control account_holder_name" id="account_holder_name" type="text" data-stripe="account_holder_name" placeholder="Jane Doe" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="gridCheck">
+                        <label class="form-check-label" for="gridCheck">
+                          Check me out
+                        </label>
+                      </div>
+                    </div>
+
+
+                                    <div class="form-group row" id="routing_number_div">
+                                        <div class="col-sm-9">
+                                            <button class="btn btn-primary submit" type="submit">Save bank account</button>
+                                        </div>
+                                    </div>
+
+
+                </form>
+
+                <p>Payment processing services for sellers are provided by Stripe and are subject to the Stripe Connected Account Agreement.</p>
+                <p>By clicking, you agree to <a href="#">our terms</a> and the <a href="/connect-account/legal">Stripe Connected Account Agreement</a>.</p>
+
+            </div>
+
+            <script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.1.6/vue.min.js"></script>
+
+            <script>
+                var countries = {{ stripe_countries|json_encode()|raw}};
+                new Vue({
+                    delimiters: ['${', '}'],
+                    el: "#bank_account_vue",
+                    data() {
+                        return {
+                            msg: "Hello World!",
+                            days: {{ days|json_encode()|raw}},
+                            months: {{ months|json_encode()|raw}},
+                            years: {{ years|json_encode()|raw}},
+                            legal_entity: {
+                                dob : { day: "", month:"", year:""},
+                                address : { city: "", line1:"", postal_code:"", state:""},
+                                personal_id_number : "",
+                                ssn_last_4 : ""
+                            },
+                            first_name: null,
+                            last_name: null,
+                            address_line1: "",
+                            address_city: "",
+                            address_postal_code: "",
+                            address_state: "",
+                            dob_day: "",
+                            dob_month: "",
+                            dob_year:  "",
+                            countries: countries,
+                            countries: countries,
+                            verification_fields: null,
+                            country: null
+                        }
+                    },
+                    methods: {
+                        countryChange: function countryChange() {
+                            this.msg = this.country + "ddHello World"
+                        }
+                    }
+
+                });
+            </script>
+
+
+
+        </div>
+    </div>
+
+
+{% endblock %}

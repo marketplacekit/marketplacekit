@@ -1,0 +1,16 @@
+<div class="">
+    <h6 class="mt-0 text-capitalize">{{ _l(facet.name) }}</h6>
+<div class="row">
+    <div class="col-sm-12">
+        <select name="{{facet.field}}" class="form-control">
+            <option value="">-- SELECT --</option>
+			{% for option in facet.options %}
+				<option value="{{ option.name | trim('"') }}">{{ option.name |trim('"') }}</option>
+			{% endfor %}
+        </select>
+    </div>
+</div>
+
+</div>
+<hr class=""/>
+

@@ -1,0 +1,93 @@
+<div class="row mb-3">
+    <div class="col-sm-12">
+
+        <div class="card ">
+
+            <div class="card-body p-0">
+                {% if listing.carousel | length >= 1 %}
+                <div class="row">
+
+
+                    <div class="col-sm-12">
+
+                        <div id="carouselExampleControls" class="carousel slide" data-interval="false"
+                             data-ride="carousel">
+                            <div class="carousel-inner">
+                                {% for k,image in listing.carousel %}
+                                <div class="carousel-item {{(k==0)?'active':''}}">
+                                    <img class="d-block w-100" src="{{image}}" alt="{{listing.title}} photo {{k}}">
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% if listing.carousel | length > 1 %}
+                            <a class="carousel-control-prev" href="#carouselExampleControls" role="button"
+                               data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">{{ __("Previous") }}</span>
+                            </a>
+                            <a class="carousel-control-next" href="#carouselExampleControls" role="button"
+                               data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">{{ __("Next") }}</span>
+                            </a>
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+                </div>
+                {% endif %}
+
+            </div>
+            <div class="card-body">
+                <div class="row">
+
+
+                    <div class="col-sm-12">
+                        <h6 class="mt-2">{{ __("Overview") }}</h6>
+
+                        <hr/>
+
+                        <div class="row">
+                            <div class="col-md-12" id="listing-description">
+                                {% if input_get('translate') %}
+                                <a href="{{url_current()}}" ic-get-from="{{ url_current() }}"
+                                   ic-select-from-response="#listing-description"
+                                   ic-target="#listing-description">{{ __("View original") }}</a>
+                                    <iframe src="{{ url_current() }}?iframe=true"
+                                            style="width: 100%; height: auto; border: none; overflow: hidden;"
+                                            frameborder="0" scrolling="no" onload="resizeIframe(this)"></iframe>
+                                    <script>
+                                        function resizeIframe(obj) {
+                                            obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+                                        }
+                                    </script>
+                                {% else %}
+                                        {% if listing.locale != LaravelLocalization.getCurrentLocale() %}
+                                        <a href="{{ url_current() }}?translate=true"
+                                           ic-get-from="{{ url_current() }}?translate=true"
+                                           ic-select-from-response="#listing-description"
+                                           ic-target="#listing-description">{{ __("Translate to :locale using Google Translate", {'locale' : LaravelLocalization.getCurrentLocaleNative()}) }}</a>
+                                        {% endif %}
+                                        {{ listing.description | raw }}
+                                {% endif %}
+
+                            </div>
+                        </div>
+
+                        {% if listing.tags %}
+                            {% for tag in listing.tags %}
+                                <span class="badge badge-pill badge-danger font-weight-bold text-uppercase mr-1 pr-3 pl-3 mt-3">{{ tag }}</span>
+                            {% endfor %}
+                        {% endif %}
+
+                    </div>
+                </div>
+
+                <br/>
+                <br/>
+
+            </div>
+        </div>
+    </div>
+</div>

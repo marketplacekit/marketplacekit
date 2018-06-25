@@ -1,0 +1,160 @@
+<div class="card " id="form-selector" >
+	<form method="GET" id="form-widget" class="checkout-form" ic-get-from="{{ url_current() }}" ic-target="#form-selector" ic-select-from-response="#form-selector" ic-replace-target="false" ic-trigger-on="change" ic-push-url="true" ic-indicator=".widget-indicator">
+
+		<div class="card-header">
+            {{ __('Book a date/time') }}
+		</div>
+		<div class="card-body">
+			<div class="row ">
+				<div class="col-sm-12">
+
+					<div class="row ">
+						<div class="col-sm-12">
+							<h4 class="mb-0"><i class="widget-indicator fa fa-circle-o-notch p-1 fa-spin" style="display:none"></i> {{format_money(listing.price, listing.currency)}} <small>{{__('per')}} {{listing.pricing_model.duration_name}}</small></h4>
+						</div>
+					</div>
+					<div class="calendar row mb-3">
+						<div class="col-sm-12 mt-3">
+							<input type="text" name="start_date" id="calendar_value" value="{{ start_date ? start_date.format('d-m-Y') : '' }}" placeholder="DD-MM-YYYY" class="form-control text-left" autocomplete="off"/>
+                            {% if not start_date %}
+								<p class="form-text text-muted small ">{{ __('Select a date to begin') }}</p>
+                            {% endif %}
+						</div>
+
+					</div>
+
+                    {% if timeslots %}
+						<p class="mb-1 text-muted">{{ __('Select a start time') }} {{selected_slot}}</p>
+						<input type="hidden" name="slot" value="{{ selected_slot }}"/>
+						<div class="timeslot mb-3" style="overflow-y: scroll; overflow-x: hidden; max-height: 195px; display: block;">
+							<div class="row">
+                                {% for slot in timeslots %}
+									<div class="col-sm-4 mb-1">
+										<a href="{{ Request.fullUrlWithQuery({'slot' : slot})  }}" ic-get-from="{{ Request.fullUrlWithQuery({'slot' : slot}) }}" ic-target="#form-selector" ic-select-from-response="#form-selector" ic-replace-target="false" ic-push-url="true" ic-indicator=".widget-indicator" class="btn btn-block btn-sm border-0 {{ selected_slot == slot ?' btn-primary':'btn-light' }}">{{slot}}</a>
+									</div>
+                                {% endfor %}
+							</div>
+						</div>
+                    {% endif %}
+
+                    {% if error %}
+						<p class="mb-1 mt-1 p-3 text-muted text-center">{{ error }}</p>
+                    {% endif %}
+
+                    {% if listing.stock > 1 %}
+						<div class="row mb-1">
+							<div class="col-sm-12">
+                                {{ __('Quantity') }}
+							</div>
+							<div class="col-sm-4">
+                                {{ form_select('quantity', array_combine(range(1, listing.stock), range(1, listing.stock)), null, {'class' : 'form-control form-control-sm', 'required':'required'}) }}
+							</div>
+						</div>
+                    {% else %}
+                        {{ form_hidden('quantity', 1) }}
+                    {% endif %}
+
+                    {% if listing.additional_options|length > 0 %}
+						<div class="row mt-3 mb-3">
+							<div class="col-sm-12">
+								<label class="small text-muted">{{ __('Additional options') }}</label>
+                                {% for k, additional_option in listing.additional_options  %}
+									<div class="form-check">
+
+										<input class="form-check-input" required id="additional_option_{{ additional_option.id }}" {{ (input_has('additional_option.'~additional_option.id))?'checked=checked':'' }} name="additional_option[{{ additional_option.id }}]" type="checkbox" value="1">
+										<label class="form-check-label" for="additional_option_{{ additional_option.id }}">
+                                            {{ additional_option.name }} <span class="text-muted">({{ format_money(additional_option.price, listing.currency) }})</span>
+										</label>
+									</div>
+                                {% endfor %}
+							</div>
+						</div>
+                    {% endif %}
+
+                    {% if not error and selected_slot %}
+						<hr />
+                        {% for item in price_items %}
+							<div class="row">
+								<div class="col-sm-8 mt-1">
+									<span>{{ item.label }}</span>
+								</div>
+								<div class="col-sm-4 mt-1 text-right">
+									<span>{{format_money(item.price, listing.currency)}}</span>
+								</div>
+							</div>
+                        {% endfor %}
+
+						<div class="row">
+							<div class="col-sm-8 mt-1">
+								<span>{{ __('Total') }}</span>
+							</div>
+							<div class="col-sm-4 mt-1 text-right">
+								<span>{{format_money(total, listing.currency)}}</span>
+							</div>
+						</div>
+                    {% endif %}
+
+				</div>
+			</div>
+		</div>
+
+		<div class="card-footer">
+
+            {% if listing.user.can_accept_payments  %}
+
+                {% if not error and selected_slot %}
+                    {% if auth_check() %}
+						<button type="submit" class="btn btn-primary btn-block book"> {{__("Book") }} <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+
+                        {% if listing.user.paypal_email and setting('paypal_enabled') %}
+							<br />
+							<a href="{{ route("paypal.start", {'listing': listing}) }}?{{ qs }}" class="btn btn-secondary btn-block paypal-btn {{ error?'disabled':'' }}" data-turbolinks="false"> <strong class="small font-weight-bold">{{ __("Check out with") }}</strong> <img class="img-fluid" style="height: 18px" src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_100x26.png" /></a>
+                        {% endif %}
+
+                    {% else %}
+						<a href="{{route('login', {'action' : 'checkout'})}}" class="btn btn-primary btn-block pop"><i class="mdi mdi-share mr-1" ></i> {{ __("Book") }}</a>
+						<div class="webui-popover-content">
+							<p class="h6">{{ __('Want to checkout?') }}</p>
+							<p>{{ __('Sign in to make a payment.') }}</p>
+							<hr />
+							<a href="{{ route('login') }}" class="btn btn-link text-danger font-weight-bold text-uppercase pl-0">{{ __("Sign in") }}</a>
+						</div>
+                    {% endif %}
+                {% else %}
+					<button class="btn btn-primary mt-0 btn-block" disabled tooltip="{{__("Disabled")}}"><i class="mdi mdi-share mr-1" ></i> {{ __("Book") }}</button >
+                {% endif %}
+
+            {% else %}
+                {% if auth_check() %}
+					<button type="submit" {{error?'disabled':''}} class="btn btn-primary btn-block InboxDirectMessage" data-url="{{ route('inbox.create', {'user_id': listing.user_id, 'direct':true, 'listing_id':listing.id}) }}"> {{ __("Ask about availability") }} <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+                {% else %}
+					<a href="{{route('login', {'action' : 'checkout'})}}" class="btn btn-primary btn-block pop"><i class="mdi mdi-share mr-1" ></i> {{ __("Buy now") }} <i class="mdi mdi-chevron-right" aria-hidden="true"></i></a >
+					<div class="webui-popover-content">
+						<p class="h6">{{ __('Want to know about availability?') }}</p>
+						<p>{{ __('Sign in to send the seller a message.') }}</p>
+						<hr />
+						<a href="{{ route('login') }}" class="btn btn-link text-danger font-weight-bold text-uppercase pl-0">{{ __("Sign in") }}</a>
+					</div>
+                {% endif %}
+				<p class="small text-muted text-center mb-0">{{ __("This sends a message to the seller.") }}</p>
+            {% endif %}
+
+
+
+		</div>
+	</form>
+
+	<script>
+        var range = "{{ input_get('range') }}";
+        var start_date = "{{ start_date }}";
+        var total = "{{ total }}";
+        var billingAddress =  Boolean({{ listing.pricing_model.requires_billing_address }});
+        var shippingAddress =  Boolean({{ listing.pricing_model.requires_shipping_address }});
+
+        flatpickr("#calendar_value", {dateFormat:"d-m-Y", defaultDate:moment(start_date).format('DD-MM-YYYY')});
+        $('#form-selector').on('elementAdded.ic', function(){
+            flatpickr("#calendar_value", {dateFormat:"d-m-Y", defaultDate:moment(start_date).format('DD-MM-YYYY')});
+            setup_stripe();
+        });
+	</script>
+</div>

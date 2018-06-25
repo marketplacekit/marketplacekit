@@ -1,0 +1,65 @@
+{% if(input_get(facet.field ~ '_min', facet.options[0])) and input_get(facet.field ~ '_max', facet.options[1]) %}
+<div class="c">
+    <h6 class="mt-0 text-capitalize">{{ _l(facet.name) }}</h6>
+<div class="row">
+    <div class="col-sm-12">
+
+        <div style="height: 10px; display: block; " class="mt-2 mb-2 pl-2 pr-2">
+            <div id="{{ facet.field}}_slider"></div>
+        </div>
+
+    </div>
+    <div class="col-sm-6 text-left small">
+        {{ __('Min:') }} <span class="{{ facet.field}}_min">{{facet.options[0]}}</span>
+        <input type="hidden" id="{{facet.field}}_min" name="{{facet.field}}_min"  value="{{input_get(facet.field~'_min')}}"/>
+    </div>
+    <div class="col-sm-6 text-right small">
+        {{ __('Max:') }} <span class="{{facet.field}}_max">{{facet.options[1]}}</span>
+        <input type="hidden" id="{{facet.field}}_max" name="{{facet.field}}_max"  value="{{input_get(facet.field~'_max')}}"/>
+    </div>
+</div>
+<script>
+var start = getParameterByName('{{facet.field}}' + '_min');
+var end = getParameterByName('{{facet.field}}' + '_max');
+
+if(start == null) {
+    start = {{ input_get(facet.field ~ '_min', facet.options[0]) }};
+}
+if(end == null) {
+    end = {{ input_get(facet.field ~ '_max', facet.options[1]) }};
+}
+console.log(start, end);
+$( "#{{facet.field}}_slider" ).slider({
+      range: true,
+      min: {{facet.options[0]}},
+      max: {{facet.options[1]}},
+      values: [ start, end ],
+      create: function( event, ui ) {
+          var values =$(this).slider('values');
+          $('#{{ facet.field }}_label').text("$" + values[0] + '-' + "$" + values[1]);
+    },
+      slide: function( event, ui ) {
+          $('#{{facet.field}}_min').val(ui.values[0].toFixed(2));
+          $('#{{facet.field}}_max').val(ui.values[1].toFixed(2));
+
+          $('#{{ facet.field }}_label').text("$" + ui.values[0] + '-' + "$" + ui.values[1]);
+    },
+      stop: function( event, ui ) {
+          console.log("*******************");
+          console.log(ui.values);
+          $('#{{facet.field}}_min').val(ui.values[0].toFixed(2));
+          $('#{{facet.field}}_max').val(ui.values[1].toFixed(2));
+
+          loadPage('{{route(setting('marketplace_index'))}}?' + $(".auto_submit_item").serialize());
+      }
+    });
+</script>
+<style>
+#{{facet.field}}_slider .noUi-connect {
+	background: #eee;
+}
+</style>
+
+</div>
+<hr class=""/>
+{% endif %}

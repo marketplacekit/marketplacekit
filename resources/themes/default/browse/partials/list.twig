@@ -1,0 +1,71 @@
+<div class="infinite-scroll">
+
+<div class=" list-row">
+    {% for item in listings %}
+            <div class="card mb-3 p-0" style="position: relative;">
+
+            <div class="card-body p-3">
+                {% if item.spotlight %}
+                <div class="ribbon"><span>{{ __("FEATURED") }}</span></div>
+                {%  endif %}
+
+            <div class="row mb-2 ">
+
+                <div class="col-sm-4 list-width">
+                    <div style="position: relative" >
+                        <a href="{{route('listing', {'id' : item, 'slug' : str_slug(item.title)})}}" class="p-0 text-center" style="display: block;">
+                            <img class=" img-thumbnail p-0" ssrc="/images/ajax-loader.gif" src="{{ item.thumbnail }}?w=300&h=255" alt="{{item.title}}">
+                        </a>
+                        {% if item.images |length > 1 %}
+                        <a href="{{route('listing', {'id' : item, 'slug' : str_slug(item.title)})}}" style="position: absolute; bottom: 0; left: 5px; color: #fff; width: 100%;"  >
+                            <i class="fa fa-camera" aria-hidden="true"></i> {{ item.images | length}}
+                        </a>
+                        {%  endif %}
+                    </div>
+
+
+                </div>
+
+            <div class="col-12 col-sm-8">
+                  <div class="p-2">
+                      <div class="row mb-3">
+                          <div class="col-12 col-sm-8">
+                              <a href="{{route('listing', {'id' : item, 'slug' : str_slug(item.title)})}}" style="display: block;" class="h5 mb-0 card-subtitle text-primary font-weight-bold" >{{ str_limit(item.title, 80) }}</a>
+                              <a href="" class="text-muted" style="font-size: small">{{ __("By :name", {'name': item.user.display_name}) }}</a>
+                          </div>
+                          <div class="col-12 col-sm-4 text-left text-sm-right">
+                              <a href="{{route('listing', {'id' : item, 'slug' : str_slug(item.title)})}}"  class="h6 mb-0 mt-1 mt-sm-0 card-subtitle text-danger font-weight-bold" >{{ item.price_formatted }}</a>
+                          </div>
+                      </div>
+                      {{ str_limit(item.description, 150) | raw}}
+
+                  </div>
+              </div>
+              </div>
+
+              <div class="row ">
+
+                    <div class="col-sm-4"></div>
+
+                    <div class="col-sm-8 ">
+
+                        <p class="card-text p-2 mt-2 row" style="position: absolute; bottom: 0; width: 100%;">
+                            <small class="col-6 truncate" style="color: #a8a8a8"><i class="fa fa-map-marker" aria-hidden="true"></i> {{ item.short_address }} {% if request('sort') == 'distance' %}({{ item.human_distance }}){% endif %}</small>
+                            <small class="col-6 text-muted  text-right">{{ __("Posted") }} {{ item.created_at.diffForHumans() }}</small>
+                        </p>
+                    </div>
+             </div>
+
+
+
+            </div>
+            </div>
+
+
+    {% endfor %}
+
+</div>
+    {{ listings.appends(request().query()).links() | raw }}
+
+</div>
+

@@ -1,0 +1,40 @@
+{% extends "layouts.app" %}
+
+{% block content %}
+<div class="container-fluid inner mt-3">
+    <div class="row">
+        <div class="col-sm-12">
+            <a href="{{ url_previous() }}"><i class="mdi mdi-chevron-left" aria-hidden="true"></i>{{ __("Back") }}</a>
+
+            <nav aria-label="breadcrumb" role="navigation">
+                <ol class="breadcrumb bg-transparent  pt-3 pl-0 mb-0">
+                    <li class="breadcrumb-item small"><a href="{{ route('home') }}" class="">{{ __("Home") }}</a></li>
+                    <li class="breadcrumb-item active small" aria-current="page">{{ profile.display_name }}</li>
+                </ol>
+            </nav>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 mx-auto">
+            {% include 'notifications' %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-3">
+            {% include 'profile.partials.sidebar' %}
+        </div>
+        <div class="col-sm-9">
+            {% include 'profile.partials.listings' %}
+
+            {%  if(module_enabled('ratings') and setting('rating_profile_page')) %}
+                {{ widget('Modules.Ratings.Widgets.profileReviews', {'user': profile.id, 'limit': setting('rating_profile_limit')}) | raw }}
+            {% endif %}
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

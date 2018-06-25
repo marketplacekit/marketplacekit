@@ -1,0 +1,41 @@
+{
+  "js": [
+    "npm/jquery@3.3.1/dist/jquery.min.js",
+    "npm/jquery-unveil@1.3.2/jquery.unveil.min.js",
+    "npm/jquery-ui-dist@1.12.1/jquery-ui.min.js",
+    "npm/intercooler@1.2.1/dist/intercooler.min.js",
+    "npm/turbolinks@5.1.1/dist/turbolinks.min.js",
+    "gh/cowboy/jquery-throttle-debounce@1.1/jquery.ba-throttle-debounce.min.js",
+    "npm/jscroll@2.3.9/jquery.jscroll.min.js",
+    "npm/sticky-kit@1.1.3/dist/sticky-kit.min.js",
+    "npm/active-scroll@1.0.2/dist/active-scroll.min.js",
+    "npm/fine-uploader@5.16.2/jquery.fine-uploader/jquery.fine-uploader.min.js",
+    "npm/rangeslider@1.0.0/dist/rangeslider.min.js",
+    "npm/nouislider@11.1.0/distribute/nouislider.min.js",
+    "npm/popper.js@1.14.3/dist/umd/popper.min.js",
+    "npm/bootstrap@4.1.0/dist/js/bootstrap.min.js",
+    "npm/quill@1.3.6/dist/quill.min.js",
+    "npm/selectize@0.12.4/dist/js/standalone/selectize.min.js",
+    "npm/moment@2.21.0/moment.min.js",
+    "npm/flatpickr",
+    "npm/jquery.repeater@1.2.1/jquery.repeater.min.js",
+    "gh/Logicify/jquery-locationpicker-plugin@0.1.16/dist/locationpicker.jquery.min.js",
+    "npm/formBuilder@2.9.8/dist/form-render.min.js",
+    "npm/alertify.js@1.0.12/dist/js/alertify.min.js",
+    "npm/raty-js@2.8.0/lib/jquery.raty.min.js",
+    "npm/webui-popover@1.2.18/dist/jquery.webui-popover.min.js"
+  ],
+  "css": [
+    "npm/font-awesome@4.7.0/css/font-awesome.min.css",
+    "npm/@mdi/font@2.3.54/css/materialdesignicons.min.css",
+    "npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css",
+    "npm/jquery-ui-dist@1.12.1/jquery-ui.min.css",
+    "npm/fine-uploader@5.15.4/fine-uploader/fine-uploader-gallery.css",
+    "npm/quill@1.3.6/dist/quill.snow.css",
+    "npm/selectize@0.12.4/dist/css/selectize.default.css",
+    "npm/flatpickr@4.4.4/dist/themes/airbnb.css",
+    "npm/raty-js@2.8.0/lib/jquery.raty.css",
+    "npm/alertify.js@1.0.12/dist/css/alertify.css",
+    "npm/webui-popover@1.2.18/dist/jquery.webui-popover.min.css"
+  ]
+}

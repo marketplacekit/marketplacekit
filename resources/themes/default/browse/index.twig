@@ -1,0 +1,368 @@
+{% extends "layouts.app" %}
+
+{% block search_bar %}
+    {% include 'layouts.search_bar.twig' %}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid pt-0 pb-5" id="listings">
+
+
+
+        <a class="btn btn-link pl-0 pb-0 btn-sm small {{ setting('show_search_sidebar') ? 'd-sm-none' : 'd-none' }}" data-toggle="collapse" href="#collapseFilters" role="button" aria-expanded="false" aria-controls="collapseFilters">
+            {{ __("Toggle filters") }}
+        </a>
+        <div class="row pt-2">
+
+            <div class="col-12 col-sm-4 col-md-3 collapse dont-collapse-sm {{ setting('show_search_sidebar') ? '' : 'd-none' }}" id="collapseFilters">
+                <div class="card">
+                    <div class="card-body">
+
+                <form class="auto_submit_item" action="{{ route(setting('marketplace_index')) }}" method="GET" id="search-sidebar" >
+                    {{ form_hidden( 'q', input_get('q')) }}
+                    {{ form_hidden( 'view', view) }}
+                    {{ form_hidden( 'location', input_get('location', session('location'))) }}
+                    {{ form_hidden('lat', input_get('lat', session('lat')), {'class' : 'lat'}) }}
+                    {{ form_hidden('lng', input_get('lng', session('lng')), {'class' : 'lng'}) }}
+                    {{ form_hidden('sort', input_get('sort'), {'class' : 'lng'}) }}
+                    {{ form_hidden('bounds', input_get('bounds', session('bounds')), {'class' : 'bounds'}) }}
+                    <div class="border-top-0 border-left-0 border-bottom-0 border-right-0 rounded-0">
+                        <div id="clear-filters">
+                            {% if is_filtered %}
+                            <div class=" pl-0 pr-0 pr-sm-5 pb-2">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <a href="{{ route(setting('marketplace_index')) }}" class="btn btn-block btn-secondary">{{ __("Clear all filters") }}</a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% for facet in facets %}
+                            {% include 'browse.filters.'~facet.search_ui ignore missing %}
+                        {% endfor %}
+                        <div class=" ">
+                            <button type="submit" class="btn btn-primary btn-block">{{ __("Update results") }}</button>
+                        </div>
+                    </div>
+                </form>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="{{ setting('show_search_sidebar') ? 'col-12 col-sm-8 col-md-9' : 'col-sm-12' }}" id="listing_results">
+
+                <div class="row" id="listing_results_bar">
+                    <div class="col-sm-12">
+
+
+                        <div class="card card-body border-0 rounded-bottom p-0 border-right" style="border-top-left-radius: 0; border-top-right-radius: 0">
+                            <div class=" bg-lights pt-0">
+
+                                {% if view != 'map' %}
+                                    <div class="row mb-3">
+                                        <div class="col-md-6  d-none d-md-block">
+                                            {% if listings.total() %}
+                                                <p class="form-control-plaintext mb-0">
+                                                    <span class="text-muted">{{ __(":total results found", {'total':listings.total()}) }}</span>
+                                                </p>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="col-md-6 ml-auto">
+
+                                            <form method="GET" action="<?= request()->fullUrlWithQuery([]) ?>" id="sort-form" accept-charset="UTF-8" class="form-vertical float-sm-right">
+                                                {{ csrf_field() }}
+
+                                                <div class="input-group input-group-sm mb-0">
+                                                    <div class="input-group input-group-sm mb-0">
+                                                        <div class="input-group-prepend">
+                                                            {% if setting('show_grid') %}
+                                                                <a href="{{ request().fullUrlWithQuery({"view" : 'grid'}) }}" class="btn btn-outline-secondary  {{ view == 'grid'?'active':'' }}"><i class="fa fa-th" aria-hidden="true"></i> {{ __("Grid") }}
+                                                                </a>
+                                                            {% endif %}
+
+                                                            {% if setting('show_list') %}
+                                                                <a href="{{ request().fullUrlWithQuery({"view" : 'list'}) }}" class="btn btn-outline-secondary {{ view == 'list'?'active':'' }}"><i class="fa fa-bars" aria-hidden="true"></i> {{ __("List") }}
+                                                                </a>
+                                                            {% endif %}
+
+                                                            {% if setting('show_map') %}
+                                                                <a href="{{ request().fullUrlWithQuery({"view" : 'map'}) }}" class="btn btn-outline-secondary {{ view == 'map'?'active':'' }}"><i class="fa fa-map-o" aria-hidden="true"></i> {{ __("Map") }}
+                                                                </a>
+                                                            {% endif %}
+                                                        </div>
+
+                                                        {{ form_select('sort', {
+                                                            'date'  :  __('Most recent first'),
+                                                            'price_lowest_first'  :  __('Price: low to high'),
+                                                            'price_highest_first'  :  __('Price: high to low'),
+                                                            'distance'  :  __('Nearest first'),
+                                                        },  sort, {'class' : 'border-left-0 btn-outline-secondary form-control form-control-sm', 'id': 'sort', 'style':'max-width:160px'}) }}
+                                                    </div>
+                                                </div>
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <p class="form-control-plaintext">
+                                                <strong>{{ __("Showing :total results near you", {'total':listings.total()}) }}</strong>
+                                            </p>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="input-group input-group-sm   float-right">
+                                                <input type="text" style="visibility: hidden" class="form-control" placeholder="Recipient's username">
+
+                                                <div class="input-group-append">
+                                                    <a href="{{ request().fullUrlWithQuery({"view" : 'grid'}) }}" class="btn btn-outline-secondary {{ view == 'grid'?'active':'' }}"><i class="fa fa-th" aria-hidden="true"></i> {{ __("Grid") }}
+                                                    </a>
+                                                    <a href="{{ request().fullUrlWithQuery({"view" : 'list'}) }}" class="btn btn-outline-secondary {{ view == 'list'?'active':'' }}"><i class="fa fa-bars" aria-hidden="true"></i> {{ __("List") }}
+                                                    </a>
+                                                    <a href="{{ request().fullUrlWithQuery({"view" : 'map'}) }}" class="btn btn-outline-secondary {{ view == 'map'?'active':'' }}"><i class="fa fa-map" aria-hidden="true"></i> {{ __("Map") }}
+                                                    </a>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-sm-12">
+                        <div class="row">
+                            {% if listings.total() == 0 %}
+                                <div class="col-sm-12">
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ __("Sorry, no results found.") }}
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if view == 'map' %}
+                                {% include 'browse.partials.map' %}
+                            {% elseif view == 'list' %}
+                                <div class="col-sm-12" style="display: <?= ($view == 'list')?'':'none' ?>;">
+                                    {% include 'browse.partials.list' %}
+                                </div>
+                            {% else %}
+                                <div class="col-sm-12" style="display: <?= ($view == 'grid')?'':'none' ?>;">
+                                    {% include 'browse.partials.grid' %}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                        <div id="indicator" style="display: none; text-align: center; background: rgba(255,255,255, 0.75); width: 100%; height: 100%; position: absolute; top: 0; left: 0;">
+                            <div class="loader">{{ __("Loading...") }}</div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+
+
+        var xhr = null;
+        var params = {{ params|json_encode() | raw }};
+
+
+        function loadPage(url) {
+            if (history.pushState) {
+                history.pushState(null, null, url);
+            }
+
+            if (xhr && xhr.readyState < 4) {
+                xhr.abort();
+            }
+            $('#indicator').show();
+            var start_time = new Date();
+
+            xhr = $.ajax({
+                url: url,
+                success: function (data) {
+
+                    $("#clear-filters").html($(data).find("#clear-filters").html());
+                    $("#category_filter").html($(data).find("#category_filter").html());
+                    if (view == 'map') {
+                        $("#listing_results_bar").html($(data).find("#listing_results_bar").html());
+                    } else {
+                        $("#listing_results").html($(data).find("#listing_results").html());
+                    }
+                    initListings();
+                    setUpScroll();
+
+                    if (view == 'map') {
+                        updateMap();
+                    }
+
+                },
+                complete: function (data) {
+                    $('#indicator').hide();
+                    var request_time = new Date().getTime() - start_time;
+                    $('#request_time').html(request_time);
+                }
+            });
+        }
+
+        function initListings() {
+
+            //on click categories submit new URL
+            $(".category-link").click(function (e) {
+                e.preventDefault();
+                var url = '{{ route(setting('marketplace_index')) }}?' + $(".auto_submit_item").awesomeFormSerializer({
+                    category: $(this).data('category'),
+                });
+                loadPage(url);
+            });
+
+            //on change search bar submit new URL
+            $('#top-search').on('submit', function (e) {
+                e.preventDefault();
+                $(".auto_submit_item [name='q']").val($("#top-search [name='q']").val());
+                $(".auto_submit_item [name='location']").val($("#top-search [name='location']").val());
+                $(".auto_submit_item [name='lat']").val($("#top-search [name='lat']").val());
+                $(".auto_submit_item [name='lng']").val($("#top-search [name='lng']").val());
+                loadPage('{{ route(setting('marketplace_index')) }}?' + $(".auto_submit_item").serialize());
+                //console.log($("#top-search").serialize());
+            });
+            $("#top-search [name='q']").on('input', $.debounce(250, function (e) {
+                e.preventDefault();
+                $("#top-search").submit();
+            }));
+
+            //on change form submit new URL
+            $('.auto_submit_item').on('submit change', function (e) {
+                e.preventDefault();
+                loadPage('{{ route(setting('marketplace_index')) }}?' + $(".auto_submit_item").serialize());
+            });
+
+            //on change sort submit new URL
+            $("#sort").change(function (e) {
+                e.preventDefault();
+                $(".auto_submit_item [name='sort']").val($("#sort").val());
+                loadPage('{{ route(setting('marketplace_index')) }}?' + $(".auto_submit_item").serialize());
+            });
+
+
+            //$('.grid-row .image-wrapper').width($('.grid-row .card').width()).height($('.grid-row .card').width()).css("line-height", $('.grid-row .card').width() + 'px');
+            $('.list-row .image-wrapper').width('100%').height($('.list-row .list-width').width()).css("line-height", $('.list-row .list-width').width() + 'px');
+
+        }
+
+        var markers = [];
+        var map = null;
+
+        function removeMarkers() {
+            console.log(markers);
+            //Loop through all the markers and remove
+            for (var i = 0; i < markers.length; i++) {
+                markers[i].setMap(null);
+            }
+            markers = [];
+        };
+
+        function initMap(locations) {
+            var location = new google.maps.LatLng({{ lat }}, {{ lng }});
+            console.log('locations.length', locations);
+            if (locations.length > 0) {
+                location = new google.maps.LatLng(locations[0]['lat'], locations[0]['lng']);
+            }
+            $('#map').height(540);
+
+            var mapCanvas = document.getElementById('map');
+            var mapOptions = {
+                center: location,
+                zoom: 8,
+                panControl: false,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            }
+            if (!map) {
+                map = new google.maps.Map(mapCanvas, mapOptions);
+            } else {
+                map.panTo(location);
+            }
+
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString,
+                maxWidth: 400
+            });
+
+            var marker, i, contentString;
+            for (i = 0; i < locations.length; i++) {
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(locations[i]['lat'], locations[i]['lng']),
+                    map: map
+                });
+
+                google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                    return function () {
+                        contentString = '<div class="info-window">' +
+                            '<h3>' + locations[i].title + '</h3>' +
+                            '<img src="' + locations[i].thumbnail + '" style="width: 75px" />' +
+                            '<div class="info-content">' +
+                            '<p>' + locations[i].description + ' ' + locations[i].price + '</p>' +
+                            '</div>' +
+                            '</div>';
+
+                        var contentString = '<div class="info-window">' +
+                            '        <div class="row">' +
+                            '            <div class="col-sm-12">' +
+                            '                <a href="' + locations[i].url + '"><img src="' + locations[i].thumbnail + '" style="height: 200px"/></a>' +
+                            '            </div>' +
+                            '            <div class="col-sm-12">' +
+                            '                <h6>' + locations[i].title + '</h6>' +
+                            '                <div class="content">' + locations[i].description + '' +
+                            '                </div>' +
+                            '                <h6 class="text-danger">' + locations[i].price_formatted + '</h6> <a href="' + locations[i].url + '">Order</a>' +
+                            '            </div>' +
+                            '        </div>' +
+                            '    </div>';
+
+
+                        infowindow.setContent(contentString);
+                        infowindow.open(map, marker);
+                    }
+                })(marker, i));
+
+                markers.push(marker);
+            }
+
+        }
+
+        function updateMap() {
+            removeMarkers();
+            var posting = $.get('{{ route(setting('marketplace_index')) }}?ajax=1', $(".auto_submit_item").serialize());
+            posting.done(function (data) {
+                console.log('category_id', data.category_id);
+                initMap(data.map_listings);
+            });
+        }
+
+        var view = '{{ view }}';
+        $(function () {
+            initListings();
+            if (view == 'map')
+                updateMap();
+        });
+
+    </script>
+
+{% endblock %}

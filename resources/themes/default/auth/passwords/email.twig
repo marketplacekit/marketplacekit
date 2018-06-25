@@ -1,0 +1,48 @@
+{% extends "layouts.app" %}
+
+{% block content %}
+<div class="container">
+    <div class="row flex-column pt-5 align-items-center">
+        <div class="col-sm-6">
+            <h5>{{ __("Reset Password") }}</h5>
+            <div class="card card-block">
+                <div class="card-body">
+                    {% if session_has('status') %}
+                        <div class="alert alert-success">
+                            {{ session('status') }}
+                        </div>
+                    {% endif %}
+                    <form method="POST" action="{{ route('password.email') }}">
+                        {{ csrf_field() }}
+                        <div class="form-group">
+                            <label class="form-control-label" for="email">{{ __("Email address") }}</label>
+                            <input class="form-control{{errors.has('email') ? ' is-invalid' : '' }}" type="email" id="email" name="email" value="{{ old('email') }}"
+                                   placeholder="Enter your email" required autofocus>
+                            {% if errors.has('email') %}
+                                <small class="form-control-feedback invalid-feedback">{{errors.first('email') }}</small>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-md btn-primary btn-block">{{ __("Send Password Reset Link") }}</button>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block navbar %}
+    <a href="{{route('login')}}" class="close-btn" style="position: absolute; top: 20px; right: 20px;"><i class="mdi mdi-close text-muted" style="font-size: 30px;"></i></a>
+{% endblock %}
+
+{% block footer %}
+    <footer class="bg-white border-0">
+    </footer>
+{% endblock %}
+
+{% block search_bar %}
+{% endblock %}
