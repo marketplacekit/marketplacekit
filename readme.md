@@ -125,8 +125,12 @@ Although MarketplaceKit has been tested on Ubuntu 16.04 LTS. It should work with
   Default username: admin
   Default password: changeme
   ```
-
   
+- Add your domain to APP_URL in .env file
+  ```
+  APP_URL=http://localhost.com
+  ```
+
 
 ### Facebook login
 
