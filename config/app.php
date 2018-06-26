@@ -239,7 +239,8 @@ return [
         'Date' => Jenssegers\Date\Date::class,
         'Curl'          => Ixudra\Curl\Facades\Curl::class,
         'DotenvEditor' => Jackiedo\DotenvEditor\Facades\DotenvEditor::class,
-        'Searchy' => TomLingham\Searchy\Facades\Searchy::class
+        'Searchy' => TomLingham\Searchy\Facades\Searchy::class,
+        'Zipper' => Chumper\Zipper\Zipper::class
 
     ],
 

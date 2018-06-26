@@ -11,7 +11,7 @@ Route::group(['as' => 'panel.', 'prefix' => 'panel', 'middleware' => ['web', 'au
     Route::resource('settings', 'SettingsController');
     Route::resource('orders', 'OrdersController');
     Route::resource('home', 'HomeController');
-    Route::get('/addons', 'AddonsController@index');
+    Route::resource('addons', 'AddonsController');
     Route::get('/addon/{id}/toggle', 'AddonsController@toggle');
     Route::resource('themes', 'ThemesController');
     Route::get('/theme/{id}/toggle', 'ThemesController@toggle');

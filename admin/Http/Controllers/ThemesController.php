@@ -10,6 +10,9 @@ use Illuminate\Routing\Controller;
 use Kris\LaravelFormBuilder\FormBuilder;
 use Igaster\LaravelTheme\Facades\Theme;
 use DotenvEditor;
+use Zip;
+use File;
+use Zipper;
 
 class ThemesController extends Controller
 {
@@ -38,13 +41,10 @@ class ThemesController extends Controller
      * Show the form for creating a new resource.
      * @return Response
      */
-    public function create(FormBuilder $formBuilder)
+    public function create()
     {
-        $form = $formBuilder->create('Modules\Panel\Forms\PageForm', [
-            'method' => 'POST',
-            'url' => route('panel.pages.store'),
-        ]);
-        return view('panel::pages.create', compact('form'));
+        $data = [];
+        return view('panel::themes.create', $data);
     }
 
     /**
@@ -54,12 +54,31 @@ class ThemesController extends Controller
      */
     public function store(Request $request)
     {
-        $page = new PageTranslation();
-        $page->fill($request->all());
-        $page->save();
+        #$theme_name = str_slug(pathinfo($request->theme->getClientOriginalName(), PATHINFO_FILENAME), '_');
+        try {
 
-        alert()->success('Successfully saved');
-        return redirect()->route('panel.pages.index', ['locale' => $page->locale]);
+            $theme_info = json_decode(Zipper::make($request->file('theme'))->getFileContent('theme/theme.json'));
+            $theme_name = $theme_info->name;
+
+            //check if theme exists
+            $themes = \App::make('igaster.themes');
+            $themes = collect(json_decode(json_encode($themes->scanJsonFiles())));
+
+            if(Zipper::make($request->file('theme'))->contains('public/'))
+                Zipper::make($request->file('theme'))->folder('public')->extractTo(public_path('themes/'.$theme_name));
+
+            if(Zipper::make($request->file('theme'))->contains('theme/'))
+                Zipper::make($request->file('theme'))->folder('theme')->extractTo(resource_path('themes/'.$theme_name));
+
+            alert()->success("Successfully added $theme_name theme");
+
+        } catch (\Exception $e) {
+            alert()->danger("Error: ". $e->getMessage());
+            return redirect()->route('panel.themes.create');
+        }
+
+
+        return redirect()->route('panel.themes.index');
     }
 
     /**

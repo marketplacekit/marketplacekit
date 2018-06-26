@@ -1,5 +1,6 @@
 {
     "name": "default",
     "extends": null,
-    "asset-path": "default"
+    "asset-path": "default",
+    "thumbnail": "http://marketplace-kit.s3.amazonaws.com/themes/default.png"
 }

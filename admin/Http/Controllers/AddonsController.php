@@ -9,7 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Kris\LaravelFormBuilder\FormBuilder;
 use Module;
-
+use Zipper;
 class AddonsController extends Controller
 {
     /**
@@ -50,13 +50,10 @@ class AddonsController extends Controller
      * Show the form for creating a new resource.
      * @return Response
      */
-    public function create(FormBuilder $formBuilder)
+    public function create()
     {
-        $form = $formBuilder->create('Modules\Panel\Forms\PageForm', [
-            'method' => 'POST',
-            'url' => route('panel.pages.store'),
-        ]);
-        return view('panel::pages.create', compact('form'));
+        $data = [];
+        return view('panel::addons.create', $data);
     }
 
     /**
@@ -66,12 +63,23 @@ class AddonsController extends Controller
      */
     public function store(Request $request)
     {
-        $page = new PageTranslation();
-        $page->fill($request->all());
-        $page->save();
 
-        alert()->success('Successfully saved');
-        return redirect()->route('panel.pages.index', ['locale' => $page->locale]);
+        try {
+
+            $addon_name = pathinfo(Zipper::make($request->file('addon'))->listFiles('/\module.json/i')[0], PATHINFO_DIRNAME);
+            $addon_info = json_decode(Zipper::make($request->file('addon'))->getFileContent($addon_name.'/module.json'));
+
+            Zipper::make($request->file('addon'))->folder($addon_name)->extractTo(base_path('Modules/'.$addon_name));
+
+            alert()->success("Successfully added $addon_name addon");
+
+        } catch (\Exception $e) {
+            alert()->danger("Error: ". $e->getMessage());
+            return redirect()->route('panel.addons.create');
+        }
+
+        alert()->success("Successfully added $addon_name addon");
+        return redirect()->route('panel.addons.index');
     }
 
     /**

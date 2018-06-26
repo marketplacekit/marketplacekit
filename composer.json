@@ -13,6 +13,7 @@
         "barryvdh/laravel-translation-manager": "^0.4.2",
         "bentools/cartesian-product": "^1.2",
         "christiankuri/laravel-favorite": "^1.2",
+        "chumper/zipper": "^1.0",
         "clagiordano/weblibs-configmanager": "^1.0",
         "cornford/googlmapper": "^2.31",
         "cviebrock/eloquent-sluggable": "^4.5",

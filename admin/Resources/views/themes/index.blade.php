@@ -9,10 +9,10 @@
 
     <div class="row" id="themes">
     @foreach($themes as $theme)
-        <div class="col-md-4 col-lg-4 col-sm-3">
+        <div class="col-md-4 col-lg-4 col-sm-3 mb-3">
             <div class="card" id="theme-{{ $theme->name }}">
 
-                <img class="card-img-top" src="http://marketplace-kit.s3.amazonaws.com/themes/{{ $theme->name }}.png" alt="Card image cap">
+                <img class="card-img-top" src="{{ $theme->thumbnail }}" alt="{{ $theme->name }} Theme">
                 <div class="card-body">
                     <h6 class="card-title">{{ ucfirst($theme->name) }} @if($theme->name == Theme::get())<small class="badge badge-info  "><i>Active</i></small>@endif</h6>
 
