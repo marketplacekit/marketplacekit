@@ -98,5 +98,40 @@
     </script>
 {% endif %}
 
+{% if setting('cookie_consent_enabled') %}
+    <script>
+        window.cookieconsent.initialise({
+            container: document.getElementById("consent"),
+            palette:{
+                popup: {background: "#237afc"},
+                button: {background: "transparent", border:"#fff", text:"#fff"}
+            },
+            cookieconsent: {
+                hasTransition: false
+            },
+            content: {
+                header: 'Cookies used on the website!',
+                message: 'This website uses cookies to ensure you get the best experience on our website.',
+                dismiss: 'Got it!',
+                allow: 'Allow cookies',
+                deny: 'Decline',
+                link: null,
+                href: null,
+                close: '&#x274c;'
+            },
+            autoOpen:true,
+            revokable:false,
+            onStatusChange: function(status) {
+                console.log(this.hasConsented() ? 'enable cookies' : 'disable cookies');
+            },
+            law: {
+                regionalLaw: false,
+            },
+            location: false
+        });
+    </script>
+{% endif %}
+
+
 </body>
 </html>

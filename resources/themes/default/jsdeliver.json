@@ -23,7 +23,8 @@
     "npm/formBuilder@2.9.8/dist/form-render.min.js",
     "npm/alertify.js@1.0.12/dist/js/alertify.min.js",
     "npm/raty-js@2.8.0/lib/jquery.raty.min.js",
-    "npm/webui-popover@1.2.18/dist/jquery.webui-popover.min.js"
+    "npm/webui-popover@1.2.18/dist/jquery.webui-popover.min.js",
+    "npm/cookieconsent@3.0.6/build/cookieconsent.min.js"
   ],
   "css": [
     "npm/font-awesome@4.7.0/css/font-awesome.min.css",
@@ -36,6 +37,7 @@
     "npm/flatpickr@4.4.4/dist/themes/airbnb.css",
     "npm/raty-js@2.8.0/lib/jquery.raty.css",
     "npm/alertify.js@1.0.12/dist/css/alertify.css",
-    "npm/webui-popover@1.2.18/dist/jquery.webui-popover.min.css"
+    "npm/webui-popover@1.2.18/dist/jquery.webui-popover.min.css",
+    "npm/cookieconsent@3.0.6/build/cookieconsent.min.css"
   ]
 }

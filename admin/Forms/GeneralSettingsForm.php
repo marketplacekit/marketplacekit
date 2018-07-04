@@ -177,6 +177,11 @@ class GeneralSettingsForm extends Form
                 'autocomplete' => 'new-password',
             ]
         ]);
+
+        $this->add('cookie_consent_enabled', 'checkbox', [
+            'value' => 1,
+            'checked' => (bool) $this->getData('cookie_consent_enabled', 0)
+        ]);
 /*
         - show map
     - show list
