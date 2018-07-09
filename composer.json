@@ -51,6 +51,7 @@
         "sofa/eloquence-base": "^5.6",
         "sofa/eloquence-metable": "^5.6",
         "spatie/laravel-blade-javascript": "^2.1",
+        "spatie/laravel-permission": "^2.12",
         "srmklive/paypal": "^1.6",
         "stevebauman/location": "^3.0",
         "stichoza/google-translate-php": "^3.2",

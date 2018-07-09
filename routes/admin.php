@@ -1,6 +1,6 @@
 <?php
 
-Route::group(['as' => 'panel.', 'prefix' => 'panel', 'middleware' => ['web', 'auth.admin'], 'namespace' => '\Admin'], function()
+Route::group(['as' => 'panel.', 'prefix' => 'panel', 'middleware' => ['web', 'role:admin'], 'namespace' => '\Admin'], function()
 {
     Route::get('/', 'PanelController@index');
     Route::resource('listings', 'ListingsController');
@@ -18,4 +18,10 @@ Route::group(['as' => 'panel.', 'prefix' => 'panel', 'middleware' => ['web', 'au
     Route::resource('pricing-models', 'PricingModelsController');
     Route::resource('fields', 'FieldsController');
 
+});
+
+Route::group(['as' => 'panel.', 'prefix' => 'panel', 'middleware' => ['web', 'role:admin|moderator'], 'namespace' => '\Admin'], function()
+{
+    Route::get('/', 'PanelController@index');
+    Route::resource('users', 'UsersController');
 });

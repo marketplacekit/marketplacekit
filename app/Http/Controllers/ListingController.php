@@ -33,7 +33,8 @@ class ListingController extends Controller
 	
         $data = [];
         $visible_listing = $listing->is_published && $listing->is_admin_verified && !$listing->is_disabled;
-        $can_edit = auth()->check() && (auth()->user()->id == $listing->user_id || auth()->user()->is_admin);
+        $can_edit = auth()->check() && (auth()->user()->id == $listing->user_id || auth()->user()->can('edit listing'));
+
         if(!$visible_listing && !$can_edit) {
             return abort(404);
         }
@@ -69,14 +70,14 @@ class ListingController extends Controller
         return view('listing.partials.favorite', compact('listing'));
     }
     public function spotlight($listing) {
-        if(auth()->user()->is_admin) {
+        if(auth()->user()->can('disable listing')) {
             $listing->toggleSpotlight();
         }
         return redirect(route('listing', [$listing, $listing->slug]));
     }
     public function verify($listing) {
         //sleep(2);
-        if(auth()->user()->is_admin) {
+        if(auth()->user()->can('disable listing')) {
             if($listing->is_admin_verified && !$listing->is_disabled) {
                 $listing->is_disabled = Carbon::now();
             } elseif($listing->is_admin_verified && $listing->is_disabled) {

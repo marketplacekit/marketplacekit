@@ -42,7 +42,7 @@ class ListingPolicy
      */
     public function update(User $user, Listing $listing)
     {
-        return $user->id === $listing->user_id || $user->is_admin;
+        return $user->id === $listing->user_id || $user->can('edit listing');
     }
 
     /**
@@ -54,6 +54,6 @@ class ListingPolicy
      */
     public function delete(User $user, Listing $listing)
     {
-        return $user->id === $listing->user_id || $user->is_admin;
+        return $user->id === $listing->user_id || $user->can('edit listing');
     }
 }

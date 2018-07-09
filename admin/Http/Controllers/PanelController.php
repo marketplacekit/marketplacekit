@@ -18,6 +18,10 @@ class PanelController extends Controller
      */
     public function index(Request $request)
     {
+        if(auth()->user()->hasRole('moderator')) {
+            return redirect('panel/users');
+        }
+
         $listings = Listing::paginate(10);
         if($request->get('q')) {
             $listings = Listing::search($request->get('q'))->paginate(10);

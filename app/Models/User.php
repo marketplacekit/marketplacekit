@@ -15,6 +15,7 @@ use App\Notifications\ResetPassword as ResetPasswordNotification;
 use Kodeine\Metable\Metable;
 use Cog\Contracts\Ban\Bannable as BannableContract;
 use Cog\Laravel\Ban\Traits\Bannable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements BannableContract
 {
@@ -26,10 +27,11 @@ class User extends Authenticatable implements BannableContract
 	use Favoriteability;
 	use Metable;
     use Bannable;
-    
+    use HasRoles;
+
 	protected $canBeRated = true;
     protected $mustBeApproved = false;
-	
+
 	public function getRouteKey()
 	{
 		return $this->slug;

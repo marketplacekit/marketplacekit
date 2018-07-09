@@ -31,12 +31,12 @@
 
             <h1 class="h3 mt-0 pb-2">{{listing.title}}</h1>
 
-            {% if auth_check() and (listing.user_id == auth_user().id or auth_user().is_admin) %}
+            {% if auth_check() and (listing.user_id == auth_user().id or auth_user().can('edit listing')) %}
                 <div class="mb-3">
                 <strong class="badge badge-info">{{ (listing.is_published)?__('Published'):__('Unpublished') }}</strong>
                 <a class="badge badge-secondary" href="{{listing.edit_url}}">{{ __("Edit listing") }}</a>
 
-                {% if auth_user().is_admin %}
+                {% if auth_user().can('disable listing') %}
                     <a data-turbolinks="false" ic-indicator="#listing-panel-indicator" class="badge badge-secondary" id="spotlight-listing" ic-get-from="{{ route('listing.spotlight', [listing, listing.slug]) }}" ic-target="#spotlight-listing" ic-select-from-response="#spotlight-listing" href="#">{{ (listing.spotlight)?__('Remove from spotlight'):__('Add to spotlight')}}</a>
                     <a data-turbolinks="false" ic-indicator="#listing-panel-indicator" class="badge badge-{{ (listing.is_verified)?'secondary':'danger'}}" id="verify-listing" ic-get-from="{{ route('listing.verify', [listing, listing.slug]) }}" ic-target="#listing-panel" ic-select-from-response="#listing-panel" href="#">{{ (listing.is_verified)?__('Disable listing'):__('Approve listing')}}</a>
                 {% endif %}

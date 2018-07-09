@@ -6,6 +6,7 @@
     <br />
     @include('alert::bootstrap')
 
+
 {!! Form::open(['url' => url()->current(), 'method' => 'GET']) !!}
     <div class="input-group mb-3">
       {{Form::text('q', request('q'), ['class' => 'form-control', 'placeholder' => "Search..."])}}
@@ -14,6 +15,10 @@
       </div>
     </div>
 {!! Form::close() !!}
+
+    @if(module_enabled('moderatelistings'))
+    <a href="{{route('panel.addons.moderatelistings.index')}}" class="float-right small"><i class="fa fa-user-secret" aria-hidden="true"></i> Moderate Listings</a>
+    @endif
 
 <table class="table table-sm table-striped">
   <thead class="thead- border-0">

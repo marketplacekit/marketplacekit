@@ -69,6 +69,7 @@ class UsersController extends Controller
     public function edit($user, FormBuilder $formBuilder)
     {
 
+//dd( $user->getRoleNames()->first() );
         $form = $formBuilder->create('Modules\Panel\Forms\UserForm', [
             'method' => 'PUT',
             'url' => route('panel.users.update', $user),
@@ -91,25 +92,28 @@ class UsersController extends Controller
             'email' => 'unique:users,email,' . $user->id . ',id',
         ]);
 
-        if($user->is_admin && $request->get('is_banned')) {
+        if($user->hasRole('admin') && $request->get('is_banned')) {
             alert()->danger('Cannot ban admin');
             return back();
         }
 
-        if($user->is_admin && $user->id == 1 && !$request->get('is_admin', 0)) {
+        /*if($user->is_admin && $user->id == 1 && !$request->get('is_admin', 0)) {
             alert()->danger('Cannot remove superadmin');
             return back();
-        }
+        }*/
 
         $user->fill($request->all());
 
-        $user->is_admin = $request->get('is_admin', 0);
         if($request->get('is_banned')) {
             $user->ban();
         } else {
             $user->unban();
         }
         $user->save();
+
+        if($request->get('role') && !$user->hasRole($request->get('role'))) {
+            $user->syncRoles([$request->get('role')]);
+        }
 
         alert()->success('Successfully saved');
 

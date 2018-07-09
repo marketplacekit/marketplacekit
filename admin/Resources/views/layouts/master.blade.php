@@ -67,9 +67,11 @@
 
     </ul>
     <ul class="navbar-nav  my-2 my-lg-0">
+        @role('admin')
       <li class="nav-item">
         <a class="nav-link" href="{{ route('panel.settings.index') }}">Settings</a>
       </li>
+        @endrole
         <li class="nav-item"><a class="nav-link text-s" href="{{ url('logout') }}"  onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a></li>
         <form id="logout-form" action="{{ url('logout') }}" method="POST" style="display: none;">
             {{ csrf_field() }}
@@ -88,12 +90,12 @@
                         Start Bootstrap
                     </a>
                 </li>
+        @role('admin')
+        <li class="{{ active(['*categories*']) }}">
+            <a href="/panel/categories"><i class="fa fa-pencil-square-o"></i> Categories </a>
+        </li>
 
-      <li class="{{ active(['*categories*']) }}">
-    <a href="/panel/categories"><i class="fa fa-pencil-square-o"></i> Categories </a>
-</li>
-
-        <li class="{{ active(['*listings']) }}">
+        <li class="{{ active(['panel.listings*']) }}">
             <a href="/panel/listings"><i class="fa fa-tags"></i> Listings </a>
         </li>
         <li class="{{ active(['*users']) }}">
@@ -114,6 +116,23 @@
         <li class="{{ active(['*settings*', '*fields*', '*pricing-models*']) }}">
             <a href="/panel/settings"><i class="fa fa-cogs"></i> Settings </a>
         </li>
+
+        @else
+
+            <li class="{{ active(['panel.users*']) }}">
+                <a href="/panel/users"><i class="fa fa-users"></i> Users </a>
+            </li>
+            @if(module_enabled('moderatelistings'))
+                <li class="{{ active(['panel.addons.moderatelistings*']) }}">
+                    <a href="/panel/addons/moderatelistings"><i class="fa fa-tags"></i> Moderate listings </a>
+                </li>
+            @endif
+            @if(module_enabled('ratings'))
+                <li class="{{ active(['panel.addons.ratings*']) }}">
+                    <a href="/panel/addons/ratings/comments"><i class="fa fa-star"></i> Reviews </a>
+                </li>
+            @endif
+        @endrole
 
             </ul>
         </div>

@@ -9,7 +9,7 @@
 
     <div class="row">
     @foreach($modules as $module)
-        <div class="col-md-4 col-lg-4 col-sm-3">
+        <div class="col-md-4 col-lg-4 col-sm-3 mb-4">
             <div class="card" id="addon-{{ $module->alias }}">
                 <img class="card-img-top border-bottom" src="{{ $module->thumbnail }}" alt="{{ $module->name }}">
                 <div class="card-body">
@@ -29,7 +29,11 @@
 
                         </div>
                         <div class="col-6">
-                            <a href="/panel/addons/{{ $module->alias }}" class="btn btn-outline-primary btn-block">Settings</a>
+                            @if(module_enabled($module->alias))
+                                    <a href="/panel/addons/{{ $module->alias }}" class="btn btn-outline-primary btn-block">Settings</a>
+                            @else
+                                <button type="button" class="btn btn-outline-primary btn-block" disabled>Settings</button>
+                            @endif
                         </div>
                     </div>
                 </div>

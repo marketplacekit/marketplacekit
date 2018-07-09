@@ -112,6 +112,8 @@ class RegisterController extends Controller
 
         UserVerification::send($user, __('Welcome and Email Verification'));
 
+        $user->assignRole('member'); //make a member
+
         return $this->registered($request, $user)
             ?: redirect(session()->pull('from',$this->redirectPath()));
     }

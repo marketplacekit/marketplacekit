@@ -68,7 +68,7 @@
                     <a class="nav-link text-s" href="{{ route('create.index') }}">{{ __("Post a listing") }}</a>
                 </li>
                 <li class="nav-item"><a class="nav-link text-s" href="{{ route('account.edit_profile.index') }}">{{ __("Welcome :name", {'name': auth_user().first_name()}) }}</a></li>
-                {% if auth_user().is_admin %}
+                {% if auth_user().hasRole('admin') %}
                     <li class="nav-item"><a class="nav-link text-s" href="/panel" target="_blank"><i class="mdi mdi-settings-outline mr-1" aria-hidden="true"></i></a></li>
                 {% endif %}
                 <li class="nav-item" style="position: relative">
