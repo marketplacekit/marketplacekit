@@ -9,8 +9,7 @@ use Kris\LaravelFormBuilder\FormBuilder;
 use Setting;
 use Crypt;
 use Config;
-use clagiordano\weblibs\configmanager\ConfigManager;
-use DotenvEditor;
+#use clagiordano\weblibs\configmanager\ConfigManager;
 
 class SettingsController extends Controller
 {
@@ -46,6 +45,8 @@ class SettingsController extends Controller
     public function sync() {
         $settings = Setting::all();
 
+        #no need to sync anymore, all dynamic 18/07/2018
+
         $supported_locales = config('laravellocalization.supportedLocales');
         if((array_keys($supported_locales) != setting('supported_locales'))) {
 
@@ -57,28 +58,28 @@ class SettingsController extends Controller
             }
 
             if(count($language_options)) {
-                $config = new ConfigManager(base_path("config/laravellocalization.php"));
+                /*$config = new ConfigManager(base_path("config/laravellocalization.php"));
                 $value = $config->getValue('supportedLocales');
                 $config->setValue('supportedLocales', $language_options);
                 $config->setValue('hideDefaultLocaleInURL', true);
-                $config->saveConfigFile();
+                $config->saveConfigFile();*/
             }
         }
 
-        DotenvEditor::setKey('APP_NAME', setting('site_name'));
-        DotenvEditor::setKey('APP_URL', setting('site_url'));
+        #DotenvEditor::setKey('APP_NAME', setting('site_name'));
+        #DotenvEditor::setKey('APP_URL', setting('site_url'));
 
         if($supported_locales && isset($supported_locales[setting('default_locale')])) {
-            DotenvEditor::setKey('APP_LOCALE', setting('default_locale'));
+            #DotenvEditor::setKey('APP_LOCALE', setting('default_locale'));
         } else {
             reset($supported_locales);
             $default_locale = key($supported_locales);
             Setting::set('default_locale', $default_locale);
             Setting::save();
-            DotenvEditor::setKey('APP_LOCALE', $default_locale);
+            #DotenvEditor::setKey('APP_LOCALE', $default_locale);
         }
-        DotenvEditor::setKey('GOOGLE_MAPS_KEY', setting('google_maps_key'));
-        DotenvEditor::save();
+        #DotenvEditor::setKey('GOOGLE_MAPS_KEY', setting('google_maps_key'));
+        #DotenvEditor::save();
 
     }
 

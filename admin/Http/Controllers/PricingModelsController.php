@@ -66,11 +66,11 @@ class PricingModelsController extends Controller
         $pricing_model->can_add_shipping = $request->has('can_add_shipping');
         $pricing_model->can_add_additional_pricing = $request->has('can_add_additional_pricing');
 
-
         if($pricing_model->widget == 'book_time') {
             $pricing_model->duration_name = "session";
         }
-        if($pricing_model->widget == 'book_date' && !in_array(["day", "night"], $pricing_model->duration_name)) {
+
+        if($pricing_model->widget == 'book_date' && !in_array($pricing_model->duration_name, ["day", "night"])) {
             $pricing_model->duration_name = "day";
         }
         $pricing_model->save();

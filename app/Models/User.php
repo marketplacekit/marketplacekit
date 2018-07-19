@@ -16,6 +16,10 @@ use Kodeine\Metable\Metable;
 use Cog\Contracts\Ban\Bannable as BannableContract;
 use Cog\Laravel\Ban\Traits\Bannable;
 use Spatie\Permission\Traits\HasRoles;
+use Overtrue\LaravelFollow\Traits\CanFollow;
+use Overtrue\LaravelFollow\Traits\CanBeFollowed;
+use Overtrue\LaravelFollow\Traits\CanLike;
+use Overtrue\LaravelFollow\Traits\CanBeLiked;
 
 class User extends Authenticatable implements BannableContract
 {
@@ -28,8 +32,10 @@ class User extends Authenticatable implements BannableContract
 	use Metable;
     use Bannable;
     use HasRoles;
+    use CanFollow, CanLike, CanBeFollowed, CanBeLiked;
 
-	protected $canBeRated = true;
+
+    protected $canBeRated = true;
     protected $mustBeApproved = false;
 
 	public function getRouteKey()

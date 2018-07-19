@@ -59,6 +59,17 @@ class ProfileController extends Controller
         return view('listing::widgets.favorite', compact('listing'));
     }
 
+    public function follow($user) {
+        if(!auth()->check()) {
+            return false;
+        }
+
+
+        auth()->user()->follow($user);
+
+        return ['status' => true, 'following' => auth()->user()->followings()->get()];
+    }
+
     /**
      * Show the form for creating a new resource.
      * @return Response

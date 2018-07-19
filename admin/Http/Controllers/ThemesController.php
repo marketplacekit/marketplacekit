@@ -8,8 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Kris\LaravelFormBuilder\FormBuilder;
-use Igaster\LaravelTheme\Facades\Theme;
-use DotenvEditor;
+use Theme;
 use Zip;
 use File;
 use Zipper;
@@ -32,8 +31,15 @@ class ThemesController extends Controller
 
     public function toggle($theme_name, Request $request)
     {
-        DotenvEditor::setKey('THEME', $theme_name);
-        DotenvEditor::save();
+		setting(['theme' => $theme_name])->save();
+
+        Theme::set($theme_name);
+        $manager = \App::make('Barryvdh\TranslationManager\Manager');
+        $theme_path = resource_path("themes/".Theme::get());
+        if(file_exists($theme_path)) {
+            $manager->findTranslations($theme_path);
+        }
+
         return redirect('/panel/themes');
     }
 

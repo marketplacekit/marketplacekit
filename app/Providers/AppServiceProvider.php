@@ -18,6 +18,14 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+        $this->app['translator']->addJsonPath(storage_path('app/resources/lang')); //now we can translate without changing the core
+
+        try {
+            \DB::connection()->getPdo();
+        } catch (\Exception $e) {
+            return;
+        }
+
         if (!\App::runningInConsole() && \Schema::hasTable('settings')) {
 
             setting(['marketplace_index' => "home"]);
@@ -26,7 +34,14 @@ class AppServiceProvider extends ServiceProvider
                 setting(['marketplace_index' => "browse"]);
             }
 
-            if (!setting('google_maps_key')) {
+            if (setting('site_name')) {
+                config(['app.name' => setting('site_name', env('APP_NAME', 'MarketplaceKit'))]);
+                config(['app.url' => setting('site_url', url('/'))]);
+            }
+
+            if (setting('google_maps_key')) {
+                config(['googlmapper.key' => setting('google_maps_key')]);
+            } else {
                 setting(['enable_geo_search' => false]);
                 setting(['show_map' => false]);
                 if (setting('default_view') == 'map' && !env("DEMO")) {
@@ -86,6 +101,7 @@ class AppServiceProvider extends ServiceProvider
 
             }
 
+            Theme::set(setting('theme', config('themes.default')));
             if (request('theme')) {
                 Theme::set(request('theme'));
             }
@@ -106,6 +122,16 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //
-
+        #set theme
+        config(['themes.themes.custom.views-path' => ('storage/app/themes/'.Theme::get())]);
+        $this->app->singleton('view.finder', function($app) {
+            $paths = $app['config']['view.paths'];
+            array_unshift($paths, base_path(config('themes.themes.custom.views-path')));
+            return new \Igaster\LaravelTheme\themeViewFinder(
+                $app['files'],
+                $paths,
+                null
+            );
+        });
     }
 }

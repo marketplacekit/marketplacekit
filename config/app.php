@@ -157,7 +157,7 @@ return [
         Torann\LaravelMetaTags\MetaTagsServiceProvider::class,
         Jrean\UserVerification\UserVerificationServiceProvider::class,
         Barryvdh\TranslationManager\ManagerServiceProvider::class,
-        Jackiedo\DotenvEditor\DotenvEditorServiceProvider::class,
+        Overtrue\LaravelFollow\FollowServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -175,6 +175,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Admin\Providers\PanelServiceProvider::class,
+        App\Providers\ConfigServiceProvider::class,
 
     ],
 
@@ -238,9 +239,8 @@ return [
         'UserVerification' => Jrean\UserVerification\Facades\UserVerification::class,
         'Date' => Jenssegers\Date\Date::class,
         'Curl'          => Ixudra\Curl\Facades\Curl::class,
-        'DotenvEditor' => Jackiedo\DotenvEditor\Facades\DotenvEditor::class,
         'Searchy' => TomLingham\Searchy\Facades\Searchy::class,
-        'Zipper' => Chumper\Zipper\Zipper::class
+        'Zipper' => Chumper\Zipper\Zipper::class,
 
     ],
 

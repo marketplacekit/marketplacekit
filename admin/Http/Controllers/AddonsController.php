@@ -22,7 +22,7 @@ class AddonsController extends Controller
         if(!count($data['modules'])) {
             alert()->danger('You have no addons installed.');
         }
-
+        #dd(setting('modules.homepage', 0));
         return view('panel::addons.index', $data);
     }
 
@@ -37,7 +37,7 @@ class AddonsController extends Controller
         $module = Module::find($module_name);
 
         if($module) {
-            if($module->active)
+            if($module->enabled())
                 $module->disable();
             else
                 $module->enable();

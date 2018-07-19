@@ -46,6 +46,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => 'jai
 	Route::post('/contact', 'ContactController@postIndex')->name('contact.post');
 
 	Route::get('/profile/{user}', 'ProfileController@index')->name('profile'); //PROFILE
+	Route::get('/profile/{user}/follow', 'ProfileController@follow')->name('profile.follow'); //PROFILE
 
 	//LISTINGS
 	Route::group(['prefix' => 'listing'], function()
