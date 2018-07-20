@@ -35,6 +35,7 @@ class PricingModelsController extends Controller
             $strings[] = $pricing_model->duration_name;
             $strings[] = $pricing_model->duration_name.'_plural';
         }
+
         save_language_file('pricing_models', $strings);
     }
 

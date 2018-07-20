@@ -141,8 +141,9 @@ function save_language_file($file, $strings) {
 
     //insert it into the database
     $selected_locale = 'en';
+    $strings = array_unique($strings);
+    $strings = array_filter($strings);
     foreach($strings as $string) {
-
         $translation_row = Translation::where('locale', $selected_locale)
             ->where('group', '_json')
             ->where('key', $string)
@@ -155,7 +156,6 @@ function save_language_file($file, $strings) {
             $translation_row->value = null;
             $translation_row->save();
         }
-
     }
 }
 
