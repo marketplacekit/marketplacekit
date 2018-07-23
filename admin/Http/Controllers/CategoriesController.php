@@ -24,7 +24,7 @@ class CategoriesController extends Controller
     public function save_languages()
     {
         $categories = Category::orderBy('order', 'ASC')->get();
-        save_language_file('categories', $categories->pluck('name'));
+        save_language_file('categories', $categories->pluck('name')->toArray());
     }
 
     /**
