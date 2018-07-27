@@ -104,6 +104,11 @@
                                 <label class="form-check-label" for="requires_billing_address">Require Billing Address</label>
                                 <a href="" class="small text-muted" data-toggle="tooltip" data-placement="top" title="Ask the user to provide billing address"><i class="fa fa-info-circle"></i></a>
                             </div>
+                            <div class="form-check">
+                                {{ Form::checkbox('can_list_multiple_services', true, null, ['class' => 'form-check-input', 'id' => 'can_list_multiple_services']) }}
+                                <label class="form-check-label" for="can_list_multiple_services">Can list multiple services <small class="text-muted">(Book a time widget only)</small></label>
+                                <a href="" class="small text-muted" data-toggle="tooltip" data-placement="top" title="Can the user list multiple services"><i class="fa fa-info-circle"></i></a>
+                            </div>
 
 
                             <button type="submit" class="btn btn-primary mt-4">Submit</button>

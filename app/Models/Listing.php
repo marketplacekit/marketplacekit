@@ -199,6 +199,10 @@ class Listing extends Model
         return $this->belongsTo('\App\Models\PricingModel');
     }
 
+    public function services() {
+        return $this->hasMany('\App\Models\ListingService');
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_published', 1)->whereNotNull('is_admin_verified')->whereNull('is_disabled');

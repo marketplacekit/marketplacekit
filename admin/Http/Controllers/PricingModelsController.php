@@ -118,6 +118,7 @@ class PricingModelsController extends Controller
         $pricing_model->can_add_additional_pricing = $request->has('can_add_additional_pricing');
         $pricing_model->requires_shipping_address = $request->has('requires_shipping_address');
         $pricing_model->requires_billing_address = $request->has('requires_billing_address');
+        $pricing_model->can_list_multiple_services = $request->has('can_list_multiple_services');
 
         if($pricing_model->widget == 'book_time') {
             $pricing_model->duration_name = "session";

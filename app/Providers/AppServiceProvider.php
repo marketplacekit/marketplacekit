@@ -7,6 +7,7 @@ use Illuminate\View\FileViewFinder;
 use Theme;
 use URL;
 use Crypt;
+use Setting;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -18,6 +19,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+        /*Setting::extend('mystore', function($app) {
+            return $app->make('App\Support\MyStore');
+        });*/
+
         $this->app['translator']->addJsonPath(storage_path('app/resources/lang')); //now we can translate without changing the core
 
         try {

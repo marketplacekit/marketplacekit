@@ -118,6 +118,10 @@ class BrowseController extends Controller
 
         $filters = Filter::orderBy('position', 'ASC')->where('is_hidden', 0)->where('is_default', 0)->get();
         $is_filtered = false;
+        if($request->has('category')) {
+            $is_filtered = true;
+        }
+
         foreach($filters as $filter) {
             if($filter->default){
                 continue;
@@ -192,7 +196,7 @@ class BrowseController extends Controller
 
         $lat = $request->get('lat') ? : GeoIP::getLatitude();
         $lng = $request->get('lng') ? : GeoIP::getLongitude();
-
+        #dd($lat, $lng);
         if($request->get('bounds') || ( $request->get('lat') && $request->get('lng') )) {
             $bounds = $request->get('bounds');
             $bounds = explode(",", $bounds);

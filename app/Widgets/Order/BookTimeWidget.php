@@ -5,6 +5,13 @@ namespace App\Widgets\Order;
 use App\Models\ListingBookedTime;
 use Arrilot\Widgets\AbstractWidget;
 use Carbon\Carbon;
+use Applicazza\Appointed\BusinessDay;
+use Applicazza\Appointed\Period;
+use Applicazza\Appointed\Appointment;
+use Applicazza\Appointed;
+use VM\TimeOverlapCalculator\Entity\TimeSlot;
+use VM\TimeOverlapCalculator\Generator\TimeSlotGenerator;
+use VM\TimeOverlapCalculator\TimeOverlapCalculator;
 
 class BookTimeWidget extends AbstractWidget
 {
@@ -27,42 +34,161 @@ class BookTimeWidget extends AbstractWidget
 
 
         $error = false;
+        $selected_services = false;
         $user_choice = [];
         $timeslots = [];
 
+        $total_price = $listing->price;
+        $session_length = (int) $listing->session_duration;
+        if($listing->services && isset($params['service'])) {
+            $params['service'] = array_keys($params['service']);
+            $selected_services = $listing->services->whereIn('id', $params['service']);
+            $total_price = $selected_services->sum('price');
+            $session_length = $selected_services->sum('duration');
+        }
+
         //date, time, qty
-        $subtotal = $quantity * $listing->price;
+        $subtotal = $quantity * $total_price;
         $service_fee_percentage = $subtotal * ($fee_percentage/100);
+        if($subtotal == 0)
+            $fee_transaction = 0;
         $service_fee_transaction = $fee_transaction;
         $service_fee = $service_fee_percentage + $service_fee_transaction;
         $total = $subtotal + $service_fee;
 
-        $session_length = 15;
+        $timeSlotGenerator = new TimeSlotGenerator();
+        $calculator = new TimeOverlapCalculator();
+        $time_slots = [];
         if ($start_date) {
+            $start_date = Carbon::createFromFormat('d-m-Y', $start_date);
+
+            $day_of_week = $start_date->format('N');
+
+            if ($listing->timeslots) {
+                foreach ($listing->timeslots as $timeslot) {
+                    if ($day_of_week == $timeslot['day']) {
+
+                        $start_time = (int) $timeslot['start_time'];
+                        $end_time = (int) $timeslot['end_time'];
+
+                        $time_slots[] = new TimeSlot(\Applicazza\Appointed\today( $start_time, 0), \Applicazza\Appointed\today($end_time, 0));
+                    }
+                }
+            }
+        }
+
+        $free_time_slots = $calculator->mergeOverlappedTimeSlots(
+            $timeSlotGenerator,
+            $time_slots
+        );
+
+        $business_day = new BusinessDay;
+        foreach ($free_time_slots as $timeslot) {
+            $period = Period::make($timeslot->getStart(), $timeslot->getEnd());
+            $business_day->addOperatingPeriods(
+                $period
+            );
+        }
+
+        //add booked appointments
+        if($start_date) {
+            $booked_slots = ListingBookedTime::where('listing_id', $listing->id)->where('booked_date', $start_date->toDateString())->get();
+            foreach ($booked_slots as $booked_slot) {
+                if ($booked_slot->quantity >= $listing->stock) {
+                    $appointment = Appointment::make(Carbon::parse($booked_slot->start_time), Carbon::parse($booked_slot->start_time)->addMinutes($booked_slot->duration));
+                    $business_day->addAppointments($appointment);
+                }
+            }
+        }
+
+        //now generate some time slots to choose from
+        $slot_interval = 15;
+        $available_slots = [];
+        $agenda = $business_day->getAgenda();
+
+        foreach($agenda as $timeslot) {
+            if($timeslot->jsonSerialize()['status'] == "available") {
+                $period = new \League\Period\Period($timeslot->getStartsAt(), $timeslot->getEndsAt());
+                foreach ($period->split($slot_interval . ' minutes') as $period) {
+                    $available_slots[] = $period->getStartDate()->format('H:i');
+                }
+            }
+        }
+        $timeslots = $available_slots;
+        if (!$error && count($available_slots) == 0 && $start_date) {
+            $error = __('Sorry, no available time slots. Try another date.');
+        }
+
+        if($start_date && $selected_slot && !in_array($selected_slot, $available_slots)) {
+            $error = __('Invalid slot.');
+        }
+/*
+        dd(($available_slots));
+
+
+        $agenda = $business_day->getAgenda();
+dd($agenda);
+
+        $periods = [];
+        if ($start_date) {
+            $start_date = Carbon::createFromFormat('d-m-Y', $start_date);
+
+            $day_of_week = $start_date->format('N');
+
+            if ($listing->timeslots) {
+                foreach ($listing->timeslots as $timeslot) {
+                    if ($day_of_week == $timeslot['day']) {
+
+                        $start_time = (int) $timeslot['start_time'];
+                        $end_time = (int) $timeslot['end_time'];
+
+                        $period = Period::make(\Applicazza\Appointed\today( $start_time, 0), \Applicazza\Appointed\today($end_time, 0));
+                        $business_day->addOperatingPeriods(
+                            $period
+                        );
+                    }
+                }
+            }
+        }
+
+
+
+        //now generate slots
+        $appointment = Appointment::make(\Applicazza\Appointed\today( 9, 00), \Applicazza\Appointed\today(10, 30));
+        $business_day->addAppointments(
+            $appointment
+        );
+        $agenda = $business_day->getAgenda();
+        dd($agenda);
+*/
+
+        #$session_length = 15;
+        /*if ($start_date) {
             $start_date = Carbon::createFromFormat('d-m-Y', $start_date);
             $day_of_week = $start_date->format('N');
             if ($listing->timeslots) {
                 foreach ($listing->timeslots as $timeslot) {
                     if ($day_of_week == $timeslot['day']) {
-                        $start_time = (int)$timeslot['start_time'];
-                        for ($i = 0; $i <= 60 - $session_length; $i += $session_length) {
+                        $start_time = (int) $timeslot['start_time'];
+                        $max_session_length =($session_length <= 60)?$session_length:60;
+                        for ($i = 0; $i <= 60 - $max_session_length; $i += $max_session_length) {
                             $timeslots[] = str_pad($start_time, 2, "0", STR_PAD_LEFT) . ':' . str_pad($i, 2, "0");
                         }
                     }
                 }
             }
 
-
-
             //hide taken slots
             $booked_slots = ListingBookedTime::where('listing_id', $listing->id)->where('booked_date', $start_date->toDateString())->get();
             $taken_slots = [];
+            #dd($booked_slots);
+
             foreach ($booked_slots as $slot) {
                 if($slot->quantity >= $listing->stock) {
-                    $taken_slots[] = $slot->start_time;
+                    $taken_slots[] = [$slot->start_time, Carbon::parse($slot->start_time)->addMinutes($session_length)->format('H:i')];
                 }
             }
-            #dd($taken_slots);
+            dd($taken_slots);
             if($taken_slots)
                 $timeslots = array_diff( $timeslots, $taken_slots );
 
@@ -76,9 +202,9 @@ class BookTimeWidget extends AbstractWidget
         }
 
         if($start_date && !$selected_slot) {
-            $error = __('Please select a slot.');
+            //$error = __('Please select a slot.');
         }
-		
+
 		//now check if we have any slots left for this time
         if($start_date && $selected_slot) {
             $booked_time = ListingBookedTime::where('listing_id', $listing->id)
@@ -91,12 +217,12 @@ class BookTimeWidget extends AbstractWidget
                     $error = __('Sorry no availability. Please try a different day/time.');
                 }
             }
-        }
+        }*/
 
 		$price_items = [
 			[
 				'key' 	=> 'price',
-				'label' => __(':price x :quantity :unit_label', ['price' => format_money($listing->price, $listing->currency), 'quantity' => $quantity, 'unit_label' => $listing->unit]),
+				'label' => __('Subtotal'),
 				'price' => $subtotal
 			],
 			[
@@ -105,19 +231,25 @@ class BookTimeWidget extends AbstractWidget
 				'price' => $service_fee
 			],
 		];
-
+#dd($selected_services);
         if($start_date) {
             $user_choice[] = ['group' => 'dates', 'name' => 'Selected day', 'value' => $start_date->toRfc7231String()];
             $user_choice[] = ['group' => 'dates', 'name' => 'Slot', 'value' => $selected_slot];
+            if(isset($selected_services) && $selected_services) {
+                foreach($selected_services as $selected_service) {
+                    $user_choice[] = ['group' => 'services', 'name' => 'Service', 'value' => $selected_service['name']];
+                }
+            }
         }
 
 		return [
             'user_choice'	=>	$user_choice,
             'error'			=>	$error,
 			'total'			=>	$total,
+			'duration'		=>	$session_length,
 			'service_fee'	=>	$service_fee,
 			'price_items'	=>	$price_items,
-			'timeslots'	=>	$timeslots,
+			'timeslots'	    =>	$timeslots,
 		];
 	
 	}
@@ -127,11 +259,13 @@ class BookTimeWidget extends AbstractWidget
         //add quantity to the listing_booked_dates table
         $booked_date = Carbon::createFromFormat('d-m-Y', $order->listing_options['start_date']);
         $slot = $order->listing_options['slot'];
+        $duration = $order->listing_options['duration'];
 
         $booked_slot = ListingBookedTime::firstOrCreate([
             'listing_id' => $order->listing->id,
             'booked_date' => $booked_date->toDateString(),
             'start_time' => $slot,
+            'duration' => $duration,
         ], ['quantity' => 0]);
 
         $booked_slot->increment('quantity', $order->listing_options['quantity']);
@@ -167,6 +301,8 @@ class BookTimeWidget extends AbstractWidget
 		$price_items = [];
 		$total = 0;
 		$timeslots = [];
+
+        $duration = 0;
 		#$result = $this->calculate_price($listing);
         #dd(request()->all());
         $result = $this->calculate_price($listing, request()->all());
@@ -175,6 +311,7 @@ class BookTimeWidget extends AbstractWidget
 			$price_items = $result['price_items'];
 			$total = $result['total'];
 			$timeslots = $result['timeslots'];
+            $duration = $result['duration'];
 			if($result['error'])
 				$error = $result['error'];
 		}
@@ -185,6 +322,7 @@ class BookTimeWidget extends AbstractWidget
             'config' => $this->config,
             'qs' 	        => http_build_query(request()->all()),
             'selected_slot' => $selected_slot,
+            'duration' => $duration,
             'error' => $error,
             'start_date' => $start_date,
             'timeslots' => $timeslots,

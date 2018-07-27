@@ -20,7 +20,9 @@ class SettingsController extends Controller
     public function index(Request $request, FormBuilder $formBuilder)
     {
         $settings = Setting::all();
-        
+        #dd( setting('show_list') );
+        #dd( Setting::all() );
+        #dd( $settings );
         $form = $formBuilder->create('Modules\Panel\Forms\GeneralSettingsForm', [
             'method' => 'POST',
             'url' => route('panel.settings.store'),
@@ -99,10 +101,13 @@ class SettingsController extends Controller
             Setting::set($key, $input);
         }
         Setting::save();
-        $checkboxes = ['show_map', 'show_grid', 'show_list', 'listings_require_verification', 'enable_geo_search', 'custom_homepage', 'show_search_sidebar', 'paypal_enabled'];
+        $checkboxes = ['show_map', 'show_grid', 'show_list', 'listings_require_verification', 'enable_geo_search', 'custom_homepage', 'show_search_sidebar', 'paypal_enabled', 'single_listing_per_user'];
+        #dd($request->has('show_list'));
         foreach($checkboxes as $checkbox) {
             Setting::set($checkbox, $request->has($checkbox));
         }
+        Setting::save();
+
         if($request->input('stripe_secret_key')) {
             try {
                 \Stripe\Stripe::setApiKey($request->input('stripe_secret_key'));
@@ -117,8 +122,9 @@ class SettingsController extends Controller
         }
 
         Setting::save();
-        
+
         $this->sync();
+
         alert()->success('Successfully saved');
         return redirect()->route('panel.settings.index');
     }

@@ -15,7 +15,7 @@ use App\Traits\HashId;
 class ListingBookedTime extends Model
 {
     protected $fillable = [
-        'listing_id', 'booked_date', 'start_time'
+        'listing_id', 'booked_date', 'start_time', 'duration'
     ];
 
     protected $casts = [

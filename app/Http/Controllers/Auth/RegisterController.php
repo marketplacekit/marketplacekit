@@ -84,7 +84,7 @@ class RegisterController extends Controller
     public function showRegistrationForm()
     {
         MetaTag::set('title', __("Register"));
-        session()->put('from', url()->previous());
+        session()->put('from', request('redirect')?:url()->previous());
 
         return view('auth.register');
     }

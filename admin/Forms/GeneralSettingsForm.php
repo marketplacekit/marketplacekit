@@ -178,25 +178,36 @@ class GeneralSettingsForm extends Form
             ]
         ]);
 
+
+        $this->add('single_listing_per_user', 'checkbox', [
+            'value' => 1,
+            'checked' => (bool) $this->getData('single_listing_per_user', 0),
+            'help_block' => [
+                'text' => "<i>Use this if you want only 1 listing per seller e.g. a company providing multiple bookable services.</i>",
+            ],
+        ]);
+
+
         $this->add('cookie_consent_enabled', 'checkbox', [
             'value' => 1,
             'checked' => (bool) $this->getData('cookie_consent_enabled', 0)
         ]);
-/*
-        - show map
-    - show list
-        - show grid
 
-    - site name
-    - site title
-    - site description
-    - site slogan
-    - logo
+        /*
+                - show map
+            - show list
+                - show grid
 
-    - Google analytics key
-    - GOOGLE Maps _API_KEY
-    - default map location
-*/
+            - site name
+            - site title
+            - site description
+            - site slogan
+            - logo
+
+            - Google analytics key
+            - GOOGLE Maps _API_KEY
+            - default map location
+        */
 
         $this->add('submit', 'submit', ['attr' => ['class' => 'btn btn-primary']]);
     }

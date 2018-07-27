@@ -6,6 +6,7 @@ use App\Http\Requests\StoreListing;
 use App\Mail\NewListing;
 use App\Models\ListingAdditionalOption;
 use App\Models\ListingBookedDate;
+use App\Models\ListingService;
 use App\Models\ListingShippingOption;
 use App\Models\ListingVariant;
 use App\Models\PricingModel;
@@ -35,6 +36,16 @@ class CreateController extends Controller
      */
     public function index()
     {
+
+        if(auth()->check() && setting('single_listing_per_user')) {
+            //let's see if we have a listing
+            $user = auth()->user();
+            if($user->listings->count()) {
+                $listing = $user->listings->first();
+                return redirect( $listing->edit_url );
+            }
+        }
+
         $data = [];
         $data['listings_form'] = Setting::get('listings_form', []);
 
@@ -210,6 +221,7 @@ class CreateController extends Controller
         $this->authorize('update', $listing);
 
         $params = $request->all();
+
         $filters = Filter::orderBy('position', 'ASC')->where('is_hidden', 0)->where('is_default', 0)->get();
         if($request->input('tags_string')) {
             $listing->tags = explode(",", $request->input('tags_string'));
@@ -341,11 +353,39 @@ class CreateController extends Controller
             }
 
             //delete the ones that were removed
-            foreach($listing->additional_options as $position => $additional_option) {
-                if($position >= $count) {
-                    $additional_option->delete();
+            if($listing->additional_options) {
+                foreach ($listing->additional_options as $position => $additional_option) {
+                    if ($position >= $count) {
+                        $additional_option->delete();
+                    }
                 }
             }
+        }
+
+        if($request->has('price'))
+            $listing->price = (float) $request->get('price');
+
+        if($request->input('services')) {
+            $count = 0;
+            foreach($params['services'] as $position => $service) {
+                if(!$service['name'])
+                    continue;
+                $listing_service = ListingService::updateOrCreate([
+                    'position'   => $position,
+                    'listing_id'    => $listing->id
+                ], ['name'  => $service['name'], 'duration'  => $service['duration'], 'price'  => $service['price']]);
+                $count++;
+            }
+
+            //delete the ones that were removed
+            if($listing->services) {
+                foreach ($listing->services as $position => $service) {
+                    if ($position >= $count) {
+                        $service->delete();
+                    }
+                }
+            }
+            $listing->price = (float) collect($params['services'])->sortBy('price')->first()['price'];
         }
 
         $listing->fill($request->only(['title', 'description', 'stock', 'lat', 'lng', 'city', 'country', 'session_duration', 'min_duration', 'max_duration']));
@@ -376,8 +416,6 @@ class CreateController extends Controller
         }
         if($request->has('draft'))
             $listing->is_published = false;
-        if($request->has('price'))
-            $listing->price = (float) $request->get('price');
 
         $listing->save();
 
