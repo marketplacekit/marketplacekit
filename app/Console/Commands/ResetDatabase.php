@@ -38,6 +38,9 @@ class ResetDatabase extends Command
     public function handle()
     {
         //
-        Artisan::call('db:seed');
+        if (env("DEMO")) {
+            Artisan::call('migrate:refresh');
+            Artisan::call('db:seed');
+        }
     }
 }
