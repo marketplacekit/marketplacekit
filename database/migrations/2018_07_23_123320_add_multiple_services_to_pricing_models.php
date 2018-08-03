@@ -15,7 +15,7 @@ class AddMultipleServicesToPricingModels extends Migration
     {
         //
         Schema::table('pricing_models', function($table) {
-            $table->boolean('can_list_multiple_services');
+            $table->boolean('can_list_multiple_services')->nullable()->default(0);
         });
     }
 

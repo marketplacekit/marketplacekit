@@ -8,25 +8,49 @@
 			<div class="row ">
 				<div class="col-sm-12">
 
-					<div class="row ">
-						<div class="col-sm-12">
-							<h4 class="mb-0"><i class="widget-indicator fa fa-circle-o-notch p-1 fa-spin" style="display:none"></i> {{format_money(listing.price, listing.currency)}} <small>{{__('per')}} {{listing.pricing_model.duration_name}}</small></h4>
+                    {% if total > 0 %}
+						<div class="row mb-0">
+							<div class="col-sm-12">
+								<h4 class="mb-0"><i class="widget-indicator fa fa-circle-o-notch p-1 fa-spin" style="display:none"></i> {{format_money(total, listing.currency)}} <small>{{__('per')}} {{listing.pricing_model.duration_name}}</small></h4>
+								<hr class="" />
+							</div>
 						</div>
-					</div>
+                    {% endif %}
+
+                    {% if listing.services|length > 0 %}
+						<div class="row  mb-0">
+							<div class="col-sm-12">
+								<p class="text-muted small mb-1">{{ __('Services') }}</p>
+                                {% for k, service in listing.services  %}
+									<div class="form-check">
+										<input class="form-check-input" id="service_{{ service.id }}" {{ (input_has('service.'~service.id))?'checked=checked':'' }} name="service[{{ service.id }}]" type="checkbox" value="1">
+										<label class="form-check-label" for="service_{{ service.id }}">
+                                            {{ service.name }} <small class="text-muted">{{ service.duration }} {{ __('mins') }}</small> - <span class="text-danger">{{ format_money(service.price, listing.currency) }}</span>
+										</label>
+									</div>
+                                {% endfor %}
+								<hr />
+							</div>
+						</div>
+                    {% endif %}
+
 					<div class="calendar row mb-3">
-						<div class="col-sm-12 mt-3">
+						<div class="col-sm-12 mt-0">
+							<p class="text-muted small mb-1">{{ __('Select a date & slot') }}</p>
+
 							<input type="text" name="start_date" id="calendar_value" value="{{ start_date ? start_date.format('d-m-Y') : '' }}" placeholder="DD-MM-YYYY" class="form-control text-left" autocomplete="off"/>
                             {% if not start_date %}
-								<p class="form-text text-muted small ">{{ __('Select a date to begin') }}</p>
+								<small class="form-text text-muted small ">{{ __('Available time slots will appear below after selecting a date') }}</small>
                             {% endif %}
 						</div>
-
 					</div>
 
+
                     {% if timeslots %}
-						<p class="mb-1 text-muted">{{ __('Select a start time') }} {{selected_slot}}</p>
+						<p class="mb-1 small text-muted">{{ __('Select a start time') }} {{selected_slot}}</p>
 						<input type="hidden" name="slot" value="{{ selected_slot }}"/>
-						<div class="timeslot mb-3" style="overflow-y: scroll; overflow-x: hidden; max-height: 195px; display: block;">
+						<input type="hidden" name="duration" value="{{ duration }}"/>
+						<div id="timeslot_selection" class="timeslot mb-3" style="overflow-y: scroll; overflow-x: hidden; max-height: 195px; display: block; padding-right: 8px; position: relative">
 							<div class="row">
                                 {% for slot in timeslots %}
 									<div class="col-sm-4 mb-1">
@@ -44,7 +68,7 @@
                     {% if listing.stock > 1 %}
 						<div class="row mb-1">
 							<div class="col-sm-12">
-                                {{ __('Quantity') }}
+                                {{ __('Spaces to book') }}
 							</div>
 							<div class="col-sm-4">
                                 {{ form_select('quantity', array_combine(range(1, listing.stock), range(1, listing.stock)), null, {'class' : 'form-control form-control-sm', 'required':'required'}) }}
@@ -71,7 +95,7 @@
 						</div>
                     {% endif %}
 
-                    {% if not error and selected_slot %}
+                    {% if not error and selected_slot or input_has('service') %}
 						<hr />
                         {% for item in price_items %}
 							<div class="row">
@@ -151,10 +175,17 @@
         var billingAddress =  Boolean({{ listing.pricing_model.requires_billing_address }});
         var shippingAddress =  Boolean({{ listing.pricing_model.requires_shipping_address }});
 
-        flatpickr("#calendar_value", {dateFormat:"d-m-Y", defaultDate:moment(start_date).format('DD-MM-YYYY')});
+        flatpickr("#calendar_value", {dateFormat:"d-m-Y", minDate: moment().format('DD-MM-YYYY'), defaultDate:moment(start_date).format('DD-MM-YYYY')});
         $('#form-selector').on('elementAdded.ic', function(){
-            flatpickr("#calendar_value", {dateFormat:"d-m-Y", defaultDate:moment(start_date).format('DD-MM-YYYY')});
+            flatpickr("#calendar_value", {dateFormat:"d-m-Y", minDate: moment().format('DD-MM-YYYY'), defaultDate:moment(start_date).format('DD-MM-YYYY')});
             setup_stripe();
         });
+
+        var scroll_top = 0;
+        if($("#timeslot_selection a.btn-primary").offset().top > $("#timeslot_selection").offset().top && $("#timeslot_selection a.btn-primary").offset().top > ($("#timeslot_selection").offset().top+$("#timeslot_selection").height())) {
+            scroll_top = $("#timeslot_selection a.btn-primary").offset().top -  $("#timeslot_selection").offset().top
+        }
+        $('#timeslot_selection').scrollTop(  scroll_top  );
+
 	</script>
 </div>
