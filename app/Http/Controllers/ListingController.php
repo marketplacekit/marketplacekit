@@ -47,7 +47,7 @@ class ListingController extends Controller
         $data['breadcrumbs'] = array_reverse($breadcrumbs);
 
         $data['has_map'] = false;
-        if($listing->location && setting('google_maps_key')) {
+        if($listing->location && setting('googlmapper.key')) {
             Mapper::map($listing->location->getLat(), $listing->location->getLng(), ['zoom' => 14, 'zoomControl' => false, 'streetViewControl' => false, 'mapTypeControl' => false, 'center' => true, 'marker' => true]);
             $data['has_map'] = true;
         }

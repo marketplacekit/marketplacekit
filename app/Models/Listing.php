@@ -42,6 +42,7 @@ class Listing extends Model
         'columns' => [
             'listings.tags' => 5,
             'listings.title' => 10,
+            'listings.description' => 2,
         ],
     ];
     protected $searchableColumns = ['tags', 'title', 'description'];

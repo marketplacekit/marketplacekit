@@ -158,6 +158,7 @@
                                 if(result.status) {
                                     window.location.href = result.redirect;
                                 } else {
+                                    $("#indicator-btn").hide();
                                     $("#error_message").html(result.error).show();
                                 }
                             },

@@ -51,7 +51,8 @@ class ConfigServiceProvider extends ServiceProvider {
             if ($supported_locales && in_array($default_locale, $supported_locales)) {
                 config(['app.locale' => $default_locale]);
             } else {
-                $default_locale = reset($supported_locales);
+                reset($supported_locales);
+                $default_locale = key($supported_locales);
                 config(['app.locale' => $default_locale]);
             }
         }

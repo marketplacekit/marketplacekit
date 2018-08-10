@@ -107,23 +107,24 @@ class LoginController extends Controller
 		return $local_user;
 		
     }
-	protected function redirectTo()
-	{
-		#$this->redirectTo = session('back_url') ? session('back_url') : $this->redirectTo;
-		#dd(session('back_url'));
-		return $this->redirectTo;
-	}
+    protected function redirectTo()
+    {
+        #$this->redirectTo = session('back_url') ? session('back_url') : $this->redirectTo;
+        #dd(session('back_url'));
+        #dd(5);
+        return $this->redirectTo;
+    }
 
     public function logout(Request $request)
     {
         $this->guard()->logout();
-
+        $request->session()->forget(['from']);
         $request->session()->invalidate();
 
         return back();
     }
-	
-	public function showLoginForm()
+
+    public function showLoginForm(Request $request)
     {
         MetaTag::set('title', __("Login"));
         if(!session()->has('from')){
@@ -132,9 +133,11 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
-    public function authenticated($request,$user)
+    public function authenticated($request, $user)
     {
-        return redirect(session()->pull('from',$this->redirectTo));
+        $redirect_to = session()->pull('from', $this->redirectTo);
+        $request->session()->forget(['from']);
+        return redirect($redirect_to);
     }
 
 }

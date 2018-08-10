@@ -36,11 +36,23 @@
             {{ form_text('location', null, {'class' : 'form-control', 'id' : 'location'}) }}
             {{ form_hidden('lat', null, {'class' : 'form-control', 'id' : 'lat'}) }}
             {{ form_hidden('lng', null, {'class' : 'form-control', 'id' : 'lng'}) }}
-            {{ form_hidden('city', null, {'class' : 'form-control', 'id' : 'city'}) }}
-            {{ form_hidden('country', null, {'class' : 'form-control', 'id' : 'country'}) }}
 
             <div id="create_map" style="width: 100%; height: 400px;"></div>
 
+			<div class="row mt-4">
+				<div class="col-6">
+					<div class="form-group">
+						<label>{{ __("City") }}</label>
+						{{ form_text('city', null, {'class' : 'form-control', 'id' : 'city'}) }}
+					</div>		
+				</div>		
+				<div class="col-6">
+					<div class="form-group">
+						<label>{{ __("Country") }}</label>
+						{{ form_text('country', null, {'class' : 'form-control', 'id' : 'country', 'readonly':'readonly'}) }}
+					</div>
+				</div>
+			</div>
         </div>
 
     </div>

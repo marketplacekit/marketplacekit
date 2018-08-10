@@ -33,8 +33,10 @@ class BankAccountController extends Controller
             $country = $account->country;
             $currency = $countries->firstWhere('id', $country)['default_currency'];
 
-            $external_account = $account->external_accounts->data[0];
+            #$external_account = $account->external_accounts->data[0];
             #dd($external_account.account_holder_name);
+            if($account->external_accounts->data)
+                $external_account = $account->external_accounts->data[0];
 
             $countries = $countries->reject(function ($option) use($account) {
                 return $option['id'] != $account->country;

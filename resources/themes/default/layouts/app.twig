@@ -15,7 +15,7 @@
     {{  MetaTag.tag('image') | raw }}
 
     <!-- Scripts -->
-    {% if setting('google_maps_key') %}
+    {% if setting('googlmapper.key') %}
         {{ Mapper.renderJavascript() | raw }}
     {% else %}
         <script type="text/javascript" src='https://maps.google.com/maps/api/js?sensor=false&libraries=places'></script>
@@ -39,6 +39,7 @@
     <!-- App Scripts & Styles -->
     <script src="{{ asset('themes/' ~  Theme.current().name  ~ '/js/app.js') }}"></script>
     <link href="{{ asset('themes/' ~  Theme.current().name  ~ '/css/app.css') }}" rel="stylesheet">
+
 
     {% if setting('stripe_publishable_key') %}
     <!-- Stripe -->

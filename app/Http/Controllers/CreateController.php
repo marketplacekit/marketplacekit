@@ -141,6 +141,17 @@ class CreateController extends Controller
         #dd($listing);
         #$listing->save();
 
+
+        #if it's a service - set to 9-5
+        if($listing->pricing_model->widget == 'book_time') {
+            $slots = [];
+            foreach(range(1,5) as $day)
+                for($hour = 9; $hour <= 17; $hour++)
+                    $slots[] = ['day' => $day, 'start_time' => $hour.':00', 'end_time' => ($hour+1).':00'];
+            $listing->timeslots = $slots;
+            $listing->save();
+        }
+
         //redirect to success page
         return response('OK', 200)->header('X-IC-Redirect', $listing->edit_url.'#images_section');
     }

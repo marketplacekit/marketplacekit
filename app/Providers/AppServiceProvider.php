@@ -39,24 +39,42 @@ class AppServiceProvider extends ServiceProvider
                 setting(['marketplace_index' => "browse"]);
             }
 
+            if (setting('email_address')) {
+                config(['mail.from.address' => env('MAIL_FROM_ADDRESS', setting('email_address'))]);
+            }
+
             if (setting('site_name')) {
                 config(['app.name' => setting('site_name', env('APP_NAME', 'MarketplaceKit'))]);
+                config(['mail.from.name' => setting('site_name', env('APP_NAME', 'MarketplaceKit'))]);
                 config(['app.url' => setting('site_url', url('/'))]);
+            }
+            if (setting('site_logo')) {
+                $url = \Storage::disk('public')->url('images/'.setting('site_logo'));
+                setting(['logo' => $url]);
             }
 
             if (setting('google_maps_key')) {
                 config(['googlmapper.key' => setting('google_maps_key')]);
+                setting(['googlmapper.key' => setting('google_maps_key')]);
             } else {
-                setting(['enable_geo_search' => false]);
-                setting(['show_map' => false]);
-                if (setting('default_view') == 'map' && !env("DEMO")) {
-                    setting(['default_view' => 'grid']);
+                config(['googlmapper.key' => env("GOOGLE_MAPS_KEY")]);
+                setting(['googlmapper.key' => env("GOOGLE_MAPS_KEY")]);
+                //if still no key then disable maps
+                if (!setting('googlmapper.key')) {
+                    setting(['enable_geo_search' => false]);
+                    setting(['show_map' => false]);
+                    if (setting('default_view') == 'map' && !env("DEMO")) {
+                        setting(['default_view' => 'grid']);
+                    }
                 }
-                config(['googlmapper.key' => ""]);
             }
 
             config(['marketplace.stripe_publishable_key' => setting("stripe_publishable_key")]);
-            config(['marketplace.stripe_secret_key' => setting("stripe_secret_key")]);
+            try {
+                config(['marketplace.stripe_secret_key' => \Crypt::decryptString(setting("stripe_secret_key"))]);
+            } catch(\Exception $e) {
+
+            }
 
             if (setting('paypal_enabled')) {
 
@@ -105,7 +123,7 @@ class AppServiceProvider extends ServiceProvider
                 config(['services.facebook.redirect' => url('login/facebook')]);
 
             }
-
+//dd(config('googlmapper.key'));
             Theme::set(setting('theme', config('themes.default')));
             if (request('theme')) {
                 Theme::set(request('theme'));

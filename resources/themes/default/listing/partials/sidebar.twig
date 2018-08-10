@@ -82,6 +82,11 @@
         handler.close();
     });
 </script>
+{% else %}
+    <script>
+        function setup_stripe() {
+        }
+    </script>
 {% endif %}
 
 <div class="row">
@@ -204,6 +209,10 @@
                 </div>
             </div>
         </div>
+        {% endif %}
+
+        {% if module_enabled('moderatelistings') %}
+            <a href="{{ route('listing.report', [listing]) }}" class="small">{{ __('Report listing') }}</a>
         {% endif %}
 
 

@@ -2,161 +2,163 @@
 
     <form method="GET" id="form-widget" class="checkout-form" ic-get-from="{{ url_current() }}" ic-target="#form-selector" ic-select-from-response="#form-selector" ic-replace-target="false" ic-trigger-on="change" ic-push-url="true" ic-indicator=".widget-indicator">
 
-	<div class="card-body">
+        <div class="card-body">
 
-		<div class="row ">
-			<div class="col-sm-12">
+            <div class="row ">
+                <div class="col-sm-12">
 
-                <div class="row ">
-                    <div class="col-6">
-                        <h4 class="mb-0">{{ format_money(total, listing.currency) }} <i class="widget-indicator fa fa-circle-o-notch p-1 fa-spin float-right" style="display:none"></i></h4>
+                    <div class="row ">
+                        <div class="col-6">
+                            <h4 class="mb-0">{{ format_money(total, listing.currency) }} <i class="widget-indicator fa fa-circle-o-notch p-1 fa-spin float-right" style="display:none"></i></h4>
+                        </div>
+                        <div class="col-6 text-right">
+                            {% if auth_check() %}
+                                <a href="#"  class="btn btn-sm btn-outline-info InboxDirectMessage" data-url="{{ route('inbox.create', {'user_id': listing.user_id, 'direct':true}) }}">{{ __("Ask question") }}</a>
+                            {% else %}
+                                <a href="#"  class="btn btn-sm btn-outline-info pop" data-width="300">{{ __("Ask question") }}</a>
+                                <div class="webui-popover-content">
+                                    <p class="h6">{{ __('Have a question?') }}</p>
+                                    <p>{{ __('Please sign in to contact the seller.') }}</p>
+                                    <hr />
+                                    <a href="{{ route('login') }}" class="btn btn-link text-danger font-weight-bold text-uppercase pl-0">{{ __("Sign in") }}</a>
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
-                    <div class="col-6 text-right">
-                        {% if auth_check() %}
-                            <a href="#"  class="btn btn-sm btn-outline-info InboxDirectMessage" data-url="{{ route('inbox.create', {'user_id': listing.user_id, 'direct':true}) }}">{{ __("Ask question") }}</a>
-                        {% else %}
-                            <a href="#"  class="btn btn-sm btn-outline-info pop" data-width="300">{{ __("Ask question") }}</a>
-                            <div class="webui-popover-content">
-                                <p class="h6">{{ __('Have a question?') }}</p>
-                                <p>{{ __('Please sign in to contact the seller.') }}</p>
-                                <hr />
-                                <a href="{{ route('login') }}" class="btn btn-link text-danger font-weight-bold text-uppercase pl-0">{{ __("Sign in") }}</a>
+
+                    {% if listing.variant_options %}
+                        {% for name,variation in listing.variant_options %}
+                            <div class="row mt-3">
+                                <div class="col-sm-12">
+                                    {{ _l(name) }}
+                                </div>
+                                <div class="col-sm-12">
+                                    {{  form_select('variant['~name~']', {'' : __(' - Select - ')} + array_combine(variation, variation), input_get('variant.'~name), {'class' : 'form-control form-control-sm', 'required':'required'}) }}
+                                </div>
                             </div>
-                        {% endif %}
-                    </div>
-                </div>
-
-				{% if listing.variant_options %}
-                    {% for name,variation in listing.variant_options %}
-					<div class="row mt-3">
-						<div class="col-sm-12">
-							{{ name }}
-						</div>
-						<div class="col-sm-12">
-							{{  form_select('variant['~name~']', {'' : ' - Select - '} + array_combine(variation, variation), null, {'class' : 'form-control form-control-sm', 'required':'required'}) }}
-						</div>
-					</div>
-                    {% endfor %}
-				{% endif %}
-
-                {% if listing.stock > 1 %}
-                <div class="row mt-3">
-                    <div class="col-sm-12">
-                        {{ __('Quantity') }}
-                    </div>
-                    <div class="col-sm-4">
-						{{ form_select('quantity', array_combine(range(1, listing.stock), range(1, listing.stock)), null, {'class' : 'form-control form-control-sm', 'required':'required'}) }}
-                    </div>
-                </div>
-                {% else %}
-                    {{ form_hidden('quantity', 1) }}
-                {% endif %}
-
-                {% if listing.shipping_options|length > 0 %}
-					<div class="row mt-3 mb-3">
-						<div class="col-sm-12">
-						<label class="small text-muted">{{ __('Shipping') }}</label>
-                        {% for k, shipping_option in listing.shipping_options  %}
-						<div class="form-check">
-
-							<input class="form-check-input" required id="shipping_option_{{ shipping_option.id }}" {{ (input_get('shipping_option') == shipping_option.id)?'checked=checked':'' }} name="shipping_option" type="radio" value="{{ shipping_option.id }}">
-							<label class="form-check-label" for="shipping_option_{{ shipping_option.id }}">
-								{{ shipping_option.name }} <span class="text-muted">({{ format_money(shipping_option.price, listing.currency) }})</span>
-							</label>
-						</div>
                         {% endfor %}
-						</div>
-					</div>
-                {% endif %}
+                    {% endif %}
 
-                {% if listing.additional_options|length > 0 %}
-					<div class="row mt-3 mb-3">
-						<div class="col-sm-12">
-						<label class="small text-muted">{{ __('Additional options') }}</label>
-                        {% for k, additional_option in listing.additional_options  %}
-						<div class="form-check">
-
-							<input class="form-check-input" id="additional_option_{{ additional_option.id }}" {{ (input_has('additional_option.'~additional_option.id))?'checked=checked':'' }} name="additional_option[{{ additional_option.id }}]" type="checkbox" value="1">
-							<label class="form-check-label" for="additional_option_{{ additional_option.id }}">
-								{{ additional_option.name }} <span class="text-muted">({{ format_money(additional_option.price, listing.currency) }})</span>
-							</label>
-						</div>
-                        {% endfor %}
-						</div>
-					</div>
-                {% endif %}
-
-                {% if error %}
-				<p class="mb-1 mt-1 p-3 text-muted text-center">{{  error }}</p>
-                {% endif %}
-
-                <hr />
-                {% for item in price_items %}
-                    <div class="row">
-                        <div class="col-sm-8 mt-1">
-                            <span>{{ item.label }}</span>
+                    {% if listing.stock > 1 %}
+                        <div class="row mt-3">
+                            <div class="col-sm-12">
+                                {{ __('Quantity') }}
+                            </div>
+                            <div class="col-sm-4">
+                                {{ form_select('quantity', array_combine(range(1, listing.stock), range(1, listing.stock)), null, {'class' : 'form-control form-control-sm', 'required':'required'}) }}
+                            </div>
                         </div>
-                        <div class="col-sm-4 mt-1 text-right">
-                            <span>{{format_money(item.price, listing.currency)}}</span>
+                    {% else %}
+                        {{ form_hidden('quantity', 1) }}
+                    {% endif %}
+
+                    {% if listing.shipping_options|length > 0 %}
+                        <div class="row mt-3 mb-3">
+                            <div class="col-sm-12">
+                                <label class="small text-muted">{{ __('Shipping') }}</label>
+                                {% for k, shipping_option in listing.shipping_options  %}
+                                    <div class="form-check">
+
+                                        <input class="form-check-input" required id="shipping_option_{{ shipping_option.id }}" {{ (input_get('shipping_option') == shipping_option.id)?'checked=checked':'' }} name="shipping_option" type="radio" value="{{ shipping_option.id }}">
+                                        <label class="form-check-label" for="shipping_option_{{ shipping_option.id }}">
+                                            {{ shipping_option.name }} <span class="text-muted">({{ format_money(shipping_option.price, listing.currency) }})</span>
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
-				
-			</div>
+                    {% endif %}
 
-		</div>
+                    {% if listing.additional_options|length > 0 %}
+                        <div class="row mt-3 mb-3">
+                            <div class="col-sm-12">
+                                <label class="small text-muted">{{ __('Additional options') }}</label>
+                                {% for k, additional_option in listing.additional_options  %}
+                                    <div class="form-check">
 
-	</div>
+                                        <input class="form-check-input" id="additional_option_{{ additional_option.id }}" {{ (input_has('additional_option.'~additional_option.id))?'checked=checked':'' }} name="additional_option[{{ additional_option.id }}]" type="checkbox" value="1">
+                                        <label class="form-check-label" for="additional_option_{{ additional_option.id }}">
+                                            {{ additional_option.name }} <span class="text-muted">({{ format_money(additional_option.price, listing.currency) }})</span>
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
 
-    <div class="card-footer text-center">
-        {% if listing.user.can_accept_payments  %}
+                    {% if error %}
+                        <p class="mb-1 mt-1 p-3 text-muted text-center">{{  error }}</p>
+                    {% endif %}
 
-            {% if auth_check() %}
-
-                {% if listing.user.payment_gateway('stripe') %}
-                <button type="submit" {{ error?'disabled':'' }} class="btn btn-primary btn-block book"> {{ __("Buy now") }} <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
-                {% endif %}
-
-                {% if listing.user.paypal_email and setting('paypal_enabled') %}
-                <br />
-                <a href="{{ route("paypal.start", {'listing': listing}) }}?{{ qs }}" class="btn btn-secondary btn-block paypal-btn {{ error?'disabled':'' }}" data-turbolinks="false"> <strong class="small font-weight-bold">{{ __("Check out with") }}</strong> <img class="img-fluid" style="height: 18px" src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_100x26.png" /></a>
-                {% endif %}
-            {% else %}
-                <a href="{{ route('login', {'action': 'checkout'}) }}" class="btn btn-primary btn-block pop" data-width="300" data-placement="top">{{ __("Buy now") }} <i class="mdi mdi-chevron-right" aria-hidden="true"></i></a >
-
-                <div class="webui-popover-content">
-                    <p class="h6">{{ __('Want to checkout?') }}</p>
-                    <p>{{ __('Sign in to make a payment.') }}</p>
                     <hr />
-                    <a href="{{ route('login') }}" class="btn btn-link text-danger font-weight-bold text-uppercase pl-0">{{ __("Sign in") }}</a>
-                </div>
-            {% endif %}
+                    {% for item in price_items %}
+                        <div class="row">
+                            <div class="col-sm-8 mt-1">
+                                <span>{{ item.label }}</span>
+                            </div>
+                            <div class="col-sm-4 mt-1 text-right">
+                                <span>{{format_money(item.price, listing.currency)}}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
 
-        {% else %}
-            {% if auth_check() %}
-                <button type="submit" {{error?'disabled':''}} class="btn btn-primary btn-block InboxDirectMessage" data-url="{{ route('inbox.create', {'user_id': listing.user_id, 'direct':true, 'listing_id':listing.id}) }}"> {{ __("Ask about availability") }} <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
-        {% else %}
-            <a href="{{route('login', {'action' : 'checkout'})}}" class="btn btn-primary btn-block pop"><i class="mdi mdi-share mr-1" ></i> {{ __("Buy now") }} <i class="mdi mdi-chevron-right" aria-hidden="true"></i></a >
-            <div class="webui-popover-content">
-                <p class="h6">{{ __('Want to checkout?') }}</p>
-                <p>{{ __('Sign in to make a payment.') }}</p>
-                <hr />
-                <a href="{{ route('login') }}" class="btn btn-link text-danger font-weight-bold text-uppercase pl-0">{{ __("Sign in") }}</a>
+                </div>
+
             </div>
-        {% endif %}
-            <p class="small text-muted text-center mb-0">{{ __("This sends a message to the seller.") }}</p>
-        {% endif %}
-    </div>
-</form>
+
+        </div>
+
+        <div class="card-footer text-center">
+            {% if listing.user.can_accept_payments  %}
+
+                {% if auth_check() %}
+
+                    {% if listing.user.payment_gateway('stripe') %}
+                        <button type="submit" {{ error?'disabled':'' }} class="btn btn-primary btn-block book"> {{ __("Buy now") }} <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+                    {% endif %}
+
+                    {% if listing.user.paypal_email and setting('paypal_enabled') %}
+                        <br />
+                        <a href="{{ route("paypal.start", {'listing': listing}) }}?{{ qs }}" class="btn btn-secondary btn-block paypal-btn {{ error?'disabled':'' }}" data-turbolinks="false"> <strong class="small font-weight-bold">{{ __("Check out with") }}</strong> <img class="img-fluid" style="height: 18px" src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_100x26.png" /></a>
+                    {% endif %}
+
+
+                {% else %}
+                    <a href="{{ route('login', {'action': 'checkout'}) }}" class="btn btn-primary btn-block pop" data-width="300" data-placement="top">{{ __("Buy now") }} <i class="mdi mdi-chevron-right" aria-hidden="true"></i></a >
+
+                    <div class="webui-popover-content">
+                        <p class="h6">{{ __('Want to checkout?') }}</p>
+                        <p>{{ __('Sign in to make a payment.') }}</p>
+                        <hr />
+                        <a href="{{ route('login') }}" class="btn btn-link text-danger font-weight-bold text-uppercase pl-0">{{ __("Sign in") }}</a>
+                    </div>
+                {% endif %}
+
+            {% else %}
+                {% if auth_check() %}
+                    <button type="submit" {{error?'disabled':''}} class="btn btn-primary btn-block InboxDirectMessage" data-url="{{ route('inbox.create', {'user_id': listing.user_id, 'direct':true, 'listing_id':listing.id}) }}"> {{ __("Ask about availability") }} <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+                {% else %}
+                    <a href="{{route('login', {'action' : 'checkout'})}}" class="btn btn-primary btn-block pop"><i class="mdi mdi-share mr-1" ></i> {{ __("Buy now") }} <i class="mdi mdi-chevron-right" aria-hidden="true"></i></a >
+                    <div class="webui-popover-content">
+                        <p class="h6">{{ __('Want to checkout?') }}</p>
+                        <p>{{ __('Sign in to make a payment.') }}</p>
+                        <hr />
+                        <a href="{{ route('login') }}" class="btn btn-link text-danger font-weight-bold text-uppercase pl-0">{{ __("Sign in") }}</a>
+                    </div>
+                {% endif %}
+                <p class="small text-muted text-center mb-0">{{ __("This sends a message to the seller.") }}</p>
+            {% endif %}
+        </div>
+    </form>
     <script>
         $('.pop').webuiPopover();
     </script>
     {% if listing.user.can_accept_payments  %}
-    <script>
-        var total = "{{ total }}";
-        var billingAddress =  Boolean({{ listing.pricing_model.requires_billing_address }});
-        var shippingAddress =  Boolean({{ listing.pricing_model.requires_shipping_address }});
-        setup_stripe();
-    </script>
+        <script>
+            var total = "{{ total }}";
+            var billingAddress =  Boolean({{ listing.pricing_model.requires_billing_address }});
+            var shippingAddress =  Boolean({{ listing.pricing_model.requires_shipping_address }});
+            setup_stripe();
+        </script>
     {% endif %}
 </div>

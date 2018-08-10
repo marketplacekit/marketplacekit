@@ -5,7 +5,7 @@
         <select name="{{facet.field}}" class="form-control">
             <option value="">-- SELECT --</option>
 			{% for option in facet.options %}
-				<option value="{{ option.name | trim('"') }}">{{ option.name |trim('"') }}</option>
+				<option value="{{ option.value | trim('"') }}">{{ option.name |trim('"') }}</option>
 			{% endfor %}
         </select>
     </div>

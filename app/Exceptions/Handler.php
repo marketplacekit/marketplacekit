@@ -49,6 +49,10 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         if ($exception instanceof \Spatie\Permission\Exceptions\UnauthorizedException) {
+            if ($request->is('panel*')) {
+                session()->put('from', url()->current());
+                return redirect()->route('login');
+            }
             return redirect()->route('home');
         }
 

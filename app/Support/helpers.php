@@ -141,6 +141,11 @@ function save_language_file($file, $strings) {
 
     //insert it into the database
     $selected_locale = 'en';
+
+    if ($strings instanceof Illuminate\Support\Collection) {
+        $strings = $strings->toArray();
+    }
+
     $strings = array_unique($strings);
     $strings = array_filter($strings);
     foreach($strings as $string) {

@@ -86,6 +86,12 @@ Although MarketplaceKit has been tested on Ubuntu 16.04 LTS. It should work with
   DB_PASSWORD=secret
   ```
 
+- Create the public disk
+
+  ```
+  php artisan storage:link
+  ```
+  
 - Create the database tables by running
 
   ```
