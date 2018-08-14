@@ -3,9 +3,11 @@
  * Copyright 2013-2017 Start Bootstrap
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-simple-sidebar/blob/master/LICENSE)
  */
+@import url('https://fonts.googleapis.com/css?family=Nunito');
 
 body {
   overflow-x: hidden;
+  font-family: 'Nunito', sans-serif;
 }
 
 #wrapper {

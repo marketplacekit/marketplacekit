@@ -8,6 +8,7 @@ Route::group(['as' => 'panel.', 'prefix' => 'panel', 'middleware' => ['web', 'ro
     Route::resource('users', 'UsersController');
     Route::resource('pages', 'PagesController');
     Route::resource('menu', 'MenuController');
+    Route::any('/settings/remove', 'SettingsController@remove')->name('settings.remove');
     Route::resource('settings', 'SettingsController');
     Route::resource('orders', 'OrdersController');
     Route::resource('home', 'HomeController');

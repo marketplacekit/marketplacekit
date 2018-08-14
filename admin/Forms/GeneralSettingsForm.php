@@ -33,7 +33,7 @@ class GeneralSettingsForm extends Form
         $this->add('site_logo', 'file', [
             'rules' => '',
             'help_block' => [
-                'text' => "Max height: 24px, Max width: 165px",
+                'text' => "Max height: 24px, Max width: 165px"
             ]
         ]);
 
