@@ -62,7 +62,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => 'jai
 
 
 	//ACCOUNT
-	Route::group(['middleware' => 'auth', 'prefix' => 'account', 'as' => 'account.', 'namespace' => 'Account'], function()
+	Route::group(['middleware' => ['auth', 'isVerified'], 'prefix' => 'account', 'as' => 'account.', 'namespace' => 'Account'], function()
 	{
 		Route::get('/', function () {
 			return redirect(route('account.edit_profile.index'));
@@ -83,7 +83,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => 'jai
 	});
 
 	//REQUIRES AUTHENTICATION
-	Route::group(['middleware' => 'auth'], function () {
+	Route::group(['middleware' => ['auth', 'isVerified']], function () {
 
 		//INBOX
 		Route::resource('inbox', 'InboxController')->middleware('talk'); //Inbox
@@ -118,6 +118,16 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => 'jai
 
 
     });
+
+    //REQUIRES AUTHENTICATION
+    Route::group(['middleware' => ['auth']], function () {
+
+        Route::get('email-verification', 'Auth\EmailVerificationController@index')->name('email-verification.index');
+        Route::get('resend-verification', 'Auth\EmailVerificationController@resend')->name('email-verification.resend');
+        Route::get('email-verified', 'Auth\EmailVerificationController@verified')->name('email-verification.verified');
+
+    });
+
 	Route::get('login/facebook', 'Auth\LoginController@redirectToProvider');
 	Route::get('login/facebook/callback', 'Auth\LoginController@handleProviderCallback');
 

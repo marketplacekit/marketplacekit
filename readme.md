@@ -136,6 +136,7 @@ Although MarketplaceKit has been tested on Ubuntu 16.04 LTS. It should work with
   ```
   APP_URL=http://localhost.com
   ```
+  Don't forget to add https:// in production.
 
 
 ### Facebook login

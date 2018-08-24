@@ -14,6 +14,7 @@ use App\Traits\HashId;
 
 class ListingAdditionalOption extends Model
 {
+    use \Spiritix\LadaCache\Database\LadaCacheTrait;
 	protected $casts = [
           'meta' => 'json',
     ];

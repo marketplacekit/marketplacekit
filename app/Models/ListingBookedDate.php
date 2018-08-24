@@ -14,6 +14,7 @@ use App\Traits\HashId;
 
 class ListingBookedDate extends Model
 {
+    use \Spiritix\LadaCache\Database\LadaCacheTrait;
 	   protected $fillable = [
           'listing_id', 'booked_date', 'is_available'
     ];

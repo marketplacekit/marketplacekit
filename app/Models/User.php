@@ -33,7 +33,7 @@ class User extends Authenticatable implements BannableContract
     use Bannable;
     use HasRoles;
     use CanFollow, CanLike, CanBeFollowed, CanBeLiked;
-
+    use \Spiritix\LadaCache\Database\LadaCacheTrait;
 
     protected $canBeRated = true;
     protected $mustBeApproved = false;

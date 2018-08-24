@@ -63,11 +63,11 @@
                                         }
                                     </script>
                                 {% else %}
-                                        {% if listing.locale != LaravelLocalization.getCurrentLocale() %}
+                                        {% if listing.locale != current_locale() %}
                                         <a href="{{ url_current() }}?translate=true"
                                            ic-get-from="{{ url_current() }}?translate=true"
                                            ic-select-from-response="#listing-description"
-                                           ic-target="#listing-description">{{ __("Translate to :locale using Google Translate", {'locale' : LaravelLocalization.getCurrentLocaleNative()}) }}</a>
+                                           ic-target="#listing-description">{{ __("Translate to :locale using Google Translate", {'locale' : current_locale_native()}) }}</a>
                                         {% endif %}
                                         {{ listing.description | raw }}
                                 {% endif %}

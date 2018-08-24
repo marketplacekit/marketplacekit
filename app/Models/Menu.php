@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Menu extends Model
 {
     //
+    use \Spiritix\LadaCache\Database\LadaCacheTrait;
     protected $casts = [
         'items' => 'json',
     ];

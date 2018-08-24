@@ -23,6 +23,9 @@ class EventServiceProvider extends ServiceProvider
 		'App\Events\OrderDeclined' => [
             'App\Listeners\IncreaseStock',
         ],
+        'App\Events\EmailVerified' => [
+
+        ],
         'Illuminate\Auth\Events\Login' => [
             'App\Listeners\LogSuccessfulLogin',
         ],

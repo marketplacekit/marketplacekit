@@ -18,6 +18,8 @@ class ConfigServiceProvider extends ServiceProvider {
             #dd($e);
             return;
         }
+        config(['laravel-model-caching.cache-prefix' => 'db']);
+        config(['lada-cache.prefix' => 'yoyo:']);
 
         $table = \Schema::hasTable('settings');
         if($table) {

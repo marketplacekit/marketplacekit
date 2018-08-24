@@ -27,6 +27,15 @@ class SendContactMessage extends FormRequest
             'name' => 'required',
             'email_address' => 'required|email',
             'comment' => 'required|min:10',
+            'g-recaptcha-response' => 'required|captcha'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'g-recaptcha-response.required' => __('Please verify that you are not a robot.'),
+            'g-recaptcha-response.captcha'  => __('Captcha error! try again later or contact site admin.'),
         ];
     }
 }

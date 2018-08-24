@@ -11,7 +11,9 @@
     @foreach($modules as $module)
         <div class="col-md-4 col-lg-4 col-sm-3 mb-4">
             <div class="card" id="addon-{{ $module->alias }}">
-                <img class="card-img-top border-bottom" src="{{ $module->thumbnail }}" alt="{{ $module->name }}">
+                @if(module_enabled($module->alias))<a href="/panel/addons/{{ $module->alias }}">@endif
+                    <img class="card-img-top border-bottom" @if(!module_enabled($module->alias))style="cursor: not-allowed;"@endif src="{{ $module->thumbnail }}" alt="{{ $module->name }}">
+                @if(module_enabled($module->alias))</a>@endif
                 <div class="card-body">
                     <h6 class="card-title">{{ $module->name }} @if(!$module->enabled())<small class="text-warning  "><i>Disabled</i></small>@endif</h6>
                     <p class="card-text" style="height: 60px">{{ $module->description }}</p>

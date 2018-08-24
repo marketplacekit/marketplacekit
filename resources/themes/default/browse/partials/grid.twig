@@ -13,7 +13,7 @@
                           <span class="col-sm-12 text-danger truncate mb-1">{{ item.price_formatted }}</span>
 
                           <small class="col-sm-12 text-muted truncate">{{ item.short_address }} {% if request('sort') == 'distance' %}({{ item.human_distance }}){% endif %}</small>
-                          <small class="col-sm-6 text-muted truncate">{{ item.user.display_name }}</small>
+                          <small class="col-sm-12 text-muted truncate">{{ item.user.display_name }}</small>
                           <!--<small class="col-sm-6 text-muted text-right"><?= item.created_at->diffForHumans() ?></small>-->
                       </p>
                   </div>

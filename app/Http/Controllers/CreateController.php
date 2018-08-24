@@ -141,7 +141,6 @@ class CreateController extends Controller
         #dd($listing);
         #$listing->save();
 
-
         #if it's a service - set to 9-5
         if($listing->pricing_model->widget == 'book_time') {
             $slots = [];
@@ -172,8 +171,6 @@ class CreateController extends Controller
     public function edit($listing)
     {
         $this->authorize('update', $listing);
-
-        #dd($listing->variants);
 
         $data = [];
         $data['listing'] = $listing;
@@ -269,6 +266,8 @@ class CreateController extends Controller
             if($listing->variant_options) {
                 $matrix = collect(cartesian_product($listing->variant_options)->asArray());
             }
+
+			#dd($listing->variant_options);
 
             #delete the ones we no longer need
             foreach($listing->variants as $variant) {
@@ -470,6 +469,7 @@ class CreateController extends Controller
         });
         $img->resizeCanvas(680, 460, 'center', false, '#000000');
         $img = (string) $img->encode('jpg', 90);
+		
         $thumb = Storage::cloud()->put($path, $img, 'public');
         return ['success' => true, 'path' => Storage::cloud()->url($path)];
     }

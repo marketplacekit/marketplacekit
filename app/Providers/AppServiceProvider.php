@@ -123,12 +123,21 @@ class AppServiceProvider extends ServiceProvider
                 config(['services.facebook.redirect' => url('login/facebook')]);
 
             }
-//dd(config('googlmapper.key'));
-            Theme::set(setting('theme', config('themes.default')));
+
+            $theme_name = setting('theme', config('themes.default'));
             if (request('theme')) {
-                Theme::set(request('theme'));
+                $theme_name = request('theme');
             }
 
+            if(!Theme::exists($theme_name))
+                $theme_name = 'default';
+
+            #set theme
+            Theme::set($theme_name);
+            $paths = $this->app['config']['view.paths'];
+            array_unshift($paths, storage_path('app/themes/'.Theme::get()));
+            config(['view.paths' => $paths]);
+            app('view.finder')->setPaths($paths);
         }
 
         if(request()->ip() == "127.0.0.1"){
@@ -145,16 +154,5 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //
-        #set theme
-        config(['themes.themes.custom.views-path' => ('storage/app/themes/'.Theme::get())]);
-        $this->app->singleton('view.finder', function($app) {
-            $paths = $app['config']['view.paths'];
-            array_unshift($paths, base_path(config('themes.themes.custom.views-path')));
-            return new \Igaster\LaravelTheme\themeViewFinder(
-                $app['files'],
-                $paths,
-                null
-            );
-        });
     }
 }

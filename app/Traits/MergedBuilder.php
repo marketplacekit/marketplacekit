@@ -2,9 +2,8 @@
 
 namespace App\Traits;
 
-use Sofa\Eloquence\Builder as EloquenceBuilder;
 
-class MergedBuilder extends EloquenceBuilder
+class MergedBuilder extends \Sofa\Eloquence\Builder
 {
     use SpatialBuilderTrait;
 }

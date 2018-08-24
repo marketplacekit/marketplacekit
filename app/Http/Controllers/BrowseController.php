@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Geokit\LatLng;
 use Grimzy\LaravelMysqlSpatial\Types\LineString;
 use Grimzy\LaravelMysqlSpatial\Types\Polygon;
 use Illuminate\Http\Request;
@@ -55,17 +54,13 @@ class BrowseController extends Controller
             $facet_group['name'] = $filter->name;
             $facet_group['search_ui'] = $filter->search_ui;
             $listings = new Listing();
-            #var_dump($filter->search_ui);
             if(in_array($filter->search_ui, ['refinementList', 'menuSelect'])) {
-                #dd($filter->form_input_meta);
-                #$filter->form_input_meta = json_decode($filter->form_input_meta, true);
                 $facet_group['options'] = [];
                 if($filter->form_input_meta && isset($filter->form_input_meta['values'])) {
                     foreach($filter->form_input_meta['values'] as $k => $v) {
                         $tmp = [];
                         $tmp['name'] = $v['label'];
                         $tmp['value'] = $v['value'] ;
-                        //var_dump($v);
                         $facet_group['options'][] = $tmp;
                     }
 
@@ -75,11 +70,9 @@ class BrowseController extends Controller
                                     ->select('meta->'.$filter->field.' as name', 'meta->'.$filter->field.' as value', \DB::raw('count(*) as total'))
                                     ->orderBy('meta->'.$filter->field, 'ASC')
                                     ->get();
-                    #dd($listings);
 
                     $facet_group['options'] = $listings->toArray();
-                    #dd($facet_group['options']);
-                }                
+                }
                 
             } else if(in_array($filter->search_ui, ['rangeSlider', 'priceRange'])) {
                 $min = $listings->min('meta->'.$filter->field);
@@ -90,7 +83,7 @@ class BrowseController extends Controller
             }
             $facet_groups[$filter->field] = json_decode(json_encode($facet_group));
         }
-        #dd($facet_groups);
+
         return $facet_groups;
     }
 
@@ -98,14 +91,14 @@ class BrowseController extends Controller
 
         $data = [];
         $data['facets'] = $this->getFacets();
-        #dd($data);
 
         $listings = new Listing();
         $listings = $listings->active();
 
-        //search by title, description
+        //search by title, description, tags
         if($request->get('q')) {
             $listings = $listings->search($request->get('q'));
+            #dd(debug_backtrace ());
         }
         if($request->get('price_min')) {
             $listings = $listings->where('price', '>=', (int) $request->get('price_min'));
@@ -161,14 +154,13 @@ class BrowseController extends Controller
                 }
             }
         }
-        #dd($listings->count());
 
         $category_id = $request->get('category', 0) ? :0; //get the category
 
 		//get listings with category and child categories
         $full_categories = Category::all();
         $categories = $this->getSearchableCategories($full_categories, $category_id); //get all child categories
-        #dd($categories);
+
         $listings = $listings->whereIn('category_id', $categories);
         $listings = $listings->whereNotNull('lat');
         $listings = $listings->whereNotNull('lng');
@@ -193,10 +185,8 @@ class BrowseController extends Controller
 
 
         //distance calculations
-
         $lat = $request->get('lat') ? : GeoIP::getLatitude();
         $lng = $request->get('lng') ? : GeoIP::getLongitude();
-        #dd($lat, $lng);
         if($request->get('bounds') || ( $request->get('lat') && $request->get('lng') )) {
             $bounds = $request->get('bounds');
             $bounds = explode(",", $bounds);
@@ -267,11 +257,12 @@ class BrowseController extends Controller
 
         $data['params'] = $request->all();
         $data['sort'] = $sort;
+
+        #dd($listings->get());
         $data['listings'] = $listings->paginate(24);
         $data['is_filtered'] = $is_filtered;
 
         $data['load_time'] = round(microtime(true) - LARAVEL_START);
-
         return $data;
     }
 

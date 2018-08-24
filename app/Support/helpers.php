@@ -29,6 +29,28 @@ function file_upload_max_size() {
   return $max_size;
 }
 
+function recaptcha() {
+    return NoCaptcha::renderJs().NoCaptcha::display();
+}
+function current_theme() {
+    return Theme::current()->name;
+}
+function current_locale() {
+    return LaravelLocalization::getCurrentLocale();
+}
+function default_locale() {
+    return LaravelLocalization::getDefaultLocale();
+}
+function current_locale_native() {
+    return LaravelLocalization::getCurrentLocaleNative();
+}
+function supported_locales() {
+    return LaravelLocalization::getSupportedLocales();
+}
+function get_localized_url($locale_code) {
+    return LaravelLocalization::getLocalizedURL($locale_code, null, [], ($locale_code != default_locale()));
+}
+
 function parse_size($size) {
   $unit = preg_replace('/[^bkmgtpezy]/i', '', $size); // Remove the non-unit characters from the size.
   $size = preg_replace('/[^0-9\.]/', '', $size); // Remove the non-numeric characters from the size.
@@ -145,7 +167,6 @@ function save_language_file($file, $strings) {
     if ($strings instanceof Illuminate\Support\Collection) {
         $strings = $strings->toArray();
     }
-
     $strings = array_unique($strings);
     $strings = array_filter($strings);
     foreach($strings as $string) {

@@ -2,11 +2,16 @@
 
 {% block content %}
     <div class="container">
-        <div class="row flex-column pt-5  pb-5 align-items-center">
+        <div class="row flex-column pt-5 mt-2 pb-5 align-items-center">
             <div class="col-md-8 mx-auto" style="width: 360px;">
-
-                <h5>{{ __("Register") }}</h5>
-                <div class="card card-block">
+				<a class="navbar-brand ml-auto mr-auto w-100 text-center" href="/{{ current_locale() != default_locale()?current_locale():'' }}">
+                    {% if not setting('site_logo') %}
+                        {{  setting('site_title') }}
+                    {% else %}
+                        <img src="{{ setting('logo', '../../logo.png') }}" title="{{ setting('site_title') }}" class="logo"/>
+                    {% endif %}
+                </a>
+                 <div class="card card-block shadow mt-4">
                     <div class="card-body">
                         <form method="POST" action="{{ route('register') }}">
                             {{ csrf_field() }}
@@ -48,14 +53,14 @@
                             <div class="form-group">
                                 <input id="password-confirm" type="password" class="form-control"
                                        name="password_confirmation" placeholder="{{ __("Confirm your password") }}" required>
-                                <small class="form-text text-muted" id="passwordHelp">{{ __("Keep your password from prying
-                                    eyes.") }}
-                                </small>
                             </div>
+
 
                             <div class="form-group">
                                 <button type="submit" class="btn btn-md btn-success btn-block">{{ __("Sign Up") }}</button>
                             </div>
+
+                            <small>{{  __('By signing up, you agree to our [Terms and Conditions](:terms_url). Learn how we collect, use and share your data in our [Data Policy](:privacy_url) and how we use cookies and similar technology in our [Cookies Policy](:privacy_url).', {'terms_url' : route('page', 'terms-and-conditions'), 'privacy_url' : route('page', 'privacy-policy')}) | markdown  }}</small>
                         </form>
                     </div>
                 </div>
@@ -75,8 +80,9 @@
 
 
 {% block navbar %}
-    <a href="{{ url_previous(route('login')) }}" class="close-btn" style="position: absolute; top: 20px; right: 20px;"><i
-                class="mdi mdi-close text-muted" style="font-size: 30px;"></i></a>
+    
+        <a href="{{url_previous(route('home'))}}" class="close-btn" style="position: absolute; top: 0px; right: 20px;"><i class="mdi mdi-close text-muted" style="font-size: 30px;"></i></a>
+
 {% endblock %}
 
 {% block footer %}

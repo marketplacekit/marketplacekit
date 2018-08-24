@@ -6,8 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class PaymentGateway extends Model
 {
-	
-	protected $fillable = [
+    use \Spiritix\LadaCache\Database\LadaCacheTrait;
+
+    protected $fillable = [
         'name', 'gateway_id', 'token', 'metadata', 'user_id'
     ];
 	

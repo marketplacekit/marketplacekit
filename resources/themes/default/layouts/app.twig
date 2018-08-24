@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ LaravelLocalization.getCurrentLocale() }}">
+<html lang="{{ current_locale() }}">
 <head>
     <meta charset="utf-8">
     <title>{{ MetaTag.get('title') }}</title>
@@ -26,8 +26,8 @@
         <script src="https://cdn.jsdelivr.net/{{script}}" type="text/javascript"></script>
     {% endfor %}
 
-    {% if LaravelLocalization.getCurrentLocale() != 'en' %}
-        <script src="https://npmcdn.com/flatpickr/dist/l10n/{{ LaravelLocalization.getCurrentLocale() }}.js"></script>
+    {% if current_locale() != 'en' %}
+        <script src="https://npmcdn.com/flatpickr/dist/l10n/{{ current_locale() }}.js"></script>
     {% endif %}
 
     <!-- Styles -->
@@ -37,9 +37,12 @@
     {% endfor %}
 
     <!-- App Scripts & Styles -->
-    <script src="{{ asset('themes/' ~  Theme.current().name  ~ '/js/app.js') }}"></script>
-    <link href="{{ asset('themes/' ~  Theme.current().name  ~ '/css/app.css') }}" rel="stylesheet">
-
+    <script src="{{ asset('themes/' ~ current_theme() ~ '/js/app.js') }}"></script>
+    {% if setting('theme_css') %}
+        <link href="{{ setting('theme_css') }}" rel="stylesheet">
+    {% else %}
+        <link href="{{ asset('themes/' ~  current_theme()  ~ '/css/app.css') }}" rel="stylesheet">
+    {% endif %}
 
     {% if setting('stripe_publishable_key') %}
     <!-- Stripe -->

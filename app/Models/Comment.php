@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
-
+    use \Spiritix\LadaCache\Database\LadaCacheTrait;
 	protected $fillable = [
         'comment',
         'rate',

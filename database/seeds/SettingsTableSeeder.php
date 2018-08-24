@@ -257,6 +257,22 @@ class SettingsTableSeeder extends Seeder
                 'key' => 'stripe_secret_key',
                 'value' => NULL,
             ),
+
+            array (
+                'id' => 67,
+                'key' => 'moderatelistings.report_types.0.value',
+                'value' => 'Inappropriate',
+            ),
+            array (
+                'id' => 68,
+                'key' => 'moderatelistings.report_types.1.value',
+                'value' => 'Duplicate',
+            ),
+            array (
+                'id' => 69,
+                'key' => 'moderatelistings.report_types.2.value',
+                'value' => 'Spam',
+            ),
         ));
         
         

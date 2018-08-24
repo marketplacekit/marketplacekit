@@ -4,31 +4,23 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-#use App\Traits\MergedBuilder;
-use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
+#use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
+use App\Traits\MergedTrait;
 use DB;
 use ChristianKuri\LaravelFavorite\Traits\Favoriteable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 use App\Traits\Commentable;
 use App\Traits\HashId;
-#use Sofa\Eloquence\Eloquence;
 use Date;
 use Nicolaslopezj\Searchable\SearchableTrait;
-use Sofa\Eloquence\Eloquence;
-use \Grimzy\LaravelMysqlSpatial\Eloquent\MergedBuilder as Builder;
+#use Sofa\Eloquence\Eloquence; keep for later
+
 
 class Listing extends Model
 {
-    #use SearchableTrait;
-
-    #use SpatialTrait, Eloquence;
-    use SpatialTrait;
-    /*use SpatialTrait{
-        SpatialTrait::newEloquentBuilder as spatialNewEloquentBuilder;
-        Eloquence::newEloquentBuilder insteadof SpatialTrait;
-    }*/
     #use Eloquence;
+    use MergedTrait;
     use SearchableTrait;
     use Favoriteable;
     use Commentable;
@@ -40,12 +32,16 @@ class Listing extends Model
 
     protected $searchable = [
         'columns' => [
-            'listings.tags' => 5,
             'listings.title' => 10,
-            'listings.description' => 2,
+            'listings.tags' => 10,
+            'listings.description' => 10,
+            'users.display_name' => 10,
+        ],
+        'joins' => [
+            'users' => ['users.id','listings.user_id'],
         ],
     ];
-    protected $searchableColumns = ['tags', 'title', 'description'];
+    protected $searchableColumns = ['title', 'tags', 'description'];
     protected $appends = ['thumbnail', 'price_formatted', 'url'];
 
     protected $fillable = [
@@ -63,6 +59,18 @@ class Listing extends Model
         'location',
     ];
     protected $dates = ['deleted_at'];
+
+    /*protected function newBaseQueryBuilder()
+    {
+        $conn = $this->getConnection();
+        $grammar = $conn->getQueryGrammar();
+        return new QueryBuilder(
+            $conn,
+            $grammar,
+            $conn->getPostProcessor(),
+            app()->make('lada.handler')
+        );
+    }*/
 
     public function toggleSpotlight()
     {

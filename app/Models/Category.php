@@ -5,10 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Nestable\NestableTrait;
 
-
 class Category extends Model
 {
-
+    use \Spiritix\LadaCache\Database\LadaCacheTrait;
     use NestableTrait;
     protected $parent = 'parent_id';
 

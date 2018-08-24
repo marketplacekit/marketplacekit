@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\EmailVerified;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\Registered;
@@ -54,11 +55,15 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
+        $messages = [
+            'indisposable' => __('Disposable email addresses are not allowed.'),
+        ];
         return Validator::make($data, [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email|indisposable|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
-        ]);
+            //'terms' => 'required',
+        ], $messages);
     }
 
     /**
@@ -85,7 +90,6 @@ class RegisterController extends Controller
     {
         MetaTag::set('title', __("Register"));
         session()->put('from', request('redirect')?:url()->previous());
-
         return view('auth.register');
     }
 
@@ -115,6 +119,6 @@ class RegisterController extends Controller
         $user->assignRole('member'); //make a member
 
         return $this->registered($request, $user)
-            ?: redirect(session()->pull('from',$this->redirectPath()));
+            ?: redirect(route("email-verification.index"));
     }
 }

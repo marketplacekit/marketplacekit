@@ -16,6 +16,7 @@ use Sofa\Eloquence\Eloquence;
 
 class PricingModel extends Model
 {
+    use \Spiritix\LadaCache\Database\LadaCacheTrait;
     protected $fillable = [
         "name", "widget", "unit_name", "duration_name"
     ];

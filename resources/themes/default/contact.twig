@@ -1,7 +1,7 @@
 {% extends "layouts.app" %}
 
 {% block search_bar %}
-    {% include 'layouts.search_bar.twig' %}
+    <br /><br />
 {% endblock %}
 
 {% block content %}
@@ -45,6 +45,8 @@
                                     <div class="form-group">
                                         <label>{{ __('Your comments') }}</label>
                                         {{ form_textarea('comment', default_message, {'class' : 'form-control', 'rows': 5}) }}
+<br />
+                                        {{ recaptcha() | raw }}
                                     </div>
                                 </div>
                             </div>
@@ -54,7 +56,7 @@
 
                 <div class="row">
                     <div class="col-12">
-                        {{ form_submit(__('Send message'), {'class' : 'btn btn-primary pull-right'}) }}
+                        {{ form_submit(__('Send message'), {'class' : 'btn btn-primary'}) }}
                     </div>
                 </div>
 

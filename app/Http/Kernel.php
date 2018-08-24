@@ -72,6 +72,7 @@ class Kernel extends HttpKernel
         'jailBanned' => \App\Http\Middleware\IsBanned::class,
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
+        'isVerified' => \App\Http\Middleware\IsVerified::class,
         // REDIRECTION MIDDLEWARE
     ];
 }

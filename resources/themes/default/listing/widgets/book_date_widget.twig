@@ -148,7 +148,7 @@
 		var nowDate = new Date();
 		var today = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate(), 0, 0, 0, 0);
         flatpickr("#calendar_range", {
-            locale: '{{ LaravelLocalization.getCurrentLocale() }}',
+            locale: '{{ current_locale() }}',
             minDate: "today",
             allowInput: false,
             mode: "range",
@@ -166,7 +166,7 @@
                     })
                 }
 
-            },
+            }
         });
 	}
 

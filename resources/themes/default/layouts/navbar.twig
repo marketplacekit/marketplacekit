@@ -1,7 +1,7 @@
 <nav class="navbar navbar-dark bg-dark navbar-expand-md navbar-fixed">
         <div class="container-fluid">
     <!-- Branding Image -->
-    <a class="navbar-brand" href="/{{ LaravelLocalization.getCurrentLocale() != LaravelLocalization.getDefaultLocale()?LaravelLocalization.getCurrentLocale():'' }}">
+    <a class="navbar-brand" href="/{{ current_locale() != default_locale()?current_locale():'' }}">
         {% if not setting('site_logo') %}
             {{  setting('site_title') }}
         {% else %}
@@ -16,20 +16,20 @@
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <!-- Left Side Of Navbar -->
          <ul class="navbar-nav mr-auto">
-             {% if LaravelLocalization.getSupportedLocales()|length > 1 %}
+             {% if supported_locales()|length > 1 %}
            <li class="nav-item">
                <div class="dropdown">
                    <button class="btn btn-link language-selector dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                       <i class="fa fa-language" aria-hidden="true"></i> {{ LaravelLocalization.getCurrentLocaleNative() }}
+                       <i class="fa fa-language" aria-hidden="true"></i> {{ current_locale_native() }}
                    </button>
                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                       {% for localeCode, properties in LaravelLocalization.getSupportedLocales() %}
-                            {% if localeCode == LaravelLocalization.getCurrentLocale() %}
+                       {% for localeCode, properties in supported_locales() %}
+                            {% if localeCode == current_locale() %}
                                 <span class="dropdown-item text-muted" rel="alternate" hreflang="{{ localeCode }}" href="#">
                                    {{ properties.native | capitalize  }}
                                </span>
                             {% else %}
-                                <a class="dropdown-item" rel="alternate" hreflang="{{ localeCode }}" href="{{ LaravelLocalization.getLocalizedURL(localeCode, null, [], (localeCode != LaravelLocalization.getDefaultLocale())) }}">
+                                <a class="dropdown-item" rel="alternate" hreflang="{{ localeCode }}" href="{{ get_localized_url(localeCode) }}">
                                     {{ properties.native | capitalize }}
                                 </a>
                             {% endif %}
@@ -39,7 +39,7 @@
            </li>
              {% endif %}
 
-             {%  if setting('custom_homepage') %}
+             {%  if setting('custom_homepage') or module_enabled('homepage') %}
              <li class="nav-item {{ active([route(setting('marketplace_index'))]) }}">
                  <a class="nav-link" href="{{ route(setting('marketplace_index')) }}">{{ __("Browse") }}</a>
              </li>

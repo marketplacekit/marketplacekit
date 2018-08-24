@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ListingService extends Model
 {
+    use \Spiritix\LadaCache\Database\LadaCacheTrait;
     protected $casts = [
         'meta' => 'json',
     ];

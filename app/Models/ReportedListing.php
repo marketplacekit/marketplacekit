@@ -20,6 +20,8 @@ use \Grimzy\LaravelMysqlSpatial\Eloquent\MergedBuilder as Builder;
 
 class ReportedListing extends Model
 {
+    use \Spiritix\LadaCache\Database\LadaCacheTrait;
+
     protected $fillable = [
         'reason', 'notes', 'user_id', 'listing_id'
     ];

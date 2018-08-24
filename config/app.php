@@ -176,6 +176,7 @@ return [
 
         Admin\Providers\PanelServiceProvider::class,
         App\Providers\ConfigServiceProvider::class,
+        Spiritix\LadaCache\LadaCacheServiceProvider::class,
 
     ],
 
@@ -241,6 +242,7 @@ return [
         'Curl'          => Ixudra\Curl\Facades\Curl::class,
         'Searchy' => TomLingham\Searchy\Facades\Searchy::class,
         'Zipper' => Chumper\Zipper\Zipper::class,
+        'Recaptcha' => Greggilbert\Recaptcha\Facades\Recaptcha::class,
 
     ],
 

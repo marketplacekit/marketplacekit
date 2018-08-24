@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Message extends \Nahid\Talk\Messages\Message
 {
     //
+    use \Spiritix\LadaCache\Database\LadaCacheTrait;
     public function getUnreadMessagesCount() {
          return $this->select('id')->where('user_id','!=',auth()->user()->id)->where('is_seen',0)->count();
      }

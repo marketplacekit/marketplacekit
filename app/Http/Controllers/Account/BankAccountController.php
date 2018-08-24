@@ -33,10 +33,9 @@ class BankAccountController extends Controller
             $country = $account->country;
             $currency = $countries->firstWhere('id', $country)['default_currency'];
 
-            #$external_account = $account->external_accounts->data[0];
-            #dd($external_account.account_holder_name);
             if($account->external_accounts->data)
                 $external_account = $account->external_accounts->data[0];
+            #dd($external_account.account_holder_name);
 
             $countries = $countries->reject(function ($option) use($account) {
                 return $option['id'] != $account->country;
@@ -121,7 +120,6 @@ class BankAccountController extends Controller
 
         //create a custom account
         \Stripe\Stripe::setApiKey(config('marketplace.stripe_secret_key'));
-
         $user = auth()->user();
         $stripe_info = $user->payment_gateway('stripe');
         if(!$stripe_info) {

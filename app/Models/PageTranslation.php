@@ -4,9 +4,10 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 #use LaravelBook\Ardent\Ardent;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 class PageTranslation extends Model {
-
+    use \Spiritix\LadaCache\Database\LadaCacheTrait;
 	public $timestamps = true;
     protected $fillable = ['title', 'slug', 'content', 'seo_title', 'locale', 'seo_meta_description', 'seo_meta_keywords', 'status', 'visibility'];
     protected $hidden = ['content'];

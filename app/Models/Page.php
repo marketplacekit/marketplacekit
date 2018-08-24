@@ -2,11 +2,12 @@
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 class Page extends Model {
 
 #	use \Dimsav\Translatable\Translatable;
-
+    use \Spiritix\LadaCache\Database\LadaCacheTrait;
 	public $translatedAttributes = ['title', 'slug', 'content', 'seo_title', 'seo_meta_description', 'seo_meta_keywords', 'status', 'visibility', 'locale'];
     protected $fillable = ['title'];
     protected $appends = array('last_modified');

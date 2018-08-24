@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\EmailVerified;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use MetaTag;
@@ -103,15 +104,14 @@ class LoginController extends Controller
 		$local_user->username = $user->name;
 		$local_user->verified = true;
 		$local_user->save();
-		
-		return $local_user;
-		
+
+        event(new EmailVerified($local_user));
+        return $local_user;
     }
+
     protected function redirectTo()
     {
         #$this->redirectTo = session('back_url') ? session('back_url') : $this->redirectTo;
-        #dd(session('back_url'));
-        #dd(5);
         return $this->redirectTo;
     }
 
@@ -135,8 +135,12 @@ class LoginController extends Controller
 
     public function authenticated($request, $user)
     {
-        $redirect_to = session()->pull('from', $this->redirectTo);
-        $request->session()->forget(['from']);
+        if(!$user->verified) {
+            $redirect_to = session()->pull('from', $this->redirectTo);
+            $request->session()->forget(['from']);
+        } else {
+            return redirect()->route("email-verification.index");
+        }
         return redirect($redirect_to);
     }
 

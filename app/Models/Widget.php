@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+
 class Widget extends Model
 {
-
-	
+    use \Spiritix\LadaCache\Database\LadaCacheTrait;
     protected $fillable = [
         'name', 'hash', 'order', 'parent_id', 'slug'
     ];

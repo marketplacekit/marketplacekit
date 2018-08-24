@@ -53,13 +53,14 @@
 		<div class="col-sm-8">
             {% include 'listing.partials.overview' %}
             {%  if(module_enabled('ratings') and setting('rating_listing_page')) %}
-            {{ asyncWidget('Modules.Ratings.Widgets.listingReviews', {'listing': listing.id, 'limit': setting('rating_listing_limit')}) | raw }}
 			{% endif %}
 		</div>
 		<div class="col-sm-4">
             {% include 'listing.partials.sidebar' %}
 		</div>
 	</div>
+
+
 </div>
 
 

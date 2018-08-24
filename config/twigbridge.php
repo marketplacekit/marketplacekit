@@ -115,6 +115,11 @@ return [
             'TwigBridge\Extension\Laravel\Form',
             'TwigBridge\Extension\Laravel\Html',
             // 'TwigBridge\Extension\Laravel\Legacy\Facades',
+
+            // Other TwigBridge Extensions
+            new Jralph\Twig\Markdown\Extension(
+                new Jralph\Twig\Markdown\Parsedown\ParsedownExtraMarkdown
+            ),
         ],
 
         /*
@@ -206,6 +211,13 @@ return [
             'module_enabled',
             'widget',
             'asyncWidget',
+            'current_theme',
+            'current_locale',
+            'supported_locales',
+            'default_locale',
+            'current_locale_native',
+            'get_localized_url',
+            'recaptcha',
         ],
 
         /*

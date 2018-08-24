@@ -154,7 +154,6 @@
                             url: '{{ route('account.bank-account.store') }}',
                             data: params,
                             success: function(result){
-                                console.log(result);
                                 if(result.status) {
                                     window.location.href = result.redirect;
                                 } else {
