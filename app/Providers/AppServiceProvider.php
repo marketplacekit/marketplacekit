@@ -73,7 +73,7 @@ class AppServiceProvider extends ServiceProvider
             try {
                 config(['marketplace.stripe_secret_key' => \Crypt::decryptString(setting("stripe_secret_key"))]);
             } catch(\Exception $e) {
-
+                #dd($e);
             }
 
             if (setting('paypal_enabled')) {

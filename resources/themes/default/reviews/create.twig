@@ -6,10 +6,7 @@
 	<div class="row mt-5">
 		<div class="col-sm-8 mx-auto">
             {%  if(setting('rating_permission_group') == 'members' or (setting('rating_permission_group') == 'buyer' and has_ordered == 0)) %}
-            <div class="alert alert-danger alert-dismissible fade in show" role="alert">
-                {{ __("You need to have ordered this item to submit a review!") }}
-            </div>
-            {% else %}
+
                 <div class="card mt-4 mb-4">
                     {{ form_open({'url' : route('reviews.store', {'listing':listing, 'slug' : listing.slug}), 'method' : 'POST'}) }}
 
@@ -19,24 +16,24 @@
                     </div>
                     <div class="card-body">
 
-                            {% include("notifications") %}
+                        {% include("notifications") %}
 
-                            <div class="row">
-                                <div class="col-sm-4">
-                                    <img src="{{listing.thumbnail}}" style="width: 150px" />
-                                </div>
-                                <div class="col-sm-6">
-                                    <h6>{{listing.title}}</h6>
-                                    <div id="review-rating"></div>
-
-                                </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <img src="{{listing.thumbnail}}" style="width: 150px" />
                             </div>
+                            <div class="col-sm-6">
+                                <h6>{{listing.title}}</h6>
+                                <div id="review-rating"></div>
 
-                            <div class="form-group mt-3">
-
-                                <textarea name="comment" class="form-control" rows="3" placeholder="{{ __("Write a review for this item. What did you like dislike about it?") }}"></textarea>
-                                <small id="emailHelp" class="form-text text-muted">{{ __("Minimum of 5 words") }}</small>
                             </div>
+                        </div>
+
+                        <div class="form-group mt-3">
+
+                            <textarea name="comment" class="form-control" rows="3" placeholder="{{ __("Write a review for this item. What did you like dislike about it?") }}"></textarea>
+                            <small id="emailHelp" class="form-text text-muted">{{ __("Minimum of 5 words") }}</small>
+                        </div>
 
                     </div>
                     <div class="card-footer text-muted">
@@ -46,6 +43,12 @@
                     {{ form_close() }}
 
                 </div>
+            {% else %}
+
+                <div class="alert alert-danger alert-dismissible fade in show" role="alert">
+                    {{ __("You need to have ordered this item to submit a review!") }}
+                </div>
+
 
             {% endif %}
 
