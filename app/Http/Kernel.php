@@ -41,6 +41,7 @@ class Kernel extends HttpKernel
         'api' => [
             'throttle:60,1',
             'bindings',
+            \Barryvdh\Cors\HandleCors::class,
         ],
     ];
 
@@ -52,7 +53,8 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
+        #'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
+        'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'auth.ajax' => \App\Http\Middleware\AuthCheck::class,
         'auth.admin' => \App\Http\Middleware\IsAdmin::class,

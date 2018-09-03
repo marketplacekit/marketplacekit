@@ -146,9 +146,10 @@ return [
         Illuminate\Session\SessionServiceProvider::class,
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
-        Illuminate\View\ViewServiceProvider::class,
-		
-		Igaster\LaravelTheme\themeServiceProvider::class,
+        //Illuminate\View\ViewServiceProvider::class,
+        App\Providers\APIViewProvider::class,
+
+        Igaster\LaravelTheme\themeServiceProvider::class,
         Kris\LaravelFormBuilder\FormBuilderServiceProvider::class,
 		Grimzy\LaravelMysqlSpatial\SpatialServiceProvider::class,
 		Cornford\Googlmapper\MapperServiceProvider::class,

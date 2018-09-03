@@ -42,7 +42,7 @@ class Listing extends Model
         ],
     ];
     protected $searchableColumns = ['title', 'tags', 'description'];
-    protected $appends = ['thumbnail', 'price_formatted', 'url'];
+    protected $appends = ['thumbnail', 'price_formatted', 'url', 'short_description'];
 
     protected $fillable = [
         'key', 'title', 'price', 'stock', 'unit', 'category_id', 'user_id', 'short_address', 'description', 'spotlight', 'staff_pick', 'is_hidden', 'location', 'lat', 'lng', 'pricing_model_id', 'photos', 'city', 'country', 'currency', 'is_draft', 'session_duration', 'min_duration', 'max_duration'
@@ -112,6 +112,11 @@ class Listing extends Model
         return str_slug($this->title);
     }
 
+    public function getShortDescriptionAttribute() {
+		$truncateService = new \Urodoz\Truncate\TruncateService();
+		return $truncateService->truncate($this->description, 255);
+    }
+	
     public function getEditUrlAttribute() {
         return route('create.edit', [$this]);
     }

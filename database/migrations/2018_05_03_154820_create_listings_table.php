@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Grimzy\LaravelMysqlSpatial\Schema\Blueprint;
+#use Grimzy\LaravelMysqlSpatial\Schema\Blueprint;
+use Illuminate\Database\Schema\Blueprint;
 
 class CreateListingsTable extends Migration {
 

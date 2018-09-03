@@ -28,7 +28,6 @@ class BrowseController extends Controller
             return response()->json($data);
         }
         MetaTag::set('title', __("Browse listings"));
-
         return view('browse.index', $data);
     }
 

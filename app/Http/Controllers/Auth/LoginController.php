@@ -44,7 +44,7 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
-	
+
     public function redirectToProvider()
     {
 		config(['services.facebook.redirect' => \Request::root() .'/login/facebook/callback']);
@@ -135,7 +135,7 @@ class LoginController extends Controller
 
     public function authenticated($request, $user)
     {
-        if(!$user->verified) {
+        if($user->verified) {
             $redirect_to = session()->pull('from', $this->redirectTo);
             $request->session()->forget(['from']);
         } else {

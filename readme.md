@@ -155,6 +155,27 @@ In order for your users to login via Facebook you need to register for a Faceboo
 MarketplaceKit relies on Google Maps for geolocalized searches. Please visit https://developers.google.com/maps/documentation/javascript/get-api-key to generate  your key. You can then add this in the admin panel.
 
 
+### Updating
+To update MarketplaceKit please run:
+```
+git pull origin master
+```
+
+and to install any new packages
+```
+composer update
+```
+
+### API (Note: Work in progress)
+For authentication:
+POST    /api/auth/login     [email, password]
+GET     /api/auth/me
+GET     /api/auth/refresh
+
+For all other requests please use the same URLs as the website but use use "Accept: application/json" in the HTTP headers. This will convert all data passed to HTML into JSON. e.g.
+POST    /register
+GET     /browse
+GET     /listing/<HASH>/<SLUG>
 
 ## License
 MarketplaceKit is free software, and is released under the terms of the <abbr title="GNU General Public License">GPL</abbr> version 3. See <a href="license.txt">license.txt</a>.

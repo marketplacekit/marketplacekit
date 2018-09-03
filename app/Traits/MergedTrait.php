@@ -2,7 +2,6 @@
 
 namespace App\Traits;
 
-use Sofa\Eloquence\Eloquence;
 use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 use Spiritix\LadaCache\Database\LadaCacheTrait;
 
@@ -10,7 +9,18 @@ trait MergedTrait
 {
 
     use SpatialTrait, LadaCacheTrait {
-        LadaCacheTrait::newBaseQueryBuilder insteadof SpatialTrait;
+        SpatialTrait::newBaseQueryBuilder insteadof LadaCacheTrait;
+    }
+
+    protected function newBaseQueryBuilder()
+    {
+        $connection = $this->getConnection();
+        return new MergedBuilder(
+            $connection,
+            $connection->getQueryGrammar(),
+            $connection->getPostProcessor(),
+            app()->make('lada.handler')
+        );
     }
 
 }
