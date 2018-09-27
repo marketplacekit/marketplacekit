@@ -14,7 +14,7 @@
         </a>
         <div class="row pt-2">
 
-            <div class="col-12 col-sm-4 col-md-3 collapse dont-collapse-sm {{ setting('show_search_sidebar') ? '' : 'd-none' }}" id="collapseFilters">
+            <div class="col-12 col-sm-4 col-md-3 collapse show  dont-collapse-sm {{ setting('show_search_sidebar') ? '' : 'd-none' }}" id="collapseFilters">
                 <div class="card">
                     <div class="card-body">
 
@@ -72,7 +72,7 @@
 
                                         <div class="col-md-6 ml-auto">
 
-                                            <form method="GET" action="<?= request()->fullUrlWithQuery([]) ?>" id="sort-form" accept-charset="UTF-8" class="form-vertical float-sm-right">
+                                            <form method="GET" action="{{ request().fullUrlWithQuery({}) }}" id="sort-form" accept-charset="UTF-8" class="form-vertical float-sm-right">
                                                 {{ csrf_field() }}
 
                                                 <div class="input-group input-group-sm mb-0">
@@ -318,7 +318,7 @@
                             '<h3>' + locations[i].title + '</h3>' +
                             '<img src="' + locations[i].thumbnail + '" style="width: 75px" />' +
                             '<div class="info-content">' +
-                            '<p>' + locations[i].description + ' ' + locations[i].price + '</p>' +
+                            '<p>' + locations[i].short_description + ' ' + locations[i].price + '</p>' +
                             '</div>' +
                             '</div>';
 
@@ -329,7 +329,7 @@
                             '            </div>' +
                             '            <div class="col-sm-12">' +
                             '                <h6>' + locations[i].title + '</h6>' +
-                            '                <div class="content">' + locations[i].description + '' +
+                            '                <div class="content">' + locations[i].short_description + '' +
                             '                </div>' +
                             '                <h6 class="text-danger">' + locations[i].price_formatted + '</h6> <a href="' + locations[i].url + '">Order</a>' +
                             '            </div>' +

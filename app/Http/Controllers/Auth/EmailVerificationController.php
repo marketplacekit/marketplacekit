@@ -104,7 +104,7 @@ class EmailVerificationController extends Controller
                 $can_resend = false;
             }
         }
-
+        #$can_resend = true;
         #regenerate and resend
         if ($can_resend) {
             session(['user_verification_resend' => time()]);
@@ -112,7 +112,7 @@ class EmailVerificationController extends Controller
             UserVerification::send(auth()->user(), __(':site_name verification code', ['site_name' => setting('site_name')]));
             alert()->success(__('Verification email was resent.'));
         } else {
-            alert()->success(__('Please wait up to 5 minutes before requesting a new verification email.'));
+            alert()->danger(__('Please wait up to 5 minutes before requesting a new verification email.'));
         }
 
         return redirect()->route("email-verification.index");

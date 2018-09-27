@@ -91,6 +91,10 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
 
+            $timezone = setting('timezone', config("app.timezone"));
+            config(['app.timezone' => $timezone]);
+            date_default_timezone_set($timezone);
+
             if (env("DEMO")) {
                 setting(['google_maps_key' => env("DEMO_GOOGLE_MAPS_KEY")]);
                 setting(['enable_geo_search' => true]);
@@ -124,6 +128,7 @@ class AppServiceProvider extends ServiceProvider
 
             }
 
+		
             $theme_name = setting('theme', config('themes.default'));
             if (request('theme')) {
                 $theme_name = request('theme');

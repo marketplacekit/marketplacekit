@@ -58,7 +58,7 @@ class Listing extends Model
     protected $spatialFields = [
         'location',
     ];
-    protected $dates = ['deleted_at'];
+    protected $dates = ['expires_at', 'spotlight', 'priority_until', 'deleted_at'];
 
     /*protected function newBaseQueryBuilder()
     {
@@ -91,14 +91,23 @@ class Listing extends Model
 		return __(":value miles", ['value' => number_format($distance->toUnit('miles'), 2)]);
 	}
 
+    public function getPhotosLimitAttribute($value) {
+        if(is_null($value)) {
+            return setting('photos_per_listing', 20);
+        }
+        return $value;
+    }
+
     public function getImagesAttribute() {
         if(!$this->photos) {
             return ["http://via.placeholder.com/680x460?text=No%20Image"];
         }
         return $this->photos;
     }
+
     public function getCarouselAttribute() {
         $images = [];
+        $this->photos = collect($this->photos)->slice(0, setting('photos_per_listing', 20));
         if($this->photos) {
             foreach($this->photos as $item) {
                 $images[] = $item;
@@ -219,7 +228,11 @@ class Listing extends Model
 
     public function scopeActive($query)
     {
-        return $query->where('is_published', 1)->whereNotNull('is_admin_verified')->whereNull('is_disabled');
+        return $query->where('is_published', 1)->where('is_draft', 0)->whereNotNull('is_admin_verified')->whereNull('is_disabled')
+            ->where(function ($query) {
+                $query->whereDate('expires_at', '>=', Carbon::now())
+                    ->orWhereNull('expires_at');
+            });
     }
 
 }

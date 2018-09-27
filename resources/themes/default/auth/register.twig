@@ -16,11 +16,13 @@
                         <form method="POST" action="{{ route('register') }}">
                             {{ csrf_field() }}
 
+							{% if(setting('facebook_key')) %}
                             <a href="/login/facebook" data-turbolinks="false" class="btn btn-md btn-facebook btn-block mt-3"><i class="fa fa-facebook fa-fw"></i> {{ __("Register with Facebook") }}</a>
 
                             <div class="col-12 text-center text-muted mb-4 mt-4">
                                 — {{ __("or") }} —
                             </div>
+							{% endif %}
 
                             <div class="form-group">
                                 <label class="form-control-label" for="name">{{ __("Name") }}</label>

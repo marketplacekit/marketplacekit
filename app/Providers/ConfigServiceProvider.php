@@ -23,6 +23,7 @@ class ConfigServiceProvider extends ServiceProvider {
         if($table) {
             $settings = \DB::connection()->table('settings')->get()->pluck('value', 'key')->toArray();
             $default_locale = isset($settings['default_locale']) ? $settings['default_locale'] : 'en';
+
             $supported_locales = [];
             foreach ($settings as $key => $value) {
                 if (strpos($key, 'supported_locales.') !== false) {
@@ -33,6 +34,7 @@ class ConfigServiceProvider extends ServiceProvider {
 
             if (empty($supported_locales))
                 $supported_locales = ['en'];
+            #dd($supported_locales);
 
             //first we set the languages
             if (true) {

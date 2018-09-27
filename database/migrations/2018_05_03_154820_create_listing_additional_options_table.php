@@ -16,7 +16,7 @@ class CreateListingAdditionalOptionsTable extends Migration {
 		{
 			$table->integer('id', true);
 			$table->integer('listing_id')->nullable();
-			$table->decimal('price', 11)->nullable();
+			$table->decimal('price', 11, 2)->nullable();
 			$table->string('name')->nullable();
 			$table->integer('position')->nullable()->default(0);
 			$table->timestamps();

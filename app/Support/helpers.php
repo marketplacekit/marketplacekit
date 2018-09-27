@@ -41,6 +41,9 @@ function current_locale() {
 function default_locale() {
     return LaravelLocalization::getDefaultLocale();
 }
+function current_locale_direction() {
+    return LaravelLocalization::getCurrentLocaleDirection();
+}
 function current_locale_native() {
     return LaravelLocalization::getCurrentLocaleNative();
 }
@@ -49,6 +52,9 @@ function supported_locales() {
 }
 function get_localized_url($locale_code) {
     return LaravelLocalization::getLocalizedURL($locale_code, null, [], ($locale_code != default_locale()));
+}
+function current_website() {
+    return config('website');
 }
 
 function parse_size($size) {

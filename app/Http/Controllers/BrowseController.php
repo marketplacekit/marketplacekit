@@ -237,6 +237,7 @@ class BrowseController extends Controller
         $data['lng'] = $lng;
 
         $sort = $request->input('sort')?:'date';
+        $listings = $listings->orderByRaw('IF(priority_until>NOW(), 1, 0) DESC');
         if($sort == 'date') {
             $listings = $listings->orderBy('created_at', 'DESC');
         }

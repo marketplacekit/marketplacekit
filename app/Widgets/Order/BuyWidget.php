@@ -21,7 +21,7 @@ class BuyWidget extends AbstractWidget
 		$variants = isset($params['variant'])?$params['variant']:null;
 		$shipping = isset($params['shipping_option'])?$params['shipping_option']:null;
 		$additional_options = isset($params['additional_option'])?$params['additional_option']:[];
-
+		
 		$listing_price = $listing->price;
 		
 		#calculate additional variant cost
@@ -78,7 +78,7 @@ class BuyWidget extends AbstractWidget
 		//date, time, qty
 		$subtotal = ($quantity * $listing_price) + $additional_options_price;
         $service_fee_percentage = $subtotal * ($fee_percentage/100);
-        $service_fee = $service_fee_percentage + $fee_transaction;
+        $service_fee = (float) $service_fee_percentage + (float) $fee_transaction;
 		$total = $subtotal + $service_fee + $selected_shipping_price;
 
 		if($quantity > $listing->stock) {

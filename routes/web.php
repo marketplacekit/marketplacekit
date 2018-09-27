@@ -55,7 +55,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => 'jai
 		Route::get('/{listing}/{slug}/spotlight', 'ListingController@spotlight')->middleware('auth.ajax')->name('listing.spotlight');
 		Route::get('/{listing}/{slug}/verify', 'ListingController@verify')->middleware('auth.ajax')->name('listing.verify');
 		Route::get('/{listing}/{slug}/star', 'ListingController@star')->middleware('auth.ajax')->name('listing.star');
-		Route::get('/{listing}/{slug}/edit', 'ListingController@edit');
+		Route::get('/{listing}/{slug}/edit', 'ListingController@edit')->name('listing.edit');
 		Route::any('/{id}/update', 'ListingController@update')->name('listing.update');
 
 	});

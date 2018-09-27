@@ -18,12 +18,28 @@ class AddonsController extends Controller
      */
     public function index(Request $request)
     {
-        $data['modules'] = Module::all();
+        $data['modules'] = $this->getOrdered();
         if(!count($data['modules'])) {
             alert()->danger('You have no addons installed.');
         }
         #dd(setting('modules.homepage', 0));
         return view('panel::addons.index', $data);
+    }
+
+    public function getOrdered($direction = 'asc') : array
+    {
+        $modules = Module::all();
+
+        uasort($modules, function ($a, $b) use ($direction) {
+            if ($a->order == $b->order) {
+                return 0;
+            }
+            if ($direction == 'desc') {
+                return $a->order < $b->order ? 1 : -1;
+            }
+            return $a->order > $b->order ? 1 : -1;
+        });
+        return $modules;
     }
 
     public function toggle($module_alias, Request $request)

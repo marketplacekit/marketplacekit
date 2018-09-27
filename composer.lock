@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "0e70674ecb5f0223c4e09ce6ee17a913",
+    "content-hash": "a0c9d71c54558a6e6dc1bdba63c5a0af",
     "packages": [
         {
             "name": "adam-paterson/oauth2-stripe",
@@ -1193,6 +1193,64 @@
             "time": "2014-10-08T19:01:21+00:00"
         },
         {
+            "name": "depsimon/laravel-wallet",
+            "version": "v1.0.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/depsimon/laravel-wallet.git",
+                "reference": "9f147c81401efa3a14da636d84ae5047ad85425e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/depsimon/laravel-wallet/zipball/9f147c81401efa3a14da636d84ae5047ad85425e",
+                "reference": "9f147c81401efa3a14da636d84ae5047ad85425e",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "~5.6",
+                "php": "^7.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Depsimon\\Wallet\\WalletServiceProvider"
+                    ],
+                    "aliases": {
+                        "Wallet": "Depsimon\\Wallet\\WalletFacade"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Depsimon\\Wallet\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Simon Depelchin",
+                    "email": "simon@webartisan.be",
+                    "homepage": "https://webartisan.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Easy to use virtual wallet for your app",
+            "homepage": "https://github.com/depsimon/laravel-wallet",
+            "keywords": [
+                "credits",
+                "currency",
+                "depsimon",
+                "laravel-wallet",
+                "virtual",
+                "wallet"
+            ],
+            "time": "2018-08-13T08:58:34+00:00"
+        },
+        {
             "name": "dnoegel/php-xdg-base-dir",
             "version": "0.1",
             "source": {
@@ -1889,6 +1947,51 @@
                 "geometry"
             ],
             "time": "2016-07-11T12:26:49+00:00"
+        },
+        {
+            "name": "gerardojbaez/laraplans",
+            "version": "v2.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gerardojbaez/laraplans.git",
+                "reference": "82922b4ed9c89d8e6a12a1dee0e1d6e25d43452e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gerardojbaez/laraplans/zipball/82922b4ed9c89d8e6a12a1dee0e1d6e25d43452e",
+                "reference": "82922b4ed9c89d8e6a12a1dee0e1d6e25d43452e",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "~5.3",
+                "illuminate/support": "~5.3",
+                "nesbot/carbon": "~1.21",
+                "php": ">=5.5.9"
+            },
+            "require-dev": {
+                "fzaninotto/faker": "~1.4",
+                "mockery/mockery": "0.9.*",
+                "orchestra/testbench": "~3.3.0",
+                "phpunit/phpunit": "~5.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Gerardojbaez\\Laraplans\\": "src/Laraplans/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "SaaS style recurring plans for Laravel.",
+            "keywords": [
+                "laravel",
+                "memberships",
+                "plans",
+                "subscriptions"
+            ],
+            "time": "2018-02-23T22:43:51+00:00"
         },
         {
             "name": "gerardojbaez/money",
@@ -5713,6 +5816,7 @@
                 "generator",
                 "laravel"
             ],
+            "abandoned": "laravelium/sitemap",
             "time": "2018-02-07T20:36:32+00:00"
         },
         {

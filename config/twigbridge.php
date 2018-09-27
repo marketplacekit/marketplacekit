@@ -116,6 +116,7 @@ return [
             'TwigBridge\Extension\Laravel\Html',
             // 'TwigBridge\Extension\Laravel\Legacy\Facades',
 
+			
             // Other TwigBridge Extensions
             new Jralph\Twig\Markdown\Extension(
                 new Jralph\Twig\Markdown\Parsedown\ParsedownExtraMarkdown
@@ -216,8 +217,10 @@ return [
             'supported_locales',
             'default_locale',
             'current_locale_native',
+            'current_locale_direction',
             'get_localized_url',
             'recaptcha',
+			'current_website',
         ],
 
         /*

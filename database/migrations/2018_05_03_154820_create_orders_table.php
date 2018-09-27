@@ -19,8 +19,8 @@ class CreateOrdersTable extends Migration {
 			$table->integer('seller_id')->nullable();
 			$table->integer('user_id')->nullable();
 			$table->string('status')->nullable()->default('open');
-			$table->decimal('amount', 11)->nullable();
-			$table->decimal('service_fee', 11)->nullable()->default(0.00);
+			$table->decimal('amount', 11, 2)->nullable();
+			$table->decimal('service_fee', 11, 2)->nullable()->default(0.00);
 			$table->string('currency')->nullable();
 			$table->integer('units')->nullable();
 			$table->integer('payment_gateway_id')->nullable();

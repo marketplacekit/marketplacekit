@@ -178,6 +178,7 @@ return [
         Admin\Providers\PanelServiceProvider::class,
         App\Providers\ConfigServiceProvider::class,
         Spiritix\LadaCache\LadaCacheServiceProvider::class,
+        Gerardojbaez\Laraplans\LaraplansServiceProvider::class,
 
     ],
 

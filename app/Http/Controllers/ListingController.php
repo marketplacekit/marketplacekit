@@ -62,7 +62,6 @@ class ListingController extends Controller
         if($request->has('iframe')) {
             return view('listing.iframe', $data);
         }
-
         return view('listing.show', $data);
     }
 

@@ -6,6 +6,7 @@ use App\Http\Requests\StoreListing;
 use App\Mail\NewListing;
 use App\Models\ListingAdditionalOption;
 use App\Models\ListingBookedDate;
+use App\Models\ListingPlan;
 use App\Models\ListingService;
 use App\Models\ListingShippingOption;
 use App\Models\ListingVariant;
@@ -28,6 +29,8 @@ use Validator;
 use Mail;
 use function BenTools\CartesianProduct\cartesian_product;
 
+use Gerardojbaez\Laraplans\Models\Plan;
+use Gerardojbaez\Laraplans\Models\PlanFeature;
 class CreateController extends Controller
 {
     /**
@@ -407,31 +410,88 @@ class CreateController extends Controller
             $point= new Point($request->get('lat'), $request->get('lng'));
             $listing->location = \DB::raw("GeomFromText('POINT(".$point->getLng()." ".$point->getLat().")')");
         }
-        if($request->has('publish')) {
-
-            if(!$listing->is_admin_verified && !setting('listings_require_verification')) {
-                $listing->is_admin_verified = Carbon::now();
-            }
-
-            if(!$listing->is_published && !$listing->is_admin_verified) {
-                Mail::to(config('mail.from.address'))->send(new NewListing($listing));
-            }
-            $listing->is_published = true;
-        }
         if($request->has('price_per_unit_display')) {
             $listing->price_per_unit_display = $request->input('price_per_unit_display');
             if($listing->pricing_model->widget == 'request') {
                 $listing->price_per_unit_display = $listing->price_per_unit_display;
             }
         }
-        if($request->has('draft'))
-            $listing->is_published = false;
+        if($request->has('draft')) {
+            $listing->is_draft = true;
+        }
+        if($request->has('undraft')) {
+            $listing->is_draft = false;
+        }
 
         $listing->save();
 
-        alert()->success(__('Successfully saved.'));
+        if($request->has('renew')) {
+            return $this->publish_listing($listing);
+        }
+
+        if($request->has('publish')) {
+
+            $listing->is_draft = false;
+            if(!$listing->is_admin_verified && !setting('listings_require_verification')) {
+                $listing->is_admin_verified = Carbon::now();
+            }
+            $listing->save();
+
+            if(module_enabled("memberships") || module_enabled("listingfee")) {
+                return $this->publish_listing($listing);
+            } else {
+                if(!$listing->is_published && !$listing->is_admin_verified) {
+                    Mail::to(config('mail.from.address'))->send(new NewListing($listing));
+                }
+                $listing->is_published = true;
+                $listing->save();
+            }
+
+        }
+
+        alert()->success( __('Successfully saved.') );
         return back();
     }
+
+    private function publish_listing($listing) {
+
+        $ordered_routes = ['listingfee', 'memberships', 'credits'];
+        $user = auth()->user();
+
+        #does the user have an active membership?
+        if(module_enabled("memberships")) {
+            if($user->subscription('main') && $user->subscription('main')->plan->price > 0) {
+                return redirect()->route('addons.memberships.payment', [$listing]);
+            }
+        }
+
+        #does the user have any credits?
+        if(module_enabled("credits")) {
+            if($user->balance > 0) {
+                return redirect()->route('addons.credits.payment', [$listing]);
+            }
+        }
+
+        #otherwise redirect to a payment method
+        foreach($ordered_routes as $ordered_route) {
+            if(module_enabled($ordered_route)) {
+                return redirect()->route('addons.'.$ordered_route.'.payment', [$listing]);
+            }
+        }
+
+        #if listing fee
+        /*if(module_enabled("listingfee")) {
+            return redirect()->route('addons.listingfee.payment', [$listing]);
+        }
+
+        #if memberships
+        if(module_enabled("memberships")) {
+            return redirect()->route('addons.memberships.payment', [$listing]);
+        }*/
+
+
+    }
+
     protected function asWKT(GeometryInterface $geometry)
     {
         return $this->getQuery()->raw("ST_GeomFromText('".$geometry->toWKT()."')");

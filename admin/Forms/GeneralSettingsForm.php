@@ -187,6 +187,14 @@ class GeneralSettingsForm extends Form
             ],
         ]);
 
+        $this->add('listing_expiry', 'text', [
+            'label' => 'Default number of days a listing should be active for:',
+            'rules' => '',
+            'default_value' => $this->getData('listing_expiry'),
+            'help_block' => [
+                'text' => "<i>e.g. Setting this to 30 will automatically expire listings after 30 days.</i>",
+            ],
+        ]);
 
         $this->add('cookie_consent_enabled', 'checkbox', [
             'value' => 1,

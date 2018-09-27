@@ -53,7 +53,7 @@ class Authenticate
      */
     protected function authenticate(array $guards)
     {
-        if(\Request::wantsJson() && is_array($guards)) {
+        if(\Request::wantsJson() && is_array($guards) && \Request::header('Authorization')) {
             $guards = ['api'];
         }
 

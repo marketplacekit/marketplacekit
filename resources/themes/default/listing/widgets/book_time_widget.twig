@@ -71,7 +71,7 @@
                                 {{ __('Spaces to book') }}
 							</div>
 							<div class="col-sm-4">
-                                {{ form_select('quantity', array_combine(range(1, listing.stock), range(1, listing.stock)), null, {'class' : 'form-control form-control-sm', 'required':'required'}) }}
+                                {{ form_select('quantity', array_combine(range(1, listing.stock), range(1, listing.stock)), input_get('quantity'), {'class' : 'form-control form-control-sm', 'required':'required'}) }}
 							</div>
 						</div>
                     {% else %}

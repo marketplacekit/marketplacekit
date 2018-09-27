@@ -27,6 +27,7 @@ class UsersTableSeeder extends Seeder
             'country_name' => 'Great Britain',
 			'locale' => 'en',
 			'is_admin' => 1,
+			'verified' => 1,
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'password' => bcrypt('changeme'),

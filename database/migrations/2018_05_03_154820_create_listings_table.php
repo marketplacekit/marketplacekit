@@ -37,7 +37,7 @@ class CreateListingsTable extends Migration {
 			$table->integer('max_duration')->nullable();
 			$table->integer('session_duration')->nullable();
 			$table->string('pricing_models')->nullable();
-			$table->decimal('price', 11)->nullable();
+			$table->decimal('price', 11, 2)->nullable();
 			$table->string('currency')->nullable();
             $table->point('location')->nullable();
 			$table->decimal('lat', 10, 8)->nullable();

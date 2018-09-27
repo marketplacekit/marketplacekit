@@ -22,5 +22,8 @@ class DatabaseSeeder extends Seeder
         $this->call(FiltersTableSeeder::class);
         $this->call(CategoryPricingModelTableSeeder::class);
         $this->call(SettingsTableSeeder::class);
+        $this->call(ListingPlansTableSeeder::class);
+        $this->call(PlansTableSeeder::class);
+        $this->call(PlanFeaturesTableSeeder::class);
     }
 }

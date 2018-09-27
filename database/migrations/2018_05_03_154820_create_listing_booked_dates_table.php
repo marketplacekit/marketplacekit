@@ -20,7 +20,7 @@ class CreateListingBookedDatesTable extends Migration {
 			$table->integer('quantity')->nullable()->default(0);
 			$table->integer('available_units')->nullable();
 			$table->boolean('is_available')->nullable();
-			$table->decimal('price', 11)->nullable();
+			$table->decimal('price', 11, 2)->nullable();
 			$table->timestamps();
 		});
 	}

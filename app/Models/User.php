@@ -21,8 +21,11 @@ use Overtrue\LaravelFollow\Traits\CanBeFollowed;
 use Overtrue\LaravelFollow\Traits\CanLike;
 use Overtrue\LaravelFollow\Traits\CanBeLiked;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Gerardojbaez\Laraplans\Contracts\PlanSubscriberInterface;
+use Gerardojbaez\Laraplans\Traits\PlanSubscriber;
+use Depsimon\Wallet\HasWallet;
 
-class User extends Authenticatable implements BannableContract, JWTSubject
+class User extends Authenticatable implements BannableContract, JWTSubject, PlanSubscriberInterface
 {
     use Notifiable;
     use SoftDeletes;
@@ -35,6 +38,8 @@ class User extends Authenticatable implements BannableContract, JWTSubject
     use HasRoles;
     use CanFollow, CanLike, CanBeFollowed, CanBeLiked;
     use \Spiritix\LadaCache\Database\LadaCacheTrait;
+    use PlanSubscriber;
+    use HasWallet;
 
     protected $canBeRated = true;
     protected $mustBeApproved = false;
@@ -171,6 +176,12 @@ class User extends Authenticatable implements BannableContract, JWTSubject
 
     public function avg_rating() {
       return number_format($this->comments->avg('rating'), 1);
+    }
+
+    public function getVerifiedAttribute($value) {
+		if($this->is_admin)
+			return true;
+		return $value;
     }
 
     public function count_reviews() {

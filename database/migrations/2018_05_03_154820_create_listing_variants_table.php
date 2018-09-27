@@ -16,7 +16,7 @@ class CreateListingVariantsTable extends Migration {
 		{
 			$table->integer('id', true);
 			$table->integer('listing_id')->nullable();
-			$table->decimal('price', 11)->nullable()->default(0.00);
+			$table->decimal('price', 11, 2)->nullable()->default(0.00);
 			$table->integer('stock')->nullable()->default(0);
 			$table->text('meta')->nullable();
 			$table->timestamps();

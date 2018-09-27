@@ -8,6 +8,11 @@
     <li class="nav-item {{ active(['panel.pricing-models.index'])  }}">
         <a class="nav-link" href="{{route('panel.pricing-models.index')}}">Pricing models</a>
     </li>
+    @if(module_enabled('listingfee'))
+    <li class="nav-item {{ active(['panel.addons.listingfee.index'])  }}">
+        <a class="nav-link" href="{{route('panel.addons.listingfee.index')}}">Listing Fees</a>
+    </li>
+    @endif
 
 </ul>
 

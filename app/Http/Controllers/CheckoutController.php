@@ -62,7 +62,8 @@ class CheckoutController extends Controller
                 "description" 		=> $listing->title . " x".$quantity,
                 "capture" 			=> false,
                 "application_fee" 	=> $validation_result['service_fee']*100,
-                "source" 				=> $token->id,
+                "source" 			=> $token->id,
+                'receipt_email'     => $request->input('email', auth()->user()->email),
             ), ["stripe_account" 	=> $payment_gateway->gateway_id]);
 
             #print_r($charge);

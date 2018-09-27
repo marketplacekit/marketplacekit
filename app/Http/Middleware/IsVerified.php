@@ -18,7 +18,7 @@ class IsVerified
     {
         if(!is_null($request->user()) && (!$request->user()->verified && !$request->user()->hasRole('admin'))) {
             return redirect()->route('email-verification.index')->withError('Permission Denied');
-            #throw new UserNotVerifiedException;
+            throw new UserNotVerifiedException;
         }
         return $next($request);
     }

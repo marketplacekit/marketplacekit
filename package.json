@@ -18,5 +18,8 @@
         "lodash": "^4.17.4",
         "popper.js": "^1.12",
         "vue": "^2.5.7"
+    },
+    "dependencies": {
+        "bootstrap-v4-rtl": "^4.1.1-0"
     }
 }

@@ -23,6 +23,9 @@ class EventServiceProvider extends ServiceProvider
 		'App\Events\OrderDeclined' => [
             'App\Listeners\IncreaseStock',
         ],
+        'App\Events\ListingFeePayed' => [
+            //do something
+        ],
 		\Jrean\UserVerification\Events\UserVerified::class => [
 			'App\Listeners\EmailVerified',
         ],
