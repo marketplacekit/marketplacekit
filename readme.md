@@ -38,7 +38,7 @@ MarketplaceKit is easy to customize, change the design and supports multiple lan
   - Ctype PHP Extension
   - JSON PHP Extension
   - ImageMagick PHP Extension
-- MySQL 5.7
+- MySQL 5.7.7 or greater
 - Node JS (8.9.4) - this is only required for compiling SCSS to CSS
 - Git
 - ImageMagick
@@ -50,29 +50,10 @@ Although MarketplaceKit has been tested on Ubuntu 16.04 LTS. It should work with
 
 ## Installation
 
-- Download the code via Git
+- Download the code via composer
 
   ```
-  git clone https://github.com/marketplacekit/marketplacekit.git marketplacekit
-  cd marketplacekit
-  ```
-
-- Install the required packages
-
-  ```
-  composer install
-  ```
-
-- Install the node modules
-
-  ```
-  npm install
-  ```
-
-- Create a .env file by copying the .env.example
-
-  ```
-  cp .env.example .env
+   composer create-project marketplacekit/marketplacekit:dev-master marketplacekit
   ```
 
 - Add your database details to the .env file
@@ -137,6 +118,11 @@ Although MarketplaceKit has been tested on Ubuntu 16.04 LTS. It should work with
   APP_URL=http://localhost.com
   ```
   Don't forget to add https:// in production.
+  
+- Install the node modules (Optional)
+    ```
+    npm install
+    ```
 
 
 ### Facebook login
