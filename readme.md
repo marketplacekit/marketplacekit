@@ -43,6 +43,7 @@ MarketplaceKit is easy to customize, change the design and supports multiple lan
 - Git
 - ImageMagick
 - Nginx
+- Redis
 
 Although MarketplaceKit has been tested on Ubuntu 16.04 LTS. It should work with any OS that satisfies the above requirements. Nginx (https://laravel.com/docs/5.6/deployment#nginx) is recommended as a webserver. Developers should also have knowledge of Laravel, Bootstrap and Twig for extending/building on top of MarketplaceKit.
 
