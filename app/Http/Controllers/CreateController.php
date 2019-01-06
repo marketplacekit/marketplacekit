@@ -408,7 +408,7 @@ class CreateController extends Controller
 
         if($request->get('lat') && $request->get('lng')) {
             $point= new Point($request->get('lat'), $request->get('lng'));
-            $listing->location = \DB::raw("GeomFromText('POINT(".$point->getLng()." ".$point->getLat().")')");
+            $listing->location = \DB::raw("ST_GeomFromText('POINT(".$point->getLng()." ".$point->getLat().")')");
         }
         if($request->has('price_per_unit_display')) {
             $listing->price_per_unit_display = $request->input('price_per_unit_display');
