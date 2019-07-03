@@ -153,15 +153,29 @@ composer update
 ```
 
 ### API (Note: Work in progress)
+
 For authentication:
 POST    /api/auth/login     [email, password]
 GET     /api/auth/me
 GET     /api/auth/refresh
 
-For all other requests please use the same URLs as the website but use use "Accept: application/json" in the HTTP headers. This will convert all data passed to HTML into JSON. e.g.
+For all other requests please use the same URLs as the website but use "Accept: application/json" in the HTTP headers. This will convert all data passed to HTML into JSON. e.g.
 POST    /register
 GET     /browse
 GET     /listing/<HASH>/<SLUG>
 
+## Docker usage
+
+### Build production image
+
+    docker build --no-cache -t marketplacekit/marketplacekit:latest -f Dockerfile.prod .
+
+### Run with docker-compose
+
+    docker-compose up -d \
+    && docker-compose exec php php artisan migrate \
+    && docker-compose exec php php artisan db:seed
+    
 ## License
+
 MarketplaceKit is free software, and is released under the terms of the <abbr title="GNU General Public License">GPL</abbr> version 3. See <a href="license.txt">license.txt</a>.

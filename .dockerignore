@@ -1,0 +1,15 @@
+.idea
+.DS_Store
+.git*
+.env*
+Dockerfile*
+docker-compose*
+license.txt
+phpunit.xml
+readme.md
+roadmap.md
+
+/storage/logs/*log
+/bootstrap/cache/*php
+/tests
+/vendor
