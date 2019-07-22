@@ -109,10 +109,28 @@ class UsersController extends Controller
         } else {
             $user->unban();
         }
+		
+		if($request->has('verified') != $user->verified) {
+            $user->verified = $request->has('verified');
+        }		
+		
+		if($request->input('new_password')) {
+            $user->password = Hash::make($request->input('new_password'));
+        }
+		
         $user->save();
 
         if($request->get('role') && !$user->hasRole($request->get('role'))) {
             $user->syncRoles([$request->get('role')]);
+        }
+
+        if($request->get('roles')) {
+			$after = $request->input('roles');
+			$before = $user->roles->pluck('id')->toArray();
+			$same = ( count( $after ) == count( $before ) && !array_diff( $after, $before ) );
+			if(!$same) {
+				$user->syncRoles($request->get('roles'));
+			}
         }
 
         alert()->success('Successfully saved');
@@ -128,6 +146,10 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        //
+	#dd($user);
+        $user->delete();
+
+        alert()->success('Successfully deleted');
+        return redirect()->route('panel.users.index');
     }
 }

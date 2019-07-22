@@ -51,6 +51,7 @@
         "overtrue/laravel-follow": "^1.1",
         "paypal/merchant-sdk-php": "^3.12",
         "paypal/rest-api-sdk-php": "^1.13",
+        "phoenix/eloquent-meta": "^1.9",
         "php-units-of-measure/php-units-of-measure": "^2.1",
         "propaganistas/laravel-disposable-email": "^2.0",
         "pulkitjalan/geoip": "^2.6",

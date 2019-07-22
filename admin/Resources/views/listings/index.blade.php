@@ -2,7 +2,7 @@
 
 @section('content')
     
-    <h2>Listings</h2>
+    <h2>{{$listings_count}} Listings</h2>
     <br />
     @include('alert::bootstrap')
 
@@ -33,10 +33,11 @@
       @foreach($listings as $item)
       <tr>
         <th scope="row">{{$item->id}}</th>
-        <td>{{str_limit($item->title, 40)}}</td>
-        <td>{{$item->user->email}}</td>
+        <td><a href="{{route('panel.listings.edit', $item)}}">{{str_limit($item->title, 40)}}</a> @if($item->is_draft)<small class="badge badge-secondary">draft</small>@endif <br />@if($item->expires_at)<small class="text-muted">Expires {{$item->expires_at}}</small>@endif @if($item->ends_at)<small class="text-muted">Ends {{$item->ends_at}}</small>@endif</td>
+        <td>{{@$item->user->email}}</td>
         <td>
             <a href="#" ic-target="#main" ic-select-from-response="#main" ic-delete-from="{{ route('panel.listings.destroy', $item) }}" ic-confirm="Are you sure?" class="text-muted float-right ml-2"><i class="fa fa-remove"></i></a>
+			<a href="{{route('panel.listings.duplicate', $item)}}" class="text-muted float-right ml-2" title="Duplicate listing"><i class="fa fa-files-o" aria-hidden="true"></i></a>
             <a href="{{route('panel.listings.edit', $item)}}" class="text-muted float-right"><i class="fa fa-pencil"></i></a>
         </td>
       </tr>

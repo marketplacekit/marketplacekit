@@ -27,7 +27,7 @@
         <tbody>
         @foreach($orders as $item)
             <tr>
-                <td>{{ $item->hash }}</td>
+                <td><a href="{{route('panel.orders.show', $item)}}" title="{{ $item->id }}">{{ $item->hash }}</a></td>
                 <td>{{str_limit($item->listing->title, 40)}}</td>
                 <td>{{$item->listing->user->email}}</td>
                 <td>{{$item->user->email}}</td>

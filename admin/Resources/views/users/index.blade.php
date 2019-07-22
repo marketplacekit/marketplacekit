@@ -3,7 +3,7 @@
 @section('content')
     
     <h2>Users</h2>
-    <br />
+	@include("panel::components.user_menu")
     @include('alert::bootstrap')
 
     {!! Form::open(['url' => url()->current(), 'method' => 'GET']) !!}
@@ -38,6 +38,10 @@
                 <td>
                     <a href="{{route('panel.users.edit', $item)}}" class="text-muted float-right"><i class="fa fa-pencil"></i></a>
                 </td>
+				<td>
+				   <a href="#" ic-target="#main" ic-select-from-response="#main" ic-delete-from="{{ route('panel.users.destroy', $item) }}" ic-confirm="Are you sure?" class="text-muted float-right ml-2"><i class="fa fa-remove"></i></a>
+
+                </td> 
             </tr>
         @endforeach
 

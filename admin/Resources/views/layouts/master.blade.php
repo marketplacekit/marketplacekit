@@ -50,10 +50,20 @@
         $('[data-toggle="tooltip"]').tooltip();
     })
     </script>
+	
+	<link rel="apple-touch-icon" sizes="180x180" href="https://marketplace-kit.s3.amazonaws.com/icons/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="https://marketplace-kit.s3.amazonaws.com/icons/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="https://marketplace-kit.s3.amazonaws.com/icons/favicon-16x16.png">
+	<link rel="manifest" href="https://marketplace-kit.s3.amazonaws.com/icons/site.webmanifest">
+	<link rel="shortcut icon" href="https://marketplace-kit.s3.amazonaws.com/icons/favicon.ico">
+	<meta name="msapplication-TileColor" content="#da532c">
+	<meta name="msapplication-config" content="https://marketplace-kit.s3.amazonaws.com/icons/browserconfig.xml">
+	<meta name="theme-color" content="#ffffff">
+
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top " style="padding: 0" >
+    <nav class="navbar navbar-expand-sm navbar-light bg-light fixed-top " style="padding: 0" >
   <a class="navbar-brand" href="{{ url('/panel') }}" style="height: 48px; padding:16px 25px 10px 15px; color: #fff; font-size: 16px; width: 210px; background: #1a2226; color: #fff;     font-size: 12px; color: #4b646f; background: #1a2226;">MARKETPLACE::KIT</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -66,7 +76,7 @@
       </li>
 
     </ul>
-    <ul class="navbar-nav  my-2 my-lg-0">
+    <ul class="navbar-nav  my-2 my-sm-0 pr-3">
         @role('admin')
       <li class="nav-item">
         <a class="nav-link" href="{{ route('panel.settings.index') }}">Settings</a>

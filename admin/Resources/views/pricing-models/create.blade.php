@@ -44,7 +44,7 @@
 							
                             <div class="form-group">
                                 <label>Widget Type</label>
-                                {{ Form::select('widget', ['buy' => 'Buy', 'book_date' => 'Book a Date', 'book_time' => 'Book a Time'], null, ['placeholder' => 'Select...', 'class' => 'form-control']) }}
+                                {{ Form::select('widget', ['announcement' => 'Announcement', 'buy' => 'Buy', 'book_date' => 'Book a Date', 'book_time' => 'Book a Time', 'request' => 'Request',], null, ['placeholder' => 'Select...', 'class' => 'form-control', 'required' => 'required']) }}
                             </div>                            
 
                             <div class="form-group">
@@ -54,7 +54,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Quantity label</label>
+                                <label>Quantity label (Seller)</label>
                                 {{ Form::text('quantity_label', null, ['class' => 'form-control', 'placeholder' => 'e.g. Inventory, Room, Spaces per session']) }}
                                 <small class="form-text text-muted">The display name for the seller to enter a quantity for the listing. e.g. a seller listing rooms for rent would see "Rooms", a seller selling products would see "Quantity".</small>
                             </div>
@@ -64,6 +64,33 @@
                                 {{ Form::select('duration_name', ['day' => 'Day', 'night' => 'Night'], null, ['placeholder' => 'Select...', 'class' => 'form-control']) }}
                                 <small class="form-text text-muted"></small>
                             </div>
+											<hr />	
+											<div class="card card-body bg-light">
+    <h5 class="card-title">Buyer labels</h5>
+
+                            <div class="form-group">
+                                <label>Per label (Buyer)</label>
+								<div class="input-group mb-0">
+								  <div class="input-group-prepend">
+									<span class="input-group-text" id="basic-addon3">Per</span>
+								  </div>
+								  {{ Form::text('per_label_buyer', null, ['class' => 'form-control', 'placeholder' => 'session']) }}
+								</div>
+								<div class="form-check m-0">
+                                {{ Form::checkbox('can_seller_enter_per_label', true, null, ['class' => 'form-check-input', 'id' => 'can_seller_enter_per_label']) }}
+									<label class="form-check-label small" for="can_seller_enter_per_label">Can seller enter own label</label>
+								</div>
+                                <small class="form-text text-muted">Use this to overwrite the label displayed to the user e.g. session, day, night</small>
+                            </div>
+							
+                            <div class="form-group">
+                                <label>Quantity label (Buyer) </label>
+                                {{ Form::text('quantity_label_buyer', null, ['class' => 'form-control', 'placeholder' => 'e.g. Inventory, Room, Spaces per session']) }}
+                                <small class="form-text text-muted">The buyer sees this for the quantity label.</small>
+                            </div>
+                            </div>
+<hr />			
+
 
                             <div class="form-check">
                                 {{ Form::checkbox('can_add_pricing', true, null, ['class' => 'form-check-input', 'id' => 'can_add_pricing']) }}

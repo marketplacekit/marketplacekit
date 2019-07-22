@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "a0c9d71c54558a6e6dc1bdba63c5a0af",
+    "content-hash": "e4714ad0d1f67279cc43fc46fa62884b",
     "packages": [
         {
             "name": "adam-paterson/oauth2-stripe",
@@ -2454,12 +2454,12 @@
             "version": "3.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ivanakimov/hashids.php.git",
+                "url": "https://github.com/vinkla/hashids.git",
                 "reference": "b6c61142bfe36d43740a5419d11c351dddac0458"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ivanakimov/hashids.php/zipball/b6c61142bfe36d43740a5419d11c351dddac0458",
+                "url": "https://api.github.com/repos/vinkla/hashids/zipball/b6c61142bfe36d43740a5419d11c351dddac0458",
                 "reference": "b6c61142bfe36d43740a5419d11c351dddac0458",
                 "shasum": ""
             },
@@ -4254,12 +4254,12 @@
             "version": "v1.6.5",
             "source": {
                 "type": "git",
-                "url": "https://github.com/mikey179/vfsStream.git",
+                "url": "https://github.com/bovigo/vfsStream.git",
                 "reference": "d5fec95f541d4d71c4823bb5e30cf9b9e5b96145"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mikey179/vfsStream/zipball/d5fec95f541d4d71c4823bb5e30cf9b9e5b96145",
+                "url": "https://api.github.com/repos/bovigo/vfsStream/zipball/d5fec95f541d4d71c4823bb5e30cf9b9e5b96145",
                 "reference": "d5fec95f541d4d71c4823bb5e30cf9b9e5b96145",
                 "shasum": ""
             },
@@ -5053,6 +5053,59 @@
                 "sdk"
             ],
             "time": "2017-11-13T18:53:13+00:00"
+        },
+        {
+            "name": "phoenix/eloquent-meta",
+            "version": "v1.9.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/electricjones/eloquent-meta.git",
+                "reference": "ac4a49339619041f366c9b54cc323d8082bf9a5a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/electricjones/eloquent-meta/zipball/ac4a49339619041f366c9b54cc323d8082bf9a5a",
+                "reference": "ac4a49339619041f366c9b54cc323d8082bf9a5a",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "5.4.*|5.5.*|5.6.*|5.7.*",
+                "php": ">=5.6.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.4.*"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/migrations"
+                ],
+                "psr-4": {
+                    "Phoenix\\EloquentMeta\\": "src/Phoenix/EloquentMeta/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Boris Glumpler",
+                    "email": "tech@scubaclick.com"
+                },
+                {
+                    "name": "Michael Wilson",
+                    "email": "phoenixlabsdev@gmail.com"
+                }
+            ],
+            "description": "Attach meta data to Eloquent models",
+            "homepage": "https://github.com/phoenix-labs/eloquent-meta",
+            "keywords": [
+                "eloquent",
+                "laravel",
+                "meta"
+            ],
+            "time": "2019-02-03T16:26:29+00:00"
         },
         {
             "name": "php-units-of-measure/php-units-of-measure",
@@ -8315,6 +8368,7 @@
                 "flash",
                 "laravel"
             ],
+            "abandoned": "laracasts/flash",
             "time": "2018-02-11T14:03:34+00:00"
         },
         {

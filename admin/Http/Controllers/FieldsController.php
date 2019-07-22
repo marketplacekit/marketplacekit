@@ -61,6 +61,7 @@ class FieldsController extends Controller
         $filter->position = $request->get('position', 1000);
         $filter->is_category_specific = $request->get('is_category_specific');
         $filter->is_searchable =  $request->get('is_searchable');
+        $filter->is_hidden =  0;
 		$filter->categories = [];
 		if($request->get('categories'))
 			$filter->categories =  array_map('intval', $request->get('categories'));
@@ -116,8 +117,9 @@ class FieldsController extends Controller
 
         $filter = Filter::findOrFail($id);
         $filter->position = $request->get('position', 1000);
-        $filter->is_category_specific = $request->get('is_category_specific');
-        $filter->is_searchable =  $request->get('is_searchable');
+        $filter->is_category_specific = $request->has('is_category_specific');
+        $filter->is_searchable =  $request->has('is_searchable');
+        $filter->is_hidden =  $request->has('is_hidden');
 		$filter->categories = [];
 		if($request->get('categories'))
 			$filter->categories =  array_map('intval', $request->get('categories'));

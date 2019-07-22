@@ -74,6 +74,9 @@ class PricingModelsController extends Controller
         if($pricing_model->widget == 'book_date' && !in_array($pricing_model->duration_name, ["day", "night"])) {
             $pricing_model->duration_name = "day";
         }
+		if(!$pricing_model->widget) {
+			$pricing_model->widget = 'buy';
+		}
         $pricing_model->save();
 
         alert()->success('Successfully saved');
@@ -111,6 +114,7 @@ class PricingModelsController extends Controller
         $pricing_model->fill($params);
 
 		$pricing_model->seller_label = $request->input('seller_label');
+		$pricing_model->quantity_label = $request->input('quantity_label');
         $pricing_model->can_add_pricing = $request->has('can_add_pricing');
         $pricing_model->can_accept_payments = $request->has('can_accept_payments');
         $pricing_model->can_add_variants = $request->has('can_add_variants');
@@ -119,6 +123,12 @@ class PricingModelsController extends Controller
         $pricing_model->requires_shipping_address = $request->has('requires_shipping_address');
         $pricing_model->requires_billing_address = $request->has('requires_billing_address');
         $pricing_model->can_list_multiple_services = $request->has('can_list_multiple_services');
+		
+				
+		$pricing_model->meta->per_label_buyer = $request->input('per_label_buyer');
+		$pricing_model->meta->quantity_label_buyer = $request->input('quantity_label_buyer');
+		$pricing_model->meta->can_seller_enter_per_label = $request->has('can_seller_enter_per_label');
+		
 
         if($pricing_model->widget == 'book_time') {
             $pricing_model->duration_name = "session";

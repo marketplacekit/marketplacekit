@@ -37,13 +37,21 @@
                     </tr>
                     <tr>
                         <th scope="row">Buyer</th>
-                        <td>{{$order->user->name}} ({{$order->user->email}})<br />
+                        <td>{{$order->user->name}} ({{$order->user->email}})
+                            @if($order->customer_details)
+                            <br />
                             <pre>{!! array_to_string($order->customer_details) !!}</pre>
+                            @endif
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">Seller</th>
-                        <td>{{$order->listing->user->name}} ({{$order->listing->user->email}}) @if($order->payment_gateway)- <a href="https://dashboard.stripe.com/{{$order->payment_gateway->gateway_id}}/payments/{{$order->authorization_id}}" target="_blank">{{$order->payment_gateway->gateway_id}}</a>@endif</td>
+                        <td>{{$order->listing->user->name}} ({{$order->listing->user->email}})
+
+                            @if($order->payment_gateway->name == 'stripe')
+                                - <a href="https://dashboard.stripe.com/{{$order->payment_gateway->gateway_id}}/payments/{{$order->authorization_id}}" target="_blank">{{$order->payment_gateway->gateway_id}}</a>
+                            @endif
+                        </td>
                     </tr>
                     <tr>
                         <th scope="row">Date&nbsp;Placed</th>

@@ -4,8 +4,10 @@ Route::group(['as' => 'panel.', 'prefix' => 'panel', 'middleware' => ['web', 'ro
 {
     Route::get('/', 'PanelController@index');
     Route::resource('listings', 'ListingsController');
+	Route::get('/listings/{listing}/duplicate', 'ListingsController@duplicate')->name('listings.duplicate');
     Route::resource('categories', 'CategoriesController');
     Route::resource('users', 'UsersController');
+	Route::resource('roles', 'RolesController');
     Route::resource('pages', 'PagesController');
     Route::resource('menu', 'MenuController');
     Route::any('/settings/remove', 'SettingsController@remove')->name('settings.remove');
