@@ -1,4 +1,4 @@
-<nav class="navbar navbar-dark bg-dark navbar-expand-md navbar-fixed">
+<nav class="navbar navbar-expand-md navbar-light navbar-laravel navbar-fixed">
         <div class="container-fluid">
     <!-- Branding Image -->
     <a class="navbar-brand" href="/{{ current_locale() != default_locale()?current_locale():'' }}">
@@ -70,14 +70,47 @@
                 </li>
                 <li class="nav-item"><a class="nav-link text-s" href="{{ route('login') }}">{{ __("Sign in") }}</a></li>
             {% else %}
-                <li class="nav-item">
-                    <a class="nav-link text-s" href="{{ route('create.index') }}">{{ __("Post a listing") }}</a>
+
+                <li class="nav-item avatar dropdown">
+
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="{{ auth_user().avatar }}" class="rounded-circle z-depth-0" />
+                        {{ __('Welcome') }} {{ auth_user().display_name }}
+                    </a>
+
+
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow" x-placement="bottom-end">
+                        <a class="dropdown-item" href="{{ route('account.edit_profile.index') }}">
+                            <i class="dropdown-icon mdi mdi-account"></i> {{ __('Profile') }}
+                        </a>
+                        <a class="dropdown-item" href="{{ route('account.purchase-history.index') }}">
+                            <i class="dropdown-icon mdi mdi-history"></i> {{ __('Order History') }}
+                        </a>
+                        <a class="dropdown-item" href="{{ route('account.change_password.index') }}">
+                            <i class="dropdown-icon mdi mdi-settings"></i> {{ __('Change Password') }}
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        {% if auth_user().hasAnyRole(['admin', 'moderator']) %}
+                        <a class="dropdown-item" href="/panel" target="_blank">
+                            <i class="dropdown-icon fe fe-log-out"></i> {{ __("Admin Panel") }}
+                        </a>
+                        {% endif %}
+                        <a class="dropdown-item"  onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <i class="dropdown-icon fe fe-log-out"></i> {{ __("Logout") }}
+                        </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            {{ csrf_field() }}
+                        </form>
+                    </div>
                 </li>
-                <li class="nav-item"><a class="nav-link text-s" href="{{ route('account.edit_profile.index') }}">{{ __("Welcome :name", {'name': auth_user().first_name()}) }}</a></li>
-                {% if auth_user().hasAnyRole(['admin', 'moderator']) %}
-                    <li class="nav-item"><a class="nav-link text-s" href="/panel" target="_blank"><i class="mdi mdi-settings-outline mr-1" aria-hidden="true"></i></a></li>
-                {% endif %}
+
                 <li class="nav-item" style="position: relative">
+                    <a class="nav-link text-s" href="/panel" target="_blank">
+                        <i class="mdi mdi-wrench mr-1" aria-hidden="true"></i>
+                    </a>
+                </li>
+
+                <li class="nav-item mr-2" style="position: relative">
                     <a class="nav-link text-s {% if not is_active('inbox*') %}InboxDirectMessage{% endif %}" data-url="{{ route('inbox.index') }}" href="{{ route('inbox.index') }}">
                         <i class="mdi mdi-email-open-outline mr-1" aria-hidden="true"></i>
                         {% if auth_user().unread_messages %}
@@ -85,10 +118,10 @@
                         {% endif %}
                     </a>
                 </li>
-                <li class="nav-item"><a class="nav-link text-s" href="{{ route('logout') }}"  onclick="event.preventDefault(); document.getElementById('logout-form').submit();">{{ __("Logout") }}</a></li>
-               <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                   {{ csrf_field() }}
-               </form>
+
+                <li class="nav-item">
+                    <a class="btn btn-success" href="{{ route('create.index') }}">{{ __("Post listing") }}</a>
+                </li>
             {% endif %}
         </ul>
     </div>

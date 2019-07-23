@@ -29,7 +29,7 @@
 
             {% include 'notifications' %}
 
-            <h1 class="h3 mt-0 pb-2">{{listing.title}}</h1>
+            <h1 class="h3 mt-0 pb-2 text-capitalize">{{listing.title}}</h1>
 
             {% if auth_check() and (listing.user_id == auth_user().id or auth_user().can('edit listing')) %}
                 <div class="mb-3">

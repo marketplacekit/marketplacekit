@@ -1,7 +1,18 @@
+// Fonts
+@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+@import url("https://fonts.googleapis.com/css?family=Nunito:300,400,600");
+
 // Variables
+@import "variables";
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+// Variables
+
+@import 'bootswatch';
 // Bootstrap
 $enable-rounded: false;
-@import '~bootstrap/scss/bootstrap';
 
 .cell-active {
   background: #ffc
@@ -35,7 +46,7 @@ ul.category-list {
   list-style-type: none;
 }
 .container-fluid {
-  max-width: 1170px;
+  max-width: 980px;
 }
 
 .btn-default {
@@ -374,4 +385,20 @@ font-size: 10px;
     height: auto !important;
     visibility: visible;
   }
+}
+
+.navbar-brand {
+  text-transform: lowercase;
+  font-weight: bold;
+  font-family: Nunito;
+}
+
+
+
+.navbar .nav-item.avatar .dropdown-toggle img {
+  height: 22px;
+}
+
+#app {
+  min-height: 100vh;
 }

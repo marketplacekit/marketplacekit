@@ -37,12 +37,12 @@
                         <div class="row mb-4">
                             <div class="col-sm-12">
                                 {% if request('category') %}
-                                    <span class="badge badge-pill badge-secondary mt-1 mr-2">{{ __('Category') }}: {{selected_category.name}} <a href="#"  ic-get-from="{{url_current()}}" class="small" ic-target="#create-content" ic-select-from-response="#create-content"><i class="mdi mdi-close small text-muted"></i></a></span>
+                                    <span class="badge badge-pill badge-secondary mt-1 mr-2">{{ __('Category') }}: {{selected_category.name}} <a href="#"  ic-get-from="{{url_current()}}" class="small" ic-target="#create-content" ic-select-from-response="#create-content"><i class="mdi mdi-close small text-white"></i></a></span>
                                     {{ form_hidden('category', request('category')) }}
                                 {% endif %}
 
                                 {% if request('pricing_model') %}
-                                    <span class="badge badge-pill badge-secondary mt-1 ">{{ __('Listing type') }}: {{selected_pricing_model}} <a href="#"  ic-get-from="{{request().fullUrlWithQuery({'pricing_model' : null}) }}" class="small" ic-target="#create-content" ic-select-from-response="#create-content"><i class="mdi mdi-close small text-muted"></i></a></span>
+                                    <span class="badge badge-pill badge-secondary mt-1 ">{{ __('Listing type') }}: {{selected_pricing_model}} <a href="#"  ic-get-from="{{request().fullUrlWithQuery({'pricing_model' : null}) }}" class="small" ic-target="#create-content" ic-select-from-response="#create-content"><i class="mdi mdi-close small text-white"></i></a></span>
                                     {{ form_hidden('pricing_model', request('pricing_model')) }}
                                 {% endif %}
                             </div>

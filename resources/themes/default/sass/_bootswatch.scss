@@ -4,7 +4,7 @@
 
 // Variables ===================================================================
 
-$web-font-path: "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700" !default;
+$web-font-path: "https://fonts.googleapis.com/css?family=Raleway:300,400,700" !default;
 @import url($web-font-path);
 
 // Navbar ======================================================================
@@ -12,7 +12,36 @@ $web-font-path: "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400
 // Buttons =====================================================================
 
 // Typography ==================================================================
+.text-danger {
+  color: $brand-danger
+}
+.text-warning {
+  color: $brand-warning
+}
 
+.text-muted {
+  color: #00b1b1;
+}
+
+.text-larger {
+  font-size: 1.15em;
+}
+
+@media(min-width: $tablet + 1) {
+
+  .text-left-tablet {
+    text-align: left;
+  }
+
+}
+
+
+
+// $brand-primary: #3097D1;
+// $brand-info: #8eb4cb;
+// $brand-success: #2ab27b;
+// $brand-warning: #cbb956;
+// $brand-danger: #bf5329;
 body {
   -webkit-font-smoothing: antialiased;
 }
@@ -36,3 +65,8 @@ body {
 }
 
 // Containers ==================================================================
+
+.navbar-laravel {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}

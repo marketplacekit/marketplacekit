@@ -1,68 +1,59 @@
-// Cosmo 4.1.1
-// Bootswatch
-
-//
-// Color system
-//
-
-$white:    #fff !default;
-$gray-100: #f8f9fa !default;
-$gray-200: #e9ecef !default;
-$gray-300: #dee2e6 !default;
-$gray-400: #ced4da !default;
-$gray-500: #adb5bd !default;
-$gray-600: #868e96 !default;
-$gray-700: #495057 !default;
-$gray-800: #373a3c !default;
-$gray-900: #212529 !default;
-$black:    #000 !default;
-
-$blue:    #2780E3 !default;
-$indigo:  #6610f2 !default;
-$purple:  #613d7c !default;
-$pink:    #e83e8c !default;
-$red:     #FF0039 !default;
-$orange:  #f0ad4e !default;
-$yellow:  #FF7518 !default;
-$green:   #3FB618 !default;
-$teal:    #20c997 !default;
-$cyan:    #9954BB !default;
-
-$primary:       $blue !default;
-$secondary:     $gray-800 !default;
-$success:       $green !default;
-$info:          $cyan !default;
-$warning:       $yellow !default;
-$danger:        $red !default;
-$light:         $gray-100 !default;
-$dark:          $gray-800 !default;
-
-// Options
-
-$enable-rounded: false !default;
-
 // Body
+$white: #ffffff;
+$body-bg: #f5f8fa;
 
-$body-color:    $gray-800 !default;
+// Social Media
+$facebook: #4863ae;
+$twitter: #46c0fb;
+$google: #DD4B39;
+$github: #4183C4;
 
-// Fonts
+// Brands
+$brand-primary: #3097D1;
+$brand-info: #8eb4cb;
+$brand-success: #2ab27b;
+$brand-warning: #cbb956;
+$brand-danger: #bf5329;
+$text-color: #636b6f;
 
-$font-family-sans-serif: "Segoe UI", "Source Sans Pro", Calibri, Candara, Arial, sans-serif !default;
+// Typography
+$font-family-sans-serif: "Raleway", sans-serif;
+$font-size-base: 0.875rem;
+$line-height-base: 1.6;
 
-$font-size-base: 0.9375rem !default;
+// Transitions
+$transitionSpeed: 0.35s;
 
-$headings-font-weight:   300 !default;
+// Radius'
+$standard-radius: 3px;
 
-// Navbar
+// MQ's
+$mq-tiny: 320px;
+$phone: 480px;
+$bs4-phone: 576px;
+$tablet: 767px;
+$desktop: 992px;
+$lg-desktop: 1200px;
 
-$navbar-dark-hover-color:           rgba($white,1) !default;
+// Margins and Padding
+$num-of-classes: 5;
+$directions: ('top', 'bottom', 'left', 'right');
+$types: ('margin', 'padding');
+$queries: (
+        $mq-tiny: 'xxs',
+        $phone: 'xs',
+        $tablet: 'sm',
+        $desktop: 'md',
+        $lg-desktop: 'lg'
+);
 
-$navbar-light-hover-color:          rgba($black,.9) !default;
+// // Buttons
+$btn-default-color: $text-color;
 
-// Alerts
+// Inputs
+$input-border: lighten($text-color, 40%);
+$input-border-focus: lighten($brand-primary, 25%);
+$input-color-placeholder: lighten($text-color, 30%);
 
-$alert-border-width:                0 !default;
-
-// Progress bars
-
-$progress-height:               0.5rem !default;
+// Panels / Cards
+$panel-default-heading-bg: $white;

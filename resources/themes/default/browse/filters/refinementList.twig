@@ -12,7 +12,7 @@
 		{% for option in facet.options %}
             <div class="col-sm-12">
                 <div class="pretty p-icon  p-smooth">
-                    {{ form_checkbox(facet.field ~ '[' ~ option.value ~ ']', 1, input_get(option.name) == option.name) }}
+                    {{ form_checkbox(facet.field ~ '[' ~ option.value ~ ']', 1, input_get(facet.field)[option.value] == 1) }}
                     <div class="state  p-primary">
                       <i class="icon mdi mdi-check"></i>
                       <label>{{ option.name |trim('"') }}</label>

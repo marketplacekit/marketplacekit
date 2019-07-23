@@ -1,34 +1,26 @@
 {% extends "layouts.app" %}
 
 {% block search_bar %}
-    {% include 'layouts.search_bar.twig' %}
+    <br />
 {% endblock %}
 
 {% block content %}
 
     <div class="container-fluid narrow">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h1 class="card-title h5 mb-0">{{ page.title }}</h1>
+                    </div>
 
-        <div class="row">
-
-            <div class="col-12">
-
-
-                <div class="page-header">
-                    <h1>{{ page.title }}</h1>
-                </div>
-                <br/>
-
-                <div class="row">
-                    <div class="col-12">
+                    <div class="card-body">
                         {{ page.content | raw }}
                     </div>
                 </div>
-
             </div>
-
         </div>
-
-
     </div>
+
 
 {% endblock %}
