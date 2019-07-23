@@ -3,7 +3,7 @@
     <!-- Branding Image -->
     <a class="navbar-brand" href="/{{ current_locale() != default_locale()?current_locale():'' }}">
         {% if not setting('site_logo') %}
-            {{  setting('site_title') }}
+            {{  setting('site_name') }}
         {% else %}
             <img src="{{ setting('logo', '../../logo.png') }}" title="{{ setting('site_title') }}" class="logo"/>
         {% endif %}
@@ -42,6 +42,12 @@
              {%  if setting('custom_homepage') or module_enabled('homepage') %}
              <li class="nav-item {{ active([route(setting('marketplace_index'))]) }}">
                  <a class="nav-link" href="{{ route(setting('marketplace_index')) }}">{{ __("Browse") }}</a>
+             </li>
+             {% endif %}
+			 
+             {%  if module_enabled('usersearch') %}
+             <li class="nav-item {{ active([route('usersearch.index')]) }}">
+                 <a class="nav-link" href="{{ route('usersearch.index') }}">{{ __("Members") }}</a>
              </li>
              {% endif %}
 

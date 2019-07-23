@@ -18,9 +18,13 @@ class FavoritesController extends Controller
     {
         //
 		$user = User::find(auth()->user()->id);
-		$favorites = $user->favorite(Listing::class);
-		#dd($favorites);
-		
+		#$favorites = $user->favorite(Listing::class);
+		$favorites = $user->favorites()->where('favoriteable_type', Listing::class)->with('favoriteable')->get()->mapWithKeys(function ($item) {
+			$tmp = $item['favoriteable'];
+			$tmp['user'] = $item['user'];
+            return [$item['favoriteable']->id=>$tmp];
+        });
+		#dd($favorites->toArray());
 		return view('account.favorites', compact('user', 'favorites'));
     }
 

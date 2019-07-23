@@ -34,11 +34,17 @@
                             {% else %}
                                 {{  form_model(listing, {'route' : ['create.update', listing], 'class' : 'form', 'method' : 'PUT' }) }}
                                     {% if listing.is_verified %}
-                                        {% if not module_enabled('listingfee') %}
+                                        {% if not module_enabled('listingfee') and not module_enabled('memberships') %}
+										    {% if listing.is_draft %}
+                                                <input type="submit" name="undraft" value="{{ __('Re-enable') }}" class="btn  btn-outline-danger">
+                                            {% else %}
                                         <input type="submit" name="draft" value="{{ __('Unpublish') }}" class="btn btn-danger float-right">
+                                            {% endif %}
                                         {% else %}
                                             <div class="float-right text-center">
+											{% if listing.expires_at %}
                                             <small class="text-muted ">{{ __("Expires") }} {{ listing.expires_at |date("jS M 'y") }}</small><br />
+											{% endif %}
                                             {% if listing.is_draft %}
                                                 <input type="submit" name="undraft" value="{{ __('Re-enable') }}" class="btn  btn-outline-danger btn-sm">
                                             {% else %}

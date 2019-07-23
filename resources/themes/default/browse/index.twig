@@ -27,6 +27,7 @@
                     {{ form_hidden('sort', input_get('sort'), {'class' : 'lng'}) }}
                     {{ form_hidden('bounds', input_get('bounds', session('bounds')), {'class' : 'bounds'}) }}
                     <div class="border-top-0 border-left-0 border-bottom-0 border-right-0 rounded-0">
+					<div id="filters-wrapper">
                         <div id="clear-filters">
                             {% if is_filtered %}
                             <div class=" pl-0 pr-0 pb-2">
@@ -41,6 +42,7 @@
                         {% for facet in facets %}
                             {% include 'browse.filters.'~facet.search_ui ignore missing %}
                         {% endfor %}
+					</div>
                         <div class=" ">
                             <button type="submit" class="btn btn-primary btn-block">{{ __("Update results") }}</button>
                         </div>
@@ -199,6 +201,7 @@
                 url: url,
                 success: function (data) {
 
+					$("#filters-wrapper").html($(data).find("#filters-wrapper").html());
                     $("#clear-filters").html($(data).find("#clear-filters").html());
                     $("#category_filter").html($(data).find("#category_filter").html());
                     if (view == 'map') {

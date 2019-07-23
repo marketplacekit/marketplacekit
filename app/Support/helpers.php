@@ -92,6 +92,14 @@ function flatten($elements, $depth) {
     return $result;
 }
 
+function filter_message($message) {
+    if(setting('messaging_disable_contact_sharing')) {
+        $message = preg_replace('/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i', '(phone hidden)', $message); // extract email
+        $message = preg_replace('/(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?/', '(email hidden)', $message);
+    }
+    return $message;
+}
+
 function metersToMiles($i) {
      return number_format($i*0.000621371192, 0) . ' miles';
 }
@@ -208,6 +216,9 @@ function _l($string) {
 
 function _p($string, $number = 2) {
 
+    if(!$string) {
+        return "";
+    }
     if((int) $number == 1) {
         return __($string);
     }
@@ -241,6 +252,9 @@ function asyncWidget($widget_class, $params = []) {
     }
 }
 
+function get_query_string() {
+    return app('request')->getQueryString();
+}
 function module_enabled($alias) {
     $module = \Module::findByAlias($alias);
     return (bool) ($module && $module->enabled());

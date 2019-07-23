@@ -11,5 +11,6 @@ class Filter extends Model
     protected $casts = [
           'form_input_meta' => 'array',
           'categories' => 'array',
+          'is_hidden' => 'boolean',
       ];
 }

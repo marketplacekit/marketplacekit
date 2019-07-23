@@ -16,7 +16,7 @@ class PurchaseHistoryController extends Controller
     public function index()
     {
         //
-		$orders = Order::where('user_id', auth()->user()->id)->orderBy('id', 'DESC')->paginate(15);
+		$orders = Order::with('listing', 'listing.user')->where('user_id', auth()->user()->id)->orderBy('id', 'DESC')->paginate(15);
 		return view('account.purchase_history.index', compact('orders'));
     }
 

@@ -16,6 +16,7 @@ use Nahid\Talk\Conversations\Conversation;
 use Talk;
 use Validator;
 use Mail;
+use App\Support\AdminNotification;
 
 class InboxController extends Controller
 {
@@ -85,6 +86,21 @@ class InboxController extends Controller
 
         Mail::to($user->email)->send(new ReceiveMessage($user, auth()->user(), $conversationId));
 
+		#Does message contain contact info?
+        if(setting('messaging_monitor_contact_sharing')) {
+
+            $message = $request->input('message');
+            $message = preg_replace('/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i','(phone hidden)', $message); // extract email
+            $message = preg_replace('/(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?/','(email hidden)', $message);
+
+            if($message != $request->input('message')) {
+                AdminNotification::notify(
+                    "Contact Sharing",
+                    "The user $user->email has shared his contact details using direct message."
+                );
+            }
+        }
+
         return redirect(route('inbox.show', $conversationId));
     }
 
@@ -98,7 +114,7 @@ class InboxController extends Controller
         session(['conversation_id' => $id]);
         #$inboxes = Talk::getInbox();
         $message_count = Message::where('conversation_id', $id)->count();
-        $limit = 20;
+        $limit = 2000;
         $offset = max($message_count-$limit,0);
         $conversations = Talk::getConversationsAllById($id, $offset, $limit);
 

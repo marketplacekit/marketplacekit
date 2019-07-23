@@ -6,11 +6,14 @@
             <div class="repeater-default">
                 <div>
                     <div class="row mb-2">
-                        <div class="col-6 small">
+                        <div class="col-4 small">
                             {{ __("Name") }}
                         </div>
                         <div class="col-3 small">
                             {{ __("Price") }}
+                        </div>
+						<div class="col-2 small">
+                            {{ __("Max Qty") }}
                         </div>
                     </div>
                 </div>
@@ -20,11 +23,14 @@
                     {% if listing.additional_options | length == 0 %}
                         <div data-repeater-item>
                             <div class="row mb-2">
-                                <div class="col-6">
-                                    <input type="text" name="name" placeholder="{{ __("e.g.  Gift wrap") }}" class="form-control"/>
+                                <div class="col-4">
+                                    <input type="text" name="name" placeholder="{{ __("e.g.  Gift wrap") }}" class="form-control  form-control-sm"/>
                                 </div>
                                 <div class="col-3">
-                                    <input type="text" name="price" placeholder="{{ __("0.00") }}" class="form-control"/>
+                                    <input type="text" name="price" placeholder="{{ __("0.00") }}" class="form-control  form-control-sm"/>
+                                </div>
+								<div class="col-2">
+                                    <input type="text" name="max_quantity" value="" class="form-control w-100 form-control-sm"/>
                                 </div>
                                 <div class="col-3">
                                 <span data-repeater-delete class="btn btn-danger btn-sm">
@@ -38,11 +44,14 @@
 
                             <div data-repeater-item>
                                 <div class="row mb-2">
-                                    <div class="col-6">
-                                        <input type="text" name="name" value="{{additional_option.name }}" class="form-control"/>
+                                    <div class="col-4">
+                                        <input type="text" name="name" value="{{additional_option.name }}" class="form-control form-control-sm"/>
                                     </div>
                                     <div class="col-3">
-                                        <input type="text" name="price" value="{{additional_option.price }}" class="form-control"/>
+                                        <input type="text" name="price" value="{{additional_option.price }}" class="form-control form-control-sm"/>
+                                    </div>                                    
+									<div class="col-2">
+                                        <input type="text" name="max_quantity" value="{{additional_option.max_quantity }}" class="form-control form-control-sm"/>
                                     </div>
                                     <div class="col-3">
 			<span data-repeater-delete class="btn btn-danger btn-sm">

@@ -28,7 +28,7 @@
                 {% include 'profile.partials.sidebar' %}
             </div>
             <div class="col-sm-9 ">
-                <h3 class="h5">{{ __(":name's reviews", {'name' : profile.display_name}) }}</h3>
+                <h3 class="h5">{{ __(":name's reviews", {'name' : profile.display_name}) }}  <a href="{{route('profile.reviews.create', profile)}}" class="small">{{ __("(Leave review)") }}</a></h3>
                 <hr/>
                 <div class="card mb-5">
                     <div class="card-body p-0">
@@ -42,7 +42,7 @@
                                             <img class="rounded-circle img-fluid" style="width: 75px" src="{{comment.commenter.avatar }}"/>
                                         </div>
                                         <div class="col-8">
-                                            <h6 class="pt-2">{{comment.commenter.name}}
+                                            <h6 class="pt-2">{{comment.commenter.display_name}}
                                                 {{ include('components.star_rating', {rating: comment.rating}) }}
                                             </h6>
                                             <span class="text-muted">{{comment.created_at.toFormattedDateString()}}</span>

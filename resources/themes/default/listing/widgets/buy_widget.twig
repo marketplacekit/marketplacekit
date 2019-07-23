@@ -41,8 +41,8 @@
 
                     {% if listing.stock > 1 %}
                         <div class="row mt-3">
-                            <div class="col-sm-12">
-                                {{ __('Quantity') }}
+                            <div class="col-sm-12 text-capitalize">
+                                {{ _l(listing.pricing_model.quantity_label) | default(__('Quantity')) }}
                             </div>
                             <div class="col-sm-4">
                                 {{ form_select('quantity', array_combine(range(1, listing.stock), range(1, listing.stock)), null, {'class' : 'form-control form-control-sm', 'required':'required'}) }}

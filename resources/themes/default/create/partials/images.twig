@@ -87,6 +87,7 @@
 
 
 <script>
+$(function(){
 
         $('#fine-uploader-gallery').fineUploader({
             template: 'qq-template-gallery',
@@ -130,14 +131,15 @@
                     if (success) {
                         console.log(response)
                         for(var i = 0; i < response.length; i++) {
-                            $('#photo_inputs').append("<input type='hidden' name='photos[" + i + "]' value=' " + response[i].thumbnailUrl + " '/>");
+                            $('#photo_inputs').append("<input type='hidden' name='photos[" + i + "]' value='" + JSON.stringify(response[i]) + "'/>");
                         }
                         //$('#photo_inputs').append("<input type='hidden' name='photos[" + id + "]' value=' " + response.path + " '/>");
                     }
                 },
                 onComplete: function(id, name, response) {
                     if (response.success) {
-                        $('#photo_inputs').append("<input type='hidden' name='photos[" + id + "]' value=' " + response.path + " '/>");
+						console.log(JSON.stringify(response));
+                        $('#photo_inputs').append("<input type='hidden' name='photos[" + id + "]' value='" + JSON.stringify(response) + "'/>");
                     }
                 },
                 onStatusChange: function(id, oldStatus, newStatus) {
@@ -148,4 +150,6 @@
             }
         });
 
+
+});
 </script>

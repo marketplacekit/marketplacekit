@@ -41,7 +41,7 @@
                                                     <i class="fa fa-envelope-open-o mr-1 text-danger" aria-hidden="true"></i>
                                                 {% endif %}
                                             </strong>
-                                            {{ inbox.thread.message | str_limit(140)}} <br/>
+                                            {{ inbox.thread.message  | filter_message | str_limit(140)}} <br/>
                                             <small class="text-muted text-align-right">{{inbox.thread.created_at.diffForHumans()}}</small>
                                         </p>
                                     </div>

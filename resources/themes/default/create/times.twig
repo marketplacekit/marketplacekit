@@ -24,7 +24,7 @@
                         <div class="row">
                             <div class="col-sm-12">
 
-                                <form method="POST" ic-post-to="{{ url_current() }}" ic-trigger-on="change" ic-target="#editor_area" ic-select-from-response="#editor_area">
+                                <form method="POST" id="times-selector" ic-post-to="{{ url_current() }}" ic-trigger-on="mouseleave" ic-target="#editor_area" ic-select-from-response="#editor_area" ic-trigger-delay="500ms">
                                     {{ csrf_field() }}
 
                                     <table class="table table-bordered table-sm">

@@ -1,5 +1,5 @@
 <div class="card " id="form-selector" >
-    <form method="GET" class="checkout-form" ic-get-from="{{ url_current() }}" ic-target="#form-selector" ic-select-from-response="#form-selector" ic-replace-target="false" ic-trigger-on="changes" ic-trigger-delay="50ms" ic-indicator="#indicator">
+    <form method="GET" class="checkout-form" ic-get-from="{{ url_current() }}" ic-target="#form-selector" ic-select-from-response="#form-selector" ic-replace-target="false" ic-trigger-on="change" ic-trigger-delay="50ms" ic-indicator="#indicator">
 	{{ csrf_field() }}
 	<div class="card-header">
         {{ __("Select your dates") }}
@@ -35,7 +35,7 @@
                             {{ __('Quantity') }}
                         </div>
                         <div class="col-sm-4">
-                            {{ form_select('quantity', array_combine(range(1, listing.stock), range(1, listing.stock)), null, {'class' : 'form-control form-control-sm', 'required' : 'required'}) }}
+                            {{ form_select('quantity', array_combine(range(1, listing.stock), range(1, listing.stock)), input_get('quantity'), {'class' : 'form-control form-control-sm', 'required' : 'required'}) }}
                         </div>
                     </div>
                 {% else %}
@@ -49,10 +49,16 @@
                             {% for k, additional_option in listing.additional_options  %}
                                 <div class="form-check">
 
-                                    <input class="form-check-input" required id="additional_option_{{ additional_option.id }}" {{ (input_has('additional_option.'~additional_option.id))?'checked=checked':'' }} name="additional_option[{{ additional_option.id }}]" type="checkbox" value="1">
+                                    <input class="form-check-input" id="additional_option_{{ additional_option.id }}" {{ (input_has('additional_option.'~additional_option.id))?'checked=checked':'' }} name="additional_option[{{ additional_option.id }}]" type="checkbox" value="1">
                                     <label class="form-check-label" for="additional_option_{{ additional_option.id }}">
                                         {{ additional_option.name }} <span class="text-muted">({{ format_money(additional_option.price, listing.currency) }})</span>
                                     </label>
+									
+									{% if additional_option.max_quantity > 1 and input_has('additional_option.' ~ additional_option.id) %}
+										{{ form_select('additional_options_meta['~additional_option.id~'][quantity]', array_combine(range(1, additional_option.max_quantity), range(1, additional_option.max_quantity)), input_get("additional_options_meta."~ additional_option.id ~ ".quantity"), {'class' : 'form-control form-control-sm'}) }}
+										<br />
+									{% endif %}
+										
                                 </div>
                             {% endfor %}
                         </div>
@@ -63,10 +69,13 @@
                     <hr />
                     {% for item in price_items %}
                     <div class="row">
-                        <div class="col-8 mt-1">
+                        <div class="col-7 mt-1">
                             <span>{{item.label}}</span>
+							{% if item.notice %}
+								<span class="" data-toggle="tooltip" data-placement="top" title="{{ item.notice }}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>
+							{% endif %}
                         </div>
-                        <div class="col-4 mt-1 text-right">
+                        <div class="col-5 mt-1 text-right">
                             <span>{{item.price}}</span>
                         </div>
                     </div>
@@ -76,10 +85,10 @@
                 {% if units %}
 
                 <div class="row">
-                    <div class="col-8 mt-1">
+                    <div class="col-7 mt-1">
                         <span>{{ __('Total') }}</span>
                     </div>
-                    <div class="col-4 mt-1 text-right">
+                    <div class="col-5 mt-1 text-right">
                         <span>{{format_money(total, listing.currency)}}</span>
                     </div>
                 </div>

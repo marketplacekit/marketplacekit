@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Models;
+use Sofa\Eloquence\Eloquence; // base trait
+use Sofa\Eloquence\Metable; // extension trait
+use Setting;
 use Phoenix\EloquentMeta\MetaTrait;
 
 class Role extends \Spatie\Permission\Models\Role

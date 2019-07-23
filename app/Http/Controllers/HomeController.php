@@ -54,6 +54,7 @@ class HomeController extends Controller
 
         MetaTag::set('title', Setting::get('home_title'));
         MetaTag::set('description', Setting::get('home_description'));
+		MetaTag::set('keywords', Setting::get('site_keywords'));
 
         return view('home.index', $data);
 		

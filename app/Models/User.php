@@ -24,6 +24,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use Gerardojbaez\Laraplans\Contracts\PlanSubscriberInterface;
 use Gerardojbaez\Laraplans\Traits\PlanSubscriber;
 use Depsimon\Wallet\HasWallet;
+use Spatie\SchemalessAttributes\SchemalessAttributes;
 
 class User extends Authenticatable implements BannableContract, JWTSubject, PlanSubscriberInterface
 {
@@ -89,7 +90,7 @@ class User extends Authenticatable implements BannableContract, JWTSubject, Plan
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'avatar', 'bio', 'display_name', 'gender', 'phone', 'country', 'unread_messages', 'username', 'provider', 'provider_id'
+        'name', 'email', 'password', 'avatar', 'bio', 'display_name', 'gender', 'phone', 'city', 'region', 'country', 'unread_messages', 'username', 'provider', 'provider_id'
     ];
 
     /**
@@ -98,11 +99,25 @@ class User extends Authenticatable implements BannableContract, JWTSubject, Plan
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'facebook_app_key', 'facebook_app_secret', 'provider', 'provider_id', 'email'
+        'password', 'remember_token', 'facebook_app_key', 'facebook_app_secret', 'provider', 'provider_id', 'email', 'location'
     ];
     protected $append = [
         'first_name'
     ];
+	
+	public $casts = [
+        'filters' => 'array',
+    ];
+	
+	public function getFiltersAttribute(): SchemalessAttributes
+    {
+        return SchemalessAttributes::createForModel($this, 'filters');
+    }
+
+    public function scopeWithFilters(): Builder
+    {
+        return SchemalessAttributes::scopeWithSchemalessAttributes('filters');
+    }
 	
 	/*public function getSlugAttribute(): string
     {
@@ -120,6 +135,19 @@ class User extends Authenticatable implements BannableContract, JWTSubject, Plan
         return $this->hasMany('App\Models\PaymentGateway');
     }
 	
+	public function getShortBioAttribute() {
+		$description = "";
+		try {
+			$html = new \Html2Text\Html2Text($this->bio);
+			$description = $html->getText();
+			$description = str_limit($description, 160);
+		} catch(\Exception $e) {
+		
+		}
+		
+		return $description;
+    }
+	
 	public function payment_gateway($gateway) {
 		return $this->payment_gateways()->where('name', $gateway)->orderBy('created_at', 'DESC')->first();
 	}
@@ -129,6 +157,10 @@ class User extends Authenticatable implements BannableContract, JWTSubject, Plan
         return $this->hasMany(Comment::class, 'seller_id');
     }
 
+    public function getCanAcceptPaymentsAttribute($value) {
+		return $value;
+	}
+	
     public function getDisplayNameAttribute($value) {
 		if(!$value)
 			$value = $this->name;
@@ -201,5 +233,23 @@ class User extends Authenticatable implements BannableContract, JWTSubject, Plan
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token, $this));
+    }
+	
+	
+    public function orders() {
+        return $this->hasMany('App\Models\Order', 'seller_id');
+    }
+
+    public function getOpenOrdersAttribute() {
+        return $this->orders()->whereStatus('open')->count();
+    }
+
+	public function getRequiresPaymentInformationAttribute() {
+        if($this->listings()->count() > 0) {
+            if(!$this->can_accept_payments) {
+                return true;
+            }
+        }
+        return false;
     }
 }

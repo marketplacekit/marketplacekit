@@ -29,7 +29,7 @@
                         </td>
                         <td class="align-middle">{{ item.hash }}</td>
                         <td class="align-middle">{{ item.amount }}&nbsp;{{ item.currency }}</td>
-                        <td class="align-middle d-none d-sm-table-cell">{{ item.created_at.toFormattedDateString() }}</td>
+                        <td class="align-middle d-none d-sm-table-cell" title="{{ item.created_at }}">{{ item.created_at.toFormattedDateString() }}</td>
                         <td class="align-middle">{{ _l(item.status) }}</td>
                         <td class="align-middle text-right d-none d-sm-table-cell"><a
                                     href="{{ route('account.orders.show', item) }}">{{ __('View') }}&nbsp;<i

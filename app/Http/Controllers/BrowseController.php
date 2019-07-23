@@ -47,13 +47,22 @@ class BrowseController extends Controller
         */
         $filters = Filter::where('is_hidden', 0)->where('is_searchable', 1)->orderBy('position', 'ASC')->get();
         $facet_groups = [];
+		$category_id = request('category', 0) ? :0;
+		
         foreach($filters as $filter) {
+		
+		    if($filter->is_category_specific && $filter->categories && is_array($filter->categories)){
+				if(!in_array($category_id, $filter->categories)) {
+					continue;
+				}
+            }
+			
             $facet_group = [];
             $facet_group['field'] = $filter->field;
             $facet_group['name'] = $filter->name;
             $facet_group['search_ui'] = $filter->search_ui;
             $listings = new Listing();
-            if(in_array($filter->search_ui, ['refinementList', 'menuSelect'])) {
+            if(in_array($filter->search_ui, ['refinementList', 'menuSelect', 'colorSelect'])) {
                 $facet_group['options'] = [];
                 if($filter->form_input_meta && isset($filter->form_input_meta['values'])) {
                     foreach($filter->form_input_meta['values'] as $k => $v) {
@@ -99,6 +108,11 @@ class BrowseController extends Controller
             $listings = $listings->search($request->get('q'));
             #dd(debug_backtrace ());
         }
+		if($request->get('clear')) {
+			$request->session()->forget(['lat', 'lng', 'bounds', 'location']);
+
+            #dd(debug_backtrace ());
+        }
         if($request->get('price_min')) {
             $listings = $listings->where('price', '>=', (int) $request->get('price_min'));
         }
@@ -106,7 +120,10 @@ class BrowseController extends Controller
             $listings = $listings->where('price', '<=', (int) $request->get('price_max'));
         }
 
-        $listings = $listings->with('pricing_model')->with('user');
+        $listings = $listings->with('pricing_model')->whereHas('user', function ($query) {
+			$query->whereNull('banned_at')->whereNull('deleted_at'); 
+		});
+		$listings = $listings->with('user');
 
         $filters = Filter::orderBy('position', 'ASC')->where('is_hidden', 0)->where('is_default', 0)->get();
         $is_filtered = false;
@@ -114,6 +131,7 @@ class BrowseController extends Controller
             $is_filtered = true;
         }
 
+		$category_id = $request->get('category', 0) ? :0; //get the category
         foreach($filters as $filter) {
             if($filter->default){
                 continue;
@@ -121,7 +139,7 @@ class BrowseController extends Controller
             if(in_array($filter->search_ui, ['menuSelect']) && $request->input($filter->field)) {
                 $listings = $listings->where('meta->' . $filter->field, $request->input($filter->field));
                 $is_filtered = true;
-            } elseif(in_array($filter->search_ui, ['refinementList']) && $request->input($filter->field)) {
+            } elseif(in_array($filter->search_ui, ['refinementList', 'colorSelect']) && $request->input($filter->field)) {
 
                 $filter_values = collect($request->input($filter->field))->filter(function ($value, $key) {
                     return $value == 1;
@@ -157,7 +175,7 @@ class BrowseController extends Controller
         $category_id = $request->get('category', 0) ? :0; //get the category
 
 		//get listings with category and child categories
-        $full_categories = Category::all();
+        $full_categories = Category::orderBy('order', 'ASC')->all();
         $categories = $this->getSearchableCategories($full_categories, $category_id); //get all child categories
 
         $listings = $listings->whereIn('category_id', $categories);
@@ -165,17 +183,31 @@ class BrowseController extends Controller
         $listings = $listings->whereNotNull('lng');
         $listings = $listings->whereNotNull('location');
 
+		if($request->input('tagged')) {
+            $tagged = $request->input('tagged');
+            $listings = $listings->whereJsonContains('tags', $tagged);
+        }
+
         $this->categories = $categories;
         $category = Category::find($category_id); //current category
 
-        $level_categories = Category::where('parent_id', $category_id)->get(); //categories on this level
+        $level_categories = Category::where('parent_id', $category_id)->orderBy('order', 'ASC')->get(); //categories on this level
         $parent_categories = $this->getParentCategories($category_id);
         if(count($level_categories) == 0 && $category) {
-            $level_categories = Category::where('parent_id', $category->parent_id)->get();
+            $level_categories = Category::where('parent_id', $category->parent_id)->orderBy('order', 'ASC')->get();
             $parent_categories = Category::whereIn('id', $parent_categories)->get();
         } else {
             $parent_categories = Category::whereIn('id', array_merge([$category_id], $parent_categories))->get();
         }
+		
+		if(setting('categories_hide_empty')) {
+			//check which categoreis we need to show
+			$count_categories = $this->getCategoryCounts();
+			$parent_categories = $this->removeEmptyCategories($parent_categories, $count_categories);
+			$level_categories = $this->removeEmptyCategories($level_categories, $count_categories);
+			#dev_dd($parent_categories, $level_categories);
+		}
+		
         $data['parent_categories'] = $parent_categories;
         $data['level_categories'] = $level_categories;
         $data['category'] = $category;
@@ -229,6 +261,8 @@ class BrowseController extends Controller
             }
 
             $listings = $listings->distanceSphereValue('location', new Point($lat, $lng));
+        } elseif($request->input('sort') == 'distance') {
+			$listings = $listings->distanceSphereValue('location', new Point($lat, $lng));
         }
 
         $data['view'] = $request->get('view', setting('default_view', 'map'));
@@ -236,10 +270,19 @@ class BrowseController extends Controller
         $data['lat'] = $lat;
         $data['lng'] = $lng;
 
+        #$sort = $request->input('sort')?:'date';
+		if($request->input('q') && !$request->input('sort')) {
+			$sort = 'relevance';
+		} else {
         $sort = $request->input('sort')?:'date';
+		}
+		
         $listings = $listings->orderByRaw('IF(priority_until>NOW(), 1, 0) DESC');
         if($sort == 'date') {
             $listings = $listings->orderBy('created_at', 'DESC');
+        }
+		if($sort == 'ending_soon') {
+            $listings = $listings->orderByRaw('ISNULL(ends_at), ends_at ASC')->orderBy('expires_at', 'ASC');
         }
         if($sort == 'price_lowest_first') {
             $listings = $listings->orderBy('price', 'ASC');
@@ -258,6 +301,17 @@ class BrowseController extends Controller
         $data['params'] = $request->all();
         $data['sort'] = $sort;
 
+		$sort_options = [];
+		if($request->input('q')) {
+			$sort_options['relevance'] = __('Relevance');
+		}
+		$sort_options['date'] = __('Most recent first');
+		$sort_options['ending_soon'] = __('Ending soonest');
+		$sort_options['price_lowest_first'] = __('Price: low to high');
+		$sort_options['price_highest_first'] = __('Price: high to low');
+		$sort_options['distance'] = __('Nearest first');
+		$data['sort_options'] = $sort_options;
+
         #dd($listings->get());
         $data['listings'] = $listings->paginate(24);
         $data['is_filtered'] = $is_filtered;
@@ -266,6 +320,68 @@ class BrowseController extends Controller
         return $data;
     }
 
+	private function recursiveSearch(&$value) {
+		$value['child_ids'][] = $value['id'];
+		if (isset($value['child'])) {
+			foreach ($value['child'] as &$child) {
+				$id = $this->recursiveSearch($child);
+				if ( is_array($id) ) {
+					$value['child_ids'] = array_merge($value['child_ids'], $id);
+				} else {
+					$value['child_ids'][] = $id;
+				}
+			}
+			$this->category_childs[$value['id']] = $value['child_ids'];
+			return $value['child_ids'];
+		}
+	}
+	
+    private function getCategoryCounts() {
+	
+		$categories = Category::all();
+		$counts = [];
+		foreach($categories as $category) {
+			$listings_count = Listing::where('category_id', $category->id)->active()->count();
+			$counts[$category->id] = $listings_count;
+		}
+		
+        $categories = Category::orderBy('order', 'ASC')->nested()->get();
+        $categories = [
+			'id' => 0,
+			'child' => $categories
+		];
+		#dev_dd($categories);
+		$this->recursiveSearch($categories);
+		
+		$category_listing_counts = [];
+		foreach($this->category_childs as $category_id => $values) {
+			$category_listing_counts[$category_id] = 0;
+			foreach($values as $value) {
+				$category_listing_counts[$category_id] += $counts[$value];
+			}
+			
+		}
+		
+		return $category_listing_counts;
+	
+	}
+	
+    private function removeEmptyCategories($categories, $counts) {
+	
+		$empty_categories = [];
+		foreach($categories as $category) {
+		
+			$listings_count = $counts[$category->id];
+			if($listings_count == 0) {
+				$empty_categories[] = $category->id;
+			}
+		}
+		
+		return $categories->reject(function($category) use($empty_categories) {
+			return in_array($category->id, $empty_categories);
+		});
+	}
+	
     private function getParentCategories($category_id, $parents = []) {
         $category = Category::find($category_id);
         if($category) {
@@ -294,4 +410,12 @@ class BrowseController extends Controller
         return $categories;
     }
 
+	
+	public function categories() {
+	
+	    $categories = Category::nested()->get();
+        $data['categories'] = $categories;
+        $data['load_time'] = round(microtime(true) - LARAVEL_START);
+        return $data;
+	}
 }

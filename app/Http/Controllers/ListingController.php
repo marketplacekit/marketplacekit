@@ -41,8 +41,14 @@ class ListingController extends Controller
 
 		$breadcrumbs = [];
 		$category = $listing->category;
-		while($category = $category->child) {
-			$breadcrumbs[] = $category;
+		if($category) {
+			$i = 0;
+			while($category = $category->child) {
+				$breadcrumbs[] = $category;
+				$i ++;
+				if($i == 5)
+					break;
+			}
 		}
         $data['breadcrumbs'] = array_reverse($breadcrumbs);
 
@@ -51,18 +57,40 @@ class ListingController extends Controller
             Mapper::map($listing->location->getLat(), $listing->location->getLng(), ['zoom' => 14, 'zoomControl' => false, 'streetViewControl' => false, 'mapTypeControl' => false, 'center' => true, 'marker' => true]);
             $data['has_map'] = true;
         }
+		$listing->load('shipping_options');
+		$listing->load('additional_options');
 
         $data['listing'] = $listing;
+        $data['seller'] = $listing->user;
+		$data['filters'] = Filter::orderBy('position', 'ASC')->get();
         #$data['comments'] = $listing->comments()->orderBy('created_at', 'DESC')->limit(5)->get();
         #$data['comment_count'] = $listing->totalCommentCount();
 
         MetaTag::set('title', $listing->title);
         MetaTag::set('description', $listing->description);
+		#dd($listing->thumbnail);
         MetaTag::set('image', url($listing->thumbnail));
         if($request->has('iframe')) {
             return view('listing.iframe', $data);
         }
         return view('listing.show', $data);
+    }
+
+	public function card($listing, $slug, Request $request) {
+		
+        $data = [];
+        $visible_listing = $listing->is_published && $listing->is_admin_verified && !$listing->is_disabled;
+        if(!$visible_listing && !$can_edit) {
+            return abort(404);
+        }
+
+        $data['listing'] = $listing;
+        $data['seller'] = $listing->user;
+		
+        MetaTag::set('title', $listing->title);
+        MetaTag::set('description', $listing->description);
+        MetaTag::set('image', url($listing->thumbnail));
+        return view('listing.card', $data);
     }
 
     public function star($listing) {
@@ -87,7 +115,8 @@ class ListingController extends Controller
             if(!$listing->is_admin_verified) {
                 $listing->is_admin_verified = Carbon::now();
                 $listing->is_disabled = null;
-                Mail::to(auth()->user()->email)->send(new ListingVerified($listing));
+                #Mail::to(auth()->user()->email)->send(new ListingVerified($listing));
+                Mail::to($listing->user->email)->send(new ListingVerified($listing));
             }
 
             $listing->save();

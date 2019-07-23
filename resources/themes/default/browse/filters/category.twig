@@ -1,4 +1,4 @@
-{% if level_categories|length > 1 %}
+{% if level_categories|length > 1 or (setting('categories_hide_empty') or level_categories|length > 0) %}
     <div class="">
         <h6 class="mt-0 text-capitalize">{{ _l(facet.name) }}</h6>
 
@@ -7,7 +7,8 @@
                 {% for parent_category in parent_categories %}
                 <a data-category="{{ parent_category.parent_id }}" href="#{{ request().fullUrlWithQuery({"category" : parent_category.parent_id}) }}" class="category-link text-capitalize"><i class="icon mdi mdi-chevron-left"></i>{{ _l(parent_category.name)}}</a><br />
                 {% endfor %}
-                <ul class="list-unstyled pl-3">
+				
+                <ul class="list-unstyled pl-{{ (parent_categories|length > 0)?'4':'3' }}">
                     {% for level_category in level_categories %}
                         <li><a data-category="{{ level_category.id }}" href="{{ request().fullUrlWithQuery({"category" : level_category.id}) }}" class="category-link text-capitalize text-{{ (category and level_category.id == category.id)?'primary':'muted' }}">{{ _l(level_category.name) }}</a></li>
                     {% endfor %}

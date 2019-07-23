@@ -42,7 +42,7 @@
                                                 <div class="col-7 {{ (recipient.id == msg.sender.id )?'':'offset-3' }}">
                                                     <div class="bg-{{ (recipient.id == msg.sender.id )?'light':'white border' }} p-3 rounded">
                                                         <p>
-                                                            {{msg.message}}
+                                                            {{msg.message | filter_message}}
                                                         </p>
                                                     </div>
                                                     <small class="text-muted text-align-right">{{msg.created_at.toDayDateTimeString()}}</small>

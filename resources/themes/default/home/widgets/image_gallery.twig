@@ -9,7 +9,7 @@
         {% for item in widget.metadata %}
 
         <div class="col-{{ item['columns'] }} mb-4 text-center">
-            <a href="{{ item['link'] }}" style="height: 100%;"><img class="img-fluid" style="object-fit: cover;height: 100%;width: 100%;" src="{{item['image'] }}" /></a>
+            <a href="{{ item['link'] }}" target="{{ (item.target)?item.target:'_self' }}" style="height: 100%;"><img class="img-fluid" style="object-fit: cover;height: 100%;width: 100%;" src="{{item['image'] }}" /></a>
         </div>
 
         {% endfor %}

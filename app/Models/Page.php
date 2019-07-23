@@ -3,6 +3,7 @@
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
+use Cviebrock\EloquentSluggable\Sluggable;
 
 class Page extends Model {
 
@@ -12,6 +13,16 @@ class Page extends Model {
     protected $fillable = ['title'];
     protected $appends = array('last_modified');
 
+	use Sluggable;
+	public function sluggable()
+    {
+        return [
+            'slug' => [
+                'source' => 'title'
+            ]
+        ];
+    }
+	
     public static function boot()
     {
         parent::boot();

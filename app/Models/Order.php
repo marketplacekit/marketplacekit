@@ -42,6 +42,7 @@ class Order extends Model
             //'sellers' => ['listings.user_id','listings.id'],
         ],
     ];
+    protected $appends = ['hash'];
 
     public function getHashAttribute($value) {
         return $this->getRouteKey();
@@ -55,6 +56,10 @@ class Order extends Model
       return $this->belongsTo('App\Models\PaymentGateway');
     }
 
+    public function seller() {
+      return $this->belongsTo('App\Models\User', 'seller_id');
+    }
+	
     public function user() {
       return $this->belongsTo('App\Models\User');
     }

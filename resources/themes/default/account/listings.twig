@@ -10,6 +10,7 @@
             <table class="table table-sm border-top-0">
                 <thead class="thead-light">
                 <tr>
+                    <th scope="col" style="width: 90px"></th>
                     <th scope="col">{{ __('Title') }}</th>
                     <th scope="col" class="d-none d-sm-block">{{ __('Date Created') }}</th>
                     <th scope="col"></th>
@@ -18,7 +19,13 @@
                 <tbody>
                 {% for i, item in listings %}
                     <tr>
-                        <td><a href="{{ item.url }}" class="text-dark">{{ item.title | str_limit(40) }}</a></td>
+                        <td><a href="{{ item.url }}" class="text-dark"><img class=" img-thumbnail p-0" ssrc="/images/ajax-loader.gif" src="{{ item.thumbnail }}?w=300&h=255" alt="{{item.title}}" style="width: 90px"></a></td>
+                        <td><a href="{{ item.url }}" class="text-dark">{{ item.title | str_limit(40) }}</a> {% if item.is_draft %}<small class="badge badge-secondary">draft</small>{% endif %}<br />
+						
+						{% if item.stock is not null %}
+							<i class="text-muted">{{item.stock}} in stock</i>
+						{% endif %}
+						</td>
                         <td class="d-none d-sm-block">{{ item.created_at.toFormattedDateString() }}</td>
                         <td class="text-right"><a href="{{ item.edit_url }}">{{ __('edit') }}&nbsp;<i class="mdi mdi-chevron-double-right"></i></a></td>
                     </tr>

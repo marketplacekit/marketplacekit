@@ -22,6 +22,12 @@
         </div>
 
 
+		<div class="form-group">
+			<label>{{ __('Listing ends at') }} <small class="text-muted">({{ __("Leave empty for no end date") }})</small></label>
+			{{ form_text('ends_at', null, {'class' : 'form-control'}) }}
+		</div>
+
+
     </div>
 
 </div>
@@ -60,6 +66,17 @@
 </div>
 
 <script>
+    if($("input[name='ends_at']").length) {
+		flatpickr("input[name='ends_at']", {
+  enableTime: false,
+  defaultDate : null,
+  minDate : new Date(),
+  altInput: true,
+    altFormat: "F j, Y",
+    dateFormat: "Y-m-d"
+});
+		
+	}
     if($('#description').length) {
         var quill = new Quill('#description', {
             placeholder: '',

@@ -30,5 +30,9 @@ class ReportedListing extends Model
     {
         return $this->belongsTo('\App\Models\User');
     }
+    public function listing()
+    {
+        return $this->belongsTo('\App\Models\Listing');
+    }
 
 }

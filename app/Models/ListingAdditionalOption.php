@@ -21,7 +21,7 @@ class ListingAdditionalOption extends Model
 
 
     protected $fillable = [
-        'position', 'name', 'price', 'listing_id'
+        'position', 'name', 'price', 'listing_id', 'min_quantity', 'max_quantity'
     ];
    
 }

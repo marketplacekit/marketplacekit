@@ -40,8 +40,9 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => 'jai
 
     Route::get('/', 'HomeController@index')->name('home');
     Route::get('/browse', 'BrowseController@listings')->name('browse');
+    Route::get('/categories', 'BrowseController@categories')->name('categories');
 
-    Route::get('/pages/{slug}', 'PageController@index')->name('page');
+    Route::get('/pages/{slug?}', 'PageController@index')->name('page');
 	Route::get('/contact', 'ContactController@index')->name('contact');
 	Route::post('/contact', 'ContactController@postIndex')->name('contact.post');
 
@@ -52,10 +53,12 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => 'jai
 	Route::group(['prefix' => 'listing'], function()
 	{
 		Route::get('/{listing}/{slug}', 'ListingController@index')->name('listing');
+		Route::get('/{listing}/{slug}/card', 'ListingController@card')->name('listing.card');
 		Route::get('/{listing}/{slug}/spotlight', 'ListingController@spotlight')->middleware('auth.ajax')->name('listing.spotlight');
 		Route::get('/{listing}/{slug}/verify', 'ListingController@verify')->middleware('auth.ajax')->name('listing.verify');
 		Route::get('/{listing}/{slug}/star', 'ListingController@star')->middleware('auth.ajax')->name('listing.star');
 		Route::get('/{listing}/{slug}/edit', 'ListingController@edit')->name('listing.edit');
+		Route::get('/{listing}/{slug}/availability', 'AvailabilityController@availability')->name('listing.availability');
 		Route::any('/{id}/update', 'ListingController@update')->name('listing.update');
 
 	});
@@ -87,6 +90,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => 'jai
 
 		//INBOX
 		Route::resource('inbox', 'InboxController')->middleware('talk'); //Inbox
+        Route::get('/inbox/messages/{id}', 'InboxController@messages')->name('inbox.messages');
 
 		//CREATE LISTING
 		Route::resource('create', 'CreateController');
@@ -96,6 +100,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => 'jai
         Route::get('/create/{listing}/pricing', 'CreateController@pricing')->name('create.pricing');
         Route::get('/create/{listing}/times', 'CreateController@getTimes')->name('create.times');
         Route::post('/create/{listing}/times', 'CreateController@postTimes')->name('create.times');
+        Route::get('/create/{listing}/boost', 'CreateController@boost')->name('create.boost');
 
         Route::post('/create/{listing}/uploads', 'CreateController@upload')->name('create.upload');
         Route::delete('/create/{listing}/image/{uuid?}', 'CreateController@deleteUpload')->name('create.delete-image');

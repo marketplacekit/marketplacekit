@@ -18,7 +18,7 @@ class OrdersController extends Controller
     {
 
 
-        $orders = Order::where('seller_id', auth()->user()->id)->orderBy('id', 'DESC')->paginate(10);
+        $orders = Order::with('listing', 'user')->where('seller_id', auth()->user()->id)->orderBy('id', 'DESC')->paginate(10);
         return view('account.orders.index', compact('orders'));
     }
 
@@ -90,6 +90,8 @@ class OrdersController extends Controller
             Talk::sendMessageByUserId($order->user_id, $request->get('notes'));
             $order->user->increment('unread_messages');
         }
+
+        $request->session()->flash('refresh_cache', 'OK');
 
         return redirect(route('account.orders.show', $order));
     }

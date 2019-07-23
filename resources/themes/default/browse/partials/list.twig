@@ -34,10 +34,10 @@
                               <a href="" class="text-muted" style="font-size: small">{{ __("By :name", {'name': item.user.display_name}) }}</a>
                           </div>
                           <div class="col-12 col-sm-4 text-left text-sm-right">
-                              <a href="{{route('listing', {'id' : item, 'slug' : str_slug(item.title)})}}"  class="h6 mb-0 mt-1 mt-sm-0 card-subtitle text-danger font-weight-bold" >{{ item.price_formatted }}</a>
+                              <a href="{{route('listing', {'id' : item, 'slug' : str_slug(item.title)})}}"  class="h6 mb-0 mt-1 mt-sm-0 card-subtitle text-danger {% if item.bold %}font-weight-bold{% else %}font-weight-normal{%  endif %}" >{{ item.price_formatted }}</a>
                           </div>
                       </div>
-                      {{ str_limit(item.description, 150) | raw}}
+                      <p>{{ item.short_description | raw}}<br /></p>
 
                   </div>
               </div>

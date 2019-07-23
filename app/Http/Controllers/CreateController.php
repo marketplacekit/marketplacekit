@@ -11,6 +11,7 @@ use App\Models\ListingService;
 use App\Models\ListingShippingOption;
 use App\Models\ListingVariant;
 use App\Models\PricingModel;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -27,6 +28,7 @@ use GeoIP;
 use DB;
 use Validator;
 use Mail;
+use File;
 use function BenTools\CartesianProduct\cartesian_product;
 
 use Gerardojbaez\Laraplans\Models\Plan;
@@ -117,9 +119,14 @@ class CreateController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect(route('create.index', ['category' => $request->get('category'), 'pricing_model' => $request->get('pricing_model') ]))
+		#dd($validator);
+			if(\Request::wantsJson()) {
+				return response()->json(['errors'=>$validator->errors()], 500);
+			} else {
+            	return redirect(route('create.index', ['category' => $request->get('category'), 'pricing_model' => $request->get('pricing_model') ]))
                         ->withErrors($validator)
                         ->withInput();
+        	}
         }
 
         $params['category_id'] = $request->get('category');
@@ -147,15 +154,19 @@ class CreateController extends Controller
         #if it's a service - set to 9-5
         if($listing->pricing_model->widget == 'book_time') {
             $slots = [];
+			$start_hour = (int) setting('timeslot.start_hour', 9);
+			$end_hour = (int) setting('timeslot.end_hour', 17);
             foreach(range(1,5) as $day)
-                for($hour = 9; $hour <= 17; $hour++)
+				for($hour = $start_hour; $hour <= $end_hour; $hour++)
                     $slots[] = ['day' => $day, 'start_time' => $hour.':00', 'end_time' => ($hour+1).':00'];
             $listing->timeslots = $slots;
             $listing->save();
         }
 
         //redirect to success page
-        return response('OK', 200)->header('X-IC-Redirect', $listing->edit_url.'#images_section');
+		return response()->json(['listing'=>$listing], 200, ['X-IC-Redirect' => $listing->edit_url.'#images_section']);
+
+        #return response('OK', 200)->header('X-IC-Redirect', $listing->edit_url.'#images_section')->json(['listing'=>$listing]);
     }
 
     /**
@@ -177,20 +188,44 @@ class CreateController extends Controller
 
         $data = [];
         $data['listing'] = $listing;
-        $filters = Filter::get();
+		#dev_dd($listing->category_id);
+        #$filters = Filter::get();
+		$filters = Filter::orderBy('position', 'ASC')->where('is_hidden', 0)->where('is_default', 0)->get();
+		#dd($filters);
         $listings_form = [];
 
         foreach($filters as $element) {
+			if($element->is_category_specific && $element->categories && is_array($element->categories)) {
+				if(!in_array($listing->category_id, $element->categories)) {
+					continue;
+				}
+			}
+		
             if($element->form_input_meta) {
                 $form_input_meta = $element->form_input_meta;
                 $form_input_meta['name'] = 'filters['.$element->form_input_meta['name'].']';
                 $form_input_meta['value'] = (@$listing->meta[$element->form_input_meta['name']]);
 
+				if(isset($form_input_meta['selected']))
+                    $form_input_meta['selected'] = false;
+
+                if(isset($form_input_meta['values'])) {
+                    foreach ($form_input_meta['values'] as $k => $v) {
+                        $form_input_meta['values'][$k]['selected'] = false;
+                    }
+                }
+				
                 if(isset($form_input_meta['values']) && is_array($form_input_meta['value'])) {
                     foreach ($form_input_meta['values'] as $k => $v) {
                         $form_input_meta['values'][$k]['selected'] = in_array($v['value'], $form_input_meta['value']);
                     }
                 }
+
+				if($form_input_meta['value'] && isset($form_input_meta['multiple']) && $form_input_meta['placeholder']) {
+					#array_unshift($form_input_meta['values'] , ["label"=> $form_input_meta['placeholder'], "value"=> false]);
+					$form_input_meta['placeholder'] = null;
+					#unset($form_input_meta['value']);
+				}
 
                 $listings_form[] = $form_input_meta;
             }
@@ -233,10 +268,15 @@ class CreateController extends Controller
 
         $params = $request->all();
 
+		if($request->has('ends_at') && strtotime($request->get('ends_at'))) {
+			$listing->ends_at = Carbon::parse($request->get('ends_at'));
+        }
+
         $filters = Filter::orderBy('position', 'ASC')->where('is_hidden', 0)->where('is_default', 0)->get();
         if($request->input('tags_string')) {
             $listing->tags = explode(",", $request->input('tags_string'));
             $listing->tags_string = $request->input('tags_string');
+			$listing->syncTags($listing->tags);
         }
         if($request->input('filters')) {
             $meta = [];
@@ -361,7 +401,7 @@ class CreateController extends Controller
                 $listing_shipping_option = ListingAdditionalOption::updateOrCreate([
                     'position'   => $position,
                     'listing_id'    => $listing->id
-                ], ['name'  => $additional_option['name'], 'price'  => $additional_option['price']]);
+                ], ['name'  => $additional_option['name'], 'price'  => $additional_option['price'], 'max_quantity'  => $additional_option['max_quantity']]);
                 $count++;
             }
 
@@ -402,8 +442,27 @@ class CreateController extends Controller
         }
 
         $listing->fill($request->only(['title', 'description', 'stock', 'lat', 'lng', 'city', 'country', 'session_duration', 'min_duration', 'max_duration']));
+		#dd($request->input('photos'));
         if($request->input('photos') && is_array($request->input('photos'))) {
-            $listing->photos = $request->input('photos');
+			$photos = $request->input('photos');
+			$media = [];
+			foreach($photos as $photo) {
+
+				$photo_meta = json_decode($photo);
+				$tmp = [];
+				if(json_last_error() == JSON_ERROR_NONE) {
+					if(isset($photo_meta->path))
+						$tmp['photo'] = $photo_meta->path;
+					if(isset($photo_meta->original))
+						$tmp['file'] = $photo_meta->original;
+					$tmp['type'] = $photo_meta->type;
+				} else {
+					$tmp['photo'] = $photo;
+				}
+				$media[] = $tmp;
+			}
+			#dev_dd($media);
+			$listing->photos = $media;
         }
 
         if($request->get('lat') && $request->get('lng')) {
@@ -451,6 +510,19 @@ class CreateController extends Controller
 
         alert()->success( __('Successfully saved.') );
         return back();
+    }
+
+
+	private function calculateExpiryTime($old_time, $duration_units, $duration_period) {
+
+        $greatest_time = Carbon::now();
+		#dd($old_time);
+        if($old_time && $old_time->gt($greatest_time)) {
+            $greatest_time = $old_time;
+        }
+        $function = "add".ucwords(str_plural($duration_period));
+        return $greatest_time->$function($duration_units);
+
     }
 
     private function publish_listing($listing) {
@@ -507,13 +579,19 @@ class CreateController extends Controller
 
     public function session($listing, Request $request) {
         $files = [];
-        if($listing->photos) {
-            foreach($listing->photos as $i => $photo) {
+        if($listing->media) {
+			#dd($listing->media);
+            foreach($listing->media as $i => $item) {
+				#dd($item);
                 $tmp = [
                     "name" => 'photo_'.($i+1).'.jpg',
                     "uuid" => $i,
-                    "thumbnailUrl" => $photo,
+                    "thumbnailUrl" => $item['photo'],
                 ];
+				$tmp['type'] = $item['type'];
+				$tmp['path'] = $item['photo'];
+				if(isset($item['file']))
+					$tmp['original'] = $item['file'];
                 $files[] = $tmp;
             }
         }
@@ -531,7 +609,12 @@ class CreateController extends Controller
         $img = (string) $img->encode('jpg', 90);
 		
         $thumb = Storage::cloud()->put($path, $img, 'public');
-        return ['success' => true, 'path' => Storage::cloud()->url($path)];
+		$data['success'] = true;
+		$data['type'] = 'image';
+		$data['path'] = Storage::cloud()->url($path);
+		$data['thumbnailUrl'] = $data['path'];
+		
+        return $data;
     }
 
 

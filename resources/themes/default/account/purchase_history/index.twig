@@ -24,13 +24,15 @@
 
                     <tr>
                         <td><a class="text-dark">{{ str_limit(item.listing.title, 40) }}</a><br />
+							{% if item.listing.user %}
                             <span class="text-muted" href="{{ route('profile', item.listing.user) }}">
 								<a href="#" class="text-muted InboxDirectMessage" data-url="{{ route('inbox.create', {'user_id': item.listing.user.id, 'direct':true}) }}">({{ __('by :name', {'name': item.listing.user.display_name}) }})</a>
 								</span>
+								{% endif %}
                         </td>
                         <td>{{ item.hash }}</td>
                         <td>{{ format_money(item.amount, item.currency) }}</td>
-                        <td class="d-none d-sm-block">{{ item.created_at.toFormattedDateString() }}</td>
+                        <td class="d-none d-sm-block" title="{{ item.created_at }}">{{ item.created_at.toFormattedDateString() }}</td>
                         <td>{{ _l(item.status) }}</td>
                         <td class="text-right d-none d-sm-block">
                             <a href="#" class="InboxDirectMessage" data-url="{{ route('inbox.create', {'user_id': item.listing.user.id, 'direct':true}) }}">{{ __('contact seller') }} <i class="mdi mdi-chevron-double-right"></i></a>

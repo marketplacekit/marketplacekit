@@ -252,7 +252,8 @@ return [
         |
         */
         'filters' => [
-            'get' => 'data_get',    
+            'get' => 'data_get',   
+			'filter_message' => 'filter_message',
         ],
     ],  
 ];

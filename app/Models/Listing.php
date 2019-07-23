@@ -26,15 +26,17 @@ class Listing extends Model
     use Commentable;
     use SoftDeletes;
 	use HashId;
+    use \App\Traits\HasTags;
 
     protected $canBeRated = true;
     protected $mustBeApproved = false;
 
     protected $searchable = [
         'columns' => [
-            'listings.title' => 10,
+            'listings.title' => 20,
             'listings.tags' => 10,
             'listings.description' => 10,
+            'listings.tags_string' => 10,
             'users.display_name' => 10,
         ],
         'joins' => [
@@ -42,10 +44,11 @@ class Listing extends Model
         ],
     ];
     protected $searchableColumns = ['title', 'tags', 'description'];
-    protected $appends = ['thumbnail', 'price_formatted', 'url', 'short_description'];
+    protected $appends = ['thumbnail', 'price_formatted', 'url', 'short_description', 'slug', 'hash', 'media'];
+    protected $hidden = ['location'];
 
     protected $fillable = [
-        'key', 'title', 'price', 'stock', 'unit', 'category_id', 'user_id', 'short_address', 'description', 'spotlight', 'staff_pick', 'is_hidden', 'location', 'lat', 'lng', 'pricing_model_id', 'photos', 'city', 'country', 'currency', 'is_draft', 'session_duration', 'min_duration', 'max_duration'
+        'key', 'title', 'price', 'stock', 'unit', 'category_id', 'user_id', 'short_address', 'description', 'spotlight', 'staff_pick', 'is_hidden', 'location', 'lat', 'lng', 'pricing_model_id', 'photos', 'city', 'region',  'country', 'currency', 'is_draft', 'session_duration', 'min_duration', 'max_duration'
     ];
     protected $casts = [
           'photos' => 'array',
@@ -58,7 +61,7 @@ class Listing extends Model
     protected $spatialFields = [
         'location',
     ];
-    protected $dates = ['expires_at', 'spotlight', 'priority_until', 'deleted_at'];
+    protected $dates = ['expires_at', 'spotlight', 'bold_until', 'priority_until', 'deleted_at', 'ends_at'];
 
     /*protected function newBaseQueryBuilder()
     {
@@ -78,6 +81,11 @@ class Listing extends Model
         $this->save();
     }
 
+    public function getIsNewAttribute()
+    {
+        return !$this->is_published;
+    }
+	
     public function getIsVerifiedAttribute()
     {
         return ($this->is_admin_verified && !$this->is_disabled);
@@ -98,6 +106,17 @@ class Listing extends Model
         return $value;
     }
 
+    public function getCountryAttribute($value) {
+        return _l($value);
+    }
+	
+    public function getBoldAttribute() {
+        if($this->bold_until && $this->bold_until->gt(Carbon::now())) {
+            return true;
+        }
+        return false;
+    }
+	
     public function getImagesAttribute() {
         if(!$this->photos) {
             return ["http://via.placeholder.com/680x460?text=No%20Image"];
@@ -107,23 +126,40 @@ class Listing extends Model
 
     public function getCarouselAttribute() {
         $images = [];
-        $this->photos = collect($this->photos)->slice(0, setting('photos_per_listing', 20));
-        if($this->photos) {
-            foreach($this->photos as $item) {
+        $this->media_items = collect($this->media)->slice(0, setting('photos_per_listing', 20));
+        if($this->media_items) {
+            foreach($this->media_items as $item) {
+				#dev_dd($item);
                 $images[] = $item;
             }
         }
         return $images;
     }
 
+	public function getHashAttribute(): string
+    {
+        return $this->getRouteKey();
+    }
+	
 	public function getSlugAttribute(): string
     {
         return str_slug($this->title);
     }
 
     public function getShortDescriptionAttribute() {
-		$truncateService = new \Urodoz\Truncate\TruncateService();
-		return $truncateService->truncate($this->description, 255);
+		$description = "";
+		try {
+			$html = new \Html2Text\Html2Text($this->description);
+			$description = $html->getText();
+			$description = str_limit($description, 160);
+			#dev_dd($this->description);
+		} catch(\Exception $e) {
+		
+		}
+		
+		return $description;
+		#$truncateService = new \Urodoz\Truncate\TruncateService();
+		#return $truncateService->truncate($this->description, 255);
     }
 	
     public function getEditUrlAttribute() {
@@ -134,21 +170,43 @@ class Listing extends Model
         return route('listing', [$this, $this->slug]);
     }
 
+    public function getMediaAttribute() {
+		$photos = $this->photos;
+		#dev_dd('photos');
+		#dev_dd($photos);
+		if(is_array($photos)) {
+			$items = [];
+			foreach($photos as $photo) {
+				if(is_array($photo)) {
+					$items[] = $photo;
+				} else {
+					$items[] = ['photo' => $photo];
+				}
+				#dev_dd($photo);
+            }
+			return $items;
+		}
+		return [];
+	}
+	
     public function getThumbnailAttribute() {
         #var_dump($this->photos);die();
-        if($this->photos) {
-            foreach($this->photos as $photo) {
-                return $photo;
+        if($this->media) {
+            foreach($this->media as $item) {
+                return $item['photo'];
             }
         }
 
-        return "/images/no_image.png";
+        return url("/images/no_image.png");
     }
 
     public function getCoverImageAttribute() {
         #var_dump($this->photos);die();
         if($this->photos) {
             foreach($this->photos as $photo) {
+				if(is_array($photo))
+					return $photo['photo'];
+				else
                 return $photo;
             }
         }
@@ -163,16 +221,28 @@ class Listing extends Model
 		}
 
 		if($this->pricing_model && $this->pricing_model->widget == 'book_date') {
-            $price .= " per ".$this->pricing_model->duration_name;
+            $price .= __(" per ").$this->pricing_model->per_label_buyer_display;
 		}
 		if($this->pricing_model && $this->pricing_model->widget == 'book_time') {
-            $price .= " per ".$this->pricing_model->duration_name;
+			if($this->pricing_model->can_seller_enter_per_label && $this->price_per_unit_display) {
+				$price .= __(" per ").$this->price_per_unit_display;
+			} else {
+				$price .= __(" per ").$this->pricing_model->per_label_buyer_display;
+			}
 		}
 
 		if($price) {
             return $price;
         }
         return null;
+    }
+
+	public function getPerLabelBuyerDisplayAttribute() {
+		$name = $this->pricing_model->per_label_buyer_display;
+		if($this->pricing_model->can_seller_enter_per_label && $this->price_per_unit_display) {
+			$name = $this->price_per_unit_display;
+		}
+        return $name;
     }
 
     public function getCoverImagePathAttribute() {
@@ -232,6 +302,10 @@ class Listing extends Model
             ->where(function ($query) {
                 $query->whereDate('expires_at', '>=', Carbon::now())
                     ->orWhereNull('expires_at');
+            })
+			->where(function ($query) {
+                $query->whereDate('ends_at', '>=', Carbon::now())
+                    ->orWhereNull('ends_at');
             });
     }
 

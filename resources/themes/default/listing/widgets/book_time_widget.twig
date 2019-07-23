@@ -85,7 +85,7 @@
                                 {% for k, additional_option in listing.additional_options  %}
 									<div class="form-check">
 
-										<input class="form-check-input" required id="additional_option_{{ additional_option.id }}" {{ (input_has('additional_option.'~additional_option.id))?'checked=checked':'' }} name="additional_option[{{ additional_option.id }}]" type="checkbox" value="1">
+										<input class="form-check-input" id="additional_option_{{ additional_option.id }}" {{ (input_has('additional_option.'~additional_option.id))?'checked=checked':'' }} name="additional_option[{{ additional_option.id }}]" type="checkbox" value="1">
 										<label class="form-check-label" for="additional_option_{{ additional_option.id }}">
                                             {{ additional_option.name }} <span class="text-muted">({{ format_money(additional_option.price, listing.currency) }})</span>
 										</label>
@@ -101,6 +101,9 @@
 							<div class="row">
 								<div class="col-sm-8 mt-1">
 									<span>{{ item.label }}</span>
+									{% if item.notice %}
+										<span class="" data-toggle="tooltip" data-placement="top" title="{{ item.notice }}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>
+									{% endif %}
 								</div>
 								<div class="col-sm-4 mt-1 text-right">
 									<span>{{format_money(item.price, listing.currency)}}</span>
@@ -174,15 +177,37 @@
         var total = "{{ total }}";
         var billingAddress =  Boolean({{ listing.pricing_model.requires_billing_address }});
         var shippingAddress =  Boolean({{ listing.pricing_model.requires_shipping_address }});
+		var booked_dates = {{ booked_dates|json_encode()|raw }};
+		var weekdays = {{ weekdays|json_encode()|raw }};
+		
+		var calendar_params = {
+			dateFormat:"d-m-Y",
+			minDate: moment().format('DD-MM-YYYY')
+		};
+		if(moment(start_date).isValid()) {
+			calendar_params.defaultDate = moment(start_date).format('DD-MM-YYYY');
+		}
+		
+		if (weekdays instanceof Array && weekdays.length > 0) {
+			calendar_params.disable = [
+				function(date) {
+					// return true to disable
+					return (~weekdays.indexOf(date.getDay()) >= 0);
 
-        flatpickr("#calendar_value", {dateFormat:"d-m-Y", minDate: moment().format('DD-MM-YYYY'), defaultDate:moment(start_date).format('DD-MM-YYYY')});
+				}
+			];
+		}
+
+        flatpickr("#calendar_value", calendar_params);
         $('#form-selector').on('elementAdded.ic', function(){
-            flatpickr("#calendar_value", {dateFormat:"d-m-Y", minDate: moment().format('DD-MM-YYYY'), defaultDate:moment(start_date).format('DD-MM-YYYY')});
+            flatpickr("#calendar_value", calendar_params);
+            if (typeof setup_stripe === 'function') {
             setup_stripe();
+			}
         });
 
         var scroll_top = 0;
-        if($("#timeslot_selection a.btn-primary").offset().top > $("#timeslot_selection").offset().top && $("#timeslot_selection a.btn-primary").offset().top > ($("#timeslot_selection").offset().top+$("#timeslot_selection").height())) {
+        if($("#timeslot_selection a.btn-primary").length && $("#timeslot_selection a.btn-primary").offset().top > $("#timeslot_selection").offset().top && $("#timeslot_selection a.btn-primary").offset().top > ($("#timeslot_selection").offset().top+$("#timeslot_selection").height())) {
             scroll_top = $("#timeslot_selection a.btn-primary").offset().top -  $("#timeslot_selection").offset().top
         }
         $('#timeslot_selection').scrollTop(  scroll_top  );

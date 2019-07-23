@@ -20,6 +20,7 @@
     <div class="card-body">
 
 
+        {% include 'notifications' %}
 
 
     <div class="row">
@@ -80,7 +81,7 @@
     {% if order.status == 'open' %}
         <form method="PUT" action="{{ route('account.orders.update', order) }}"
               ic-put-to="{{ route('account.orders.update', order) }}" ic-target=".main-content"
-              ic-select-from-response=".main-content">
+              ic-select-from-response=".main-content" ic-indicator="#indicator">
             {{ csrf_field() }}
             <div class="row mb-5">
                 <div class="col-sm-12">
@@ -100,6 +101,11 @@
                     <button type="submit" name="status" value="accept" class="btn btn-primary btn-block">{{ __('APPROVE') }}
                     </button>
                 </div>
+				 <div class="col-sm-12 mt-3">
+					<div class="progress" id="indicator" style="display:none">
+						<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%"></div>
+					</div>
+				</div>
             </div>
         </form>
     {% endif %}

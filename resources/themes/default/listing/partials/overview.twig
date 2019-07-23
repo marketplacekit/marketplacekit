@@ -1,7 +1,7 @@
 <div class="row mb-3">
     <div class="col-sm-12">
 
-        <div class="card ">
+        <div class="card overview">
 
             <div class="card-body p-0">
                 {% if listing.carousel | length >= 1 %}
@@ -15,7 +15,21 @@
                             <div class="carousel-inner">
                                 {% for k,image in listing.carousel %}
                                 <div class="carousel-item {{(k==0)?'active':''}}">
-                                    <img class="d-block w-100" src="{{image}}" alt="{{listing.title}} photo {{k}}">
+                                    <img class="d-block w-100" src="{{image.photo}}" alt="{{listing.title}} photo {{k}} {{image.ext}}">
+									
+									{% if image.type == 'video' %}
+									<video controls style="height: 100%; position: absolute; width: 100%; top: 0;">
+										<source src="{{image.file}}" width="1024" height="552" type="video/mp4">
+										Your browser does not support the video tag.
+									</video>
+									{% endif %}
+									
+									{% if image.type == 'pdf' %}
+									<div class="carousel-caption text-center">
+										<a href="{{image.file}}" target="_blank" class="text-white font-weight-bold"><i class="mdi mdi-arrow-down" aria-hidden="true"></i> {{__("Download")}}</a>
+									</div>
+									{% endif %}
+									
                                 </div>
                                 {% endfor %}
                             </div>
@@ -77,7 +91,7 @@
 
                         {% if listing.tags %}
                             {% for tag in listing.tags %}
-                                <span class="badge badge-pill badge-danger font-weight-bold text-uppercase mr-1 pr-3 pl-3 mt-3">{{ tag }}</span>
+                                <a href="{{ route(setting('marketplace_index'), {'tagged' : tag}) }}" class="badge badge-pill badge-danger font-weight-bold text-uppercase mr-1 pr-3 pl-3 mt-3">{{ tag }}</a>
                             {% endfor %}
                         {% endif %}
 

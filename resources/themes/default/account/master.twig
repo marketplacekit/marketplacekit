@@ -11,7 +11,7 @@
                     <i class="fa fa-bars" aria-hidden="true"></i>
                 </a>
             </div>
-            <div class="col-sm-4 col-md-3 pr-sm-5 mb-5 collapse dont-collapse-sm" id="collapseMenu">
+            <div class="col-sm-4 col-md-3 pr-sm-5 mb-5    " id="collapseMenu">
                 <div class="card mb-3">
                     <div class="card-body pb-3">
                         <h6 class="card-subtitle mb-0 text-muted">{{ __('Menu') }}</h6>
@@ -37,6 +37,10 @@
                         <li class="list-group-item {{ active(['account.listings.index'], 'list-group-item-primary') }}"><a href="{{ route('account.listings.index') }}">{{ __('Listings') }}</a></li>
                         <li class="list-group-item {{ active(['account.orders.index', 'account.orders.show'], 'list-group-item-primary') }}"><a href="{{ route('account.orders.index') }}">{{ __('Orders') }}</a></li>
                         <li class="list-group-item {{ active(['account.bank-account.index'], 'list-group-item-primary') }}"><a href="{{ route('account.bank-account.index') }}">{{ __('Payments') }}</a></li>
+
+						{% if module_enabled('userverification') %}
+                        <li class="list-group-item {{ active(['account.userverification.index'], 'list-group-item-primary') }}"><a href="{{ route('account.userverification.index') }}">{{ __('Identity Verification') }}</a></li>
+                        {% endif %}
 
                     </ul>
                 </div>
