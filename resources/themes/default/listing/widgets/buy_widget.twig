@@ -45,7 +45,7 @@
                                 {{ _l(listing.pricing_model.quantity_label) | default(__('Quantity')) }}
                             </div>
                             <div class="col-sm-4">
-                                {{ form_select('quantity', array_combine(range(1, listing.stock), range(1, listing.stock)), null, {'class' : 'form-control form-control-sm', 'required':'required'}) }}
+                                {{ form_select('quantity', array_combine(range(1, listing.stock), range(1, listing.stock)), input_get('quantity'), {'class' : 'form-control form-control-sm', 'required':'required'}) }}
                             </div>
                         </div>
                     {% else %}
@@ -80,6 +80,12 @@
                                         <label class="form-check-label" for="additional_option_{{ additional_option.id }}">
                                             {{ additional_option.name }} <span class="text-muted">({{ format_money(additional_option.price, listing.currency) }})</span>
                                         </label>
+										
+										{% if additional_option.max_quantity > 1 and input_has('additional_option.' ~ additional_option.id) %}
+											{{ form_select('additional_options_meta['~additional_option.id~'][quantity]', array_combine(range(1, additional_option.max_quantity), range(1, additional_option.max_quantity)), input_get("additional_options_meta."~ additional_option.id ~ ".quantity"), {'class' : 'form-control form-control-sm'}) }}
+											<br />
+										{% endif %}
+										
                                     </div>
                                 {% endfor %}
                             </div>
@@ -95,6 +101,9 @@
                         <div class="row">
                             <div class="col-sm-8 mt-1">
                                 <span>{{ item.label }}</span>
+									{% if item.notice %}
+									<span class="" data-toggle="tooltip" data-placement="top" title="{{ item.notice }}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>
+									{% endif %}
                             </div>
                             <div class="col-sm-4 mt-1 text-right">
                                 <span>{{format_money(item.price, listing.currency)}}</span>
@@ -113,14 +122,7 @@
 
                 {% if auth_check() %}
 
-                    {% if listing.user.payment_gateway('stripe') %}
-                        <button type="submit" {{ error?'disabled':'' }} class="btn btn-primary btn-block book"> {{ __("Buy now") }} <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
-                    {% endif %}
-
-                    {% if listing.user.paypal_email and setting('paypal_enabled') %}
-                        <br />
-                        <a href="{{ route("paypal.start", {'listing': listing}) }}?{{ qs }}" class="btn btn-secondary btn-block paypal-btn {{ error?'disabled':'' }}" data-turbolinks="false"> <strong class="small font-weight-bold">{{ __("Check out with") }}</strong> <img class="img-fluid" style="height: 18px" src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_100x26.png" /></a>
-                    {% endif %}
+                    <button type="submit" {{ error?'disabled':'' }} class="btn btn-primary btn-block" formaction="{{ route('checkout', { 'listing': listing  } ) }}"> {{ __("Buy now") }} <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
 
 
                 {% else %}
@@ -158,7 +160,6 @@
             var total = "{{ total }}";
             var billingAddress =  Boolean({{ listing.pricing_model.requires_billing_address }});
             var shippingAddress =  Boolean({{ listing.pricing_model.requires_shipping_address }});
-            setup_stripe();
         </script>
     {% endif %}
 </div>

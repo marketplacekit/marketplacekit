@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Account;
 
 use App\Models\PaymentGateway;
+use App\Models\PaymentProvider;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -11,6 +12,7 @@ use Image;
 use Storage;
 use GeoIP;
 use Date;
+use Log;
 
 class BankAccountController extends Controller
 {
@@ -22,11 +24,12 @@ class BankAccountController extends Controller
     public function index(Request $request)
     {
         //
-        $countries = collect(json_decode(file_get_contents(resource_path("data/stripe-countries.json")), true));
+        /*$countries = collect(json_decode(file_get_contents(resource_path("data/stripe-countries.json")), true));
         $country = $request->input('country', GeoIP::getCountry());
         $account = [];
         $user = auth()->user();
         $stripe_info = $user->payment_gateway('stripe');
+        $individual = [];
         \Stripe\Stripe::setApiKey(config('marketplace.stripe_secret_key'));
         if($stripe_info) {
             $account = \Stripe\Account::retrieve($stripe_info->gateway_id);
@@ -40,6 +43,12 @@ class BankAccountController extends Controller
             $countries = $countries->reject(function ($option) use($account) {
                 return $option['id'] != $account->country;
             });
+
+            if(isset($account->legal_entity)) {
+                $individual = $account->legal_entity;
+            } elseif(isset($account->individual)) {
+                $individual = $account->individual;
+            }
         }
 
         $currency = $countries->firstWhere('id', $country)['default_currency'];
@@ -110,14 +119,47 @@ class BankAccountController extends Controller
             $months[$m] = ucfirst(Date::parse(mktime(0, 0, 0, $m, 1))->format('F'));
         }
         $years = range(date('Y')-100, date('Y'));
-        $years = array_combine($years, $years);
+        $years = array_combine($years, $years);*/
 
-        return view('account.bank_account', compact('user', 'countries', 'fields', 'country', 'currency', 'days', 'months', 'years', 'exclude_fields', 'account', 'extra_fields', 'external_account'));
+		$payment_providers = PaymentProvider::with(['identifier' => function ($query) {
+            $query->where('user_id', auth()->user()->id);
+        }])->where('is_enabled', 1)->get();
+
+        return view('account.bank_account', compact('payment_providers'));
+        #return view('account.bank_account', compact('user', 'countries', 'fields', 'country', 'currency', 'days', 'months', 'years', 'exclude_fields', 'account', 'extra_fields', 'external_account', 'payment_providers', 'individual'));
+    }
+	
+	//this is for a custom callback method
+    public function unlink($provider, Request $request) {
+        $provider = PaymentProvider::find($provider);
+		$gateway = PaymentGateway::find($provider->identifier->id);
+		#dd($gateway);
+        $gateway->delete();
+
+        alert()->success(__('Unlinked account'));
+        return redirect()->route('account.bank-account.index');
+    }
+
+    public function callback($provider, Request $request) {
+
+        $identifier = $request->input('identifier');
+        $provider = PaymentProvider::find($provider);
+
+        $user = auth()->user();
+        $payment_gateway = PaymentGateway::firstOrCreate([
+            'name' => $provider->key,
+            'gateway_id' => $identifier,
+            'user_id' => $user->id
+        ]);
+
+        alert()->success(__('Awesome! You can now accept payments and start selling.'));
+
+        return redirect()->route('account.bank-account.index');
     }
 
     public function store(Request $request)
     {
-
+dd('store');
         //create a custom account
         \Stripe\Stripe::setApiKey(config('marketplace.stripe_secret_key'));
         $user = auth()->user();

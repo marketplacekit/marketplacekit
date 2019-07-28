@@ -31,7 +31,8 @@ class BookTimeWidget extends AbstractWidget
         $start_date = isset($params['start_date']) ? $params['start_date'] : null;
         $selected_slot = isset($params['slot']) ? $params['slot'] : null;
         $quantity = isset($params['quantity']) ? $params['quantity'] : 1;
-
+		$additional_options = isset($params['additional_option'])?$params['additional_option']:[];
+#dev_dd($start_date);
 
         $error = false;
         $selected_services = false;
@@ -47,8 +48,23 @@ class BookTimeWidget extends AbstractWidget
             $session_length = $selected_services->sum('duration');
         }
 
+		#additional pricing
+        $additional_options_price = $listing->additional_options->reduce(function ($carry, $item) use($additional_options) {
+            if(in_array($item->id, array_keys($additional_options)))
+                return $carry + $item->price;
+            return $carry;
+        }, 0);
+
+		$number = 0;
+		foreach($listing->additional_options as $k => $item) {
+            if(in_array($item->id, array_keys($additional_options))) {
+                $number++;
+                $user_choice[] = ['group' => 'additional_options', 'name' => 'Option '.($k+1), 'value' => $item->name, 'price' => $item->price];
+            }
+        }
+
         //date, time, qty
-        $subtotal = $quantity * $total_price;
+        $subtotal = ($quantity * $total_price) + $additional_options_price;
         $service_fee_percentage = $subtotal * ($fee_percentage/100);
         if($subtotal == 0)
             $fee_transaction = 0;
@@ -63,7 +79,7 @@ class BookTimeWidget extends AbstractWidget
             $start_date = Carbon::createFromFormat('d-m-Y', $start_date);
 
             $day_of_week = $start_date->format('N');
-
+#dev_dd($day_of_week);
             if ($listing->timeslots) {
                 foreach ($listing->timeslots as $timeslot) {
                     if ($day_of_week == $timeslot['day']) {
@@ -103,6 +119,9 @@ class BookTimeWidget extends AbstractWidget
 
         //now generate some time slots to choose from
         $slot_interval = 15;
+		if($listing->session_duration)
+			$slot_interval = $listing->session_duration;
+		#dev_dd($listing->session_duration);
         $available_slots = [];
         $agenda = $business_day->getAgenda();
 
@@ -228,12 +247,13 @@ dd($agenda);
 			[
 				'key'	=> 'service',
 				'label' => __('Service fee'),
-				'price' => $service_fee
+				'price' => $service_fee,
+				'notice' => __('This fee helps cover the costs of operating the website'),
 			],
 		];
 #dd($selected_services);
         if($start_date) {
-            $user_choice[] = ['group' => 'dates', 'name' => 'Selected day', 'value' => $start_date->toRfc7231String()];
+            $user_choice[] = ['group' => 'dates', 'name' => 'Selected day', 'value' => $start_date->toFormattedDateString()];
             $user_choice[] = ['group' => 'dates', 'name' => 'Slot', 'value' => $selected_slot];
             if(isset($selected_services) && $selected_services) {
                 foreach($selected_services as $selected_service) {
@@ -241,7 +261,7 @@ dd($agenda);
                 }
             }
         }
-
+#dev_dd($timeslots);
 		return [
             'user_choice'	=>	$user_choice,
             'error'			=>	$error,
@@ -275,6 +295,26 @@ dd($agenda);
     public function validate_payment($listing, $request)
     {
 		return $this->calculate_price($listing, $request);
+	}
+	
+    private function getDisabledDates($listing) {
+	
+		#find availability for next 3 months
+		$start = Carbon::now()->startOfDay();
+        $end = Carbon::now()->addMonths(3)->endOfDay();
+		$weekdays = [];
+		if($listing->timeslots && is_array($listing->timeslots)) {
+			$weekdays = array_values(collect($listing->timeslots)->pluck('day')->unique()->toArray());
+		}
+		$disabled_dates = [];
+		for($date = $start; $date->lte($end); $date->addDay()) {
+		    $day_of_week = $date->format('N');
+			if (!in_array($day_of_week, $weekdays)) {
+				$disabled_dates[] = $date->format('d-m-Y');
+			}
+		}
+		
+		return ['weekdays' => $weekdays, 'disabled_dates' => $disabled_dates];
 	}
 	
     /**
@@ -316,8 +356,8 @@ dd($agenda);
 				$error = $result['error'];
 		}
 		
-
-		
+		$disabled_dates = $this->getDisabledDates($listing);
+        #dd($disabled_dates);
         return view('listing.widgets.book_time_widget', [
             'config' => $this->config,
             'qs' 	        => http_build_query(request()->all()),
@@ -326,6 +366,8 @@ dd($agenda);
             'error' => $error,
             'start_date' => $start_date,
             'timeslots' => $timeslots,
+			'weekdays' => $disabled_dates['weekdays'],
+			'booked_dates' => $disabled_dates['disabled_dates'],
             'listing' => $listing,
             'quantity' => $quantity,
             'price_items' => $price_items,

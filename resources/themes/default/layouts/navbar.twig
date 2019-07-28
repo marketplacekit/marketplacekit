@@ -104,11 +104,13 @@
                     </div>
                 </li>
 
+                {% if auth_user().hasAnyRole(['admin', 'moderator']) %}
                 <li class="nav-item" style="position: relative">
                     <a class="nav-link text-s" href="/panel" target="_blank">
                         <i class="mdi mdi-wrench mr-1" aria-hidden="true"></i>
                     </a>
                 </li>
+                {% endif %}
 
                 <li class="nav-item mr-2" style="position: relative">
                     <a class="nav-link text-s {% if not is_active('inbox*') %}InboxDirectMessage{% endif %}" data-url="{{ route('inbox.index') }}" href="{{ route('inbox.index') }}">

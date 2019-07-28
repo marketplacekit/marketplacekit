@@ -1,0 +1,200 @@
+{% extends "layouts.app" %}
+    {% block navbar %}
+
+    {% endblock %}
+
+    {% block footer %}
+
+    {% endblock %}
+
+{% block content %}
+
+
+    <div class="bg-white window-height" data-turbolinks="false">
+
+
+
+        {{ form_open({'url' : url, 'class':' ',  }) }}
+
+        <div class="container-fluid " id="checkout-page" style="max-width: 800px">
+            <div class="text-center mb-3">
+
+                <a href="/" class="navbar-brand text-dark mt-3">
+                    {% if not setting('site_logo') %}
+                        {{  setting('site_name') }}
+                    {% else %}
+                        <img src="{{ setting('logo', '../../logo.png') }}" title="{{ setting('site_title') }}" class="logo"/>
+                    {% endif %}
+                </a>
+            </div>
+
+            <a href="{{listing.url}}?{{get_query_string()}}" class="small"><i class="mdi mdi-chevron-left" aria-hidden="true"></i>{{ __("Back") }}</a>
+            <h5 class="mt-3"><i class="fa fa-lock text-dark " aria-hidden="true"></i> {{ __('Secure checkout') }}</h5>
+
+            {% if pricing.error %}
+            <div class="alert alert-danger" role="alert">
+                {{ pricing.error }}
+            </div>
+            {% endif %}
+            <div class="row mt-4"  >
+            <div class="col-sm-7"  >
+
+                {% include 'notifications' %}
+
+                <h6 class="mb-1 text-muted">{{ __('Address') }}</h6>
+                <div class="bg-light rounded border-0 p-3">
+
+                    {{ form_text('billing_address[full_name]', user.billing_address.full_name, {'class':'form-control mb-3', 'placeholder': __("Full Name"), "required":"required"}) }}
+
+                    {{ form_text('billing_address[address]', user.billing_address.address, {'class':'form-control mb-3', 'placeholder': __("Address")}) }}
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form_text('billing_address[city]', user.billing_address.city, {'class':'form-control', 'placeholder':__("City") }) }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form_text('billing_address[state]', user.billing_address.state, {'class':'form-control', 'placeholder':__("State")}) }}
+                        </div>
+
+                        <div class="col-md-6 mb-0">
+                            {{ form_text('billing_address[zip]', user.billing_address.zip, {'class':'form-control', 'placeholder':__("Post code/Zip")}) }}
+                        </div>
+                        <div class="col-md-6 mb-0">
+                            {{ form_select('billing_address[country]', countries, user.billing_address.country, {'class' : 'custom-select d-block w-100'} ) }}
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="custom-control custom-checkbox mt-3">
+                    <input type="checkbox" name="same_address" {{ not input_has('same_address')?'checked="checked"':'' }} ic-action="toggle" ic-target="#shipping-address" class="custom-control-input" id="same-address" value="1">
+                    <label class="custom-control-label" for="same-address">{{ __('Shipping address is the same as my billing address') }}</label>
+                </div>
+
+
+                <div id="shipping-address" style="display: {{ not input_has('same_address')?'none"':'' }}" >
+                <h6 class="mb-1 mt-3 text-muted">{{ __('Shipping Address') }}</h6>
+                    <div class="bg-light border-rounded border-0 p-3">
+
+                        {{ form_text('shipping_address[full_name]', user.shipping_address.full_name, {'class':'form-control mb-3', 'placeholder': "Full Name"}) }}
+
+                        {{ form_text('shipping_address[address]', user.shipping_address.address, {'class':'form-control mb-3', 'placeholder': "Address"}) }}
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form_text('shipping_address[city]', user.shipping_address.city, {'class':'form-control', 'placeholder':"City"}) }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form_text('shipping_address[state]', user.shipping_address.state, {'class':'form-control', 'placeholder':"State"}) }}
+                            </div>
+
+                            <div class="col-md-6 mb-0">
+                                {{ form_text('shipping_address[zip]', user.shipping_address.zip, {'class':'form-control', 'placeholder':"Post code/Zip"}) }}
+                            </div>
+                            <div class="col-md-6 mb-0">
+                                {{ form_select('shipping_address[country]', countries, user.shipping_address.country, {'class' : 'custom-select d-block w-100'} ) }}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            <h6 class="mt-5 mb-1 text-muted">{{ __("Payment methods") }}</h6>
+			
+			{% if payment_providers|length > 0 %}
+            <div class=" bg-light p-3 border-0">
+                {% for payment_provider in payment_providers  %}
+                <div class="custom-control custom-radio">
+                    {{ form_radio('payment_method', payment_provider.key, (payment_method == payment_provider.key), {'class':'custom-control-input', 'id':payment_provider.key}) }}
+                    <label class="custom-control-label" for="{{ payment_provider.key }}">{{ payment_provider.display_name }}</label>
+                    <p class="text-muted" for="{{ payment_provider.key }}">{{ payment_provider.payment_instructions }}</p>
+                </div>
+                {% endfor %}
+            </div>
+			{% else %}
+				<div class="alert alert-danger" role="alert">
+					{{ __("This seller has no payment methods available.") }}<br /><a href="{{listing.url}}?{{get_query_string()}}" class="alert-link">{{__('Contact seller')}}</a>
+				</div>
+			{% endif %}
+			
+			{% if payment_providers|length > 0 %}
+                <div class="row"  >
+
+                <div class="col-sm-12 text-left"  >
+
+                    <button class="btn btn-primary mt-3 " type="submit">{{ __('Place order') }}</button>
+
+                </div>
+                <div class="col-sm-12"  >
+
+                <br />
+<p class="text-muted small">{{ __('By clicking "Place Order" I approve the User Terms and confirm I have read the Privacy Notice. I agree to the terms & conditions of this Merchant.') }}
+</p>
+            </div>
+			
+            </div>
+			{% endif %}
+			
+            </div>
+
+            <div class="col-sm-5"  >
+
+            <div class="card mt-3"  >
+                            <div class="card-header">{{ __('Order summary') }}</div>
+                            <div class="card-body">
+
+                                <div class="row">
+                                    <div class="col-4  ">
+                                        <img src="{{ listing.thumbnail }}" class="img-fluid"/>
+                                    </div>
+                                    <div class="col-8  ">
+                                        <p class="text-capitalize mb-0 font-weight-bold">{{ listing.title }}</p>
+                                        <p class="text-capitalize">{{ listing.user.display_name }}</p>
+                                    </div>
+                                </div>
+<hr />
+                                <table class="table table-sm table-borderless ">
+                                    <tbody>
+                                    {%  for choice in pricing.user_choice %}
+                                    <tr>
+                                        <td scope="row" class="col-6">{{ choice.name|capitalize }}</td>
+                                        <td>
+                                            {%  if choice.group == 'dates' %}
+                                                {{ choice.value | date("d/m/Y") }}
+                                            {% else %}
+                                                {{ choice.value }}
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                <hr />
+                                <table class="table table-sm table-borderless">
+                                    <tbody>
+                                    {%  for price_item in pricing.price_items %}
+                                    <tr>
+                                        <td scope="row">{{ price_item.label }}</td>
+                                        <td>{{ format_money(price_item.price, listing.currency) }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    <tr>
+                                        <th scope="row">Total</th>
+                                        <td class="font-weight-bold">{{ format_money(pricing.total, listing.currency) }}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        {{ form_close() }}
+
+
+    </div>
+
+
+{% endblock %}

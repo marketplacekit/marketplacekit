@@ -1,0 +1,30 @@
+<hr />
+<div class="row mt-5">
+    <div class="col-sm-4">
+        <div class="custom-control custom-radio">
+            <input type="radio" id="providerRadio{{ payment_provider.key }}" checked name="providerRadio{{ payment_provider.key }}" class="custom-control-input">
+            <label class="custom-control-label" for="providerRadio{{ payment_provider.key }}">{{ _l(payment_provider.display_name) }}</label>
+        </div>
+
+        <p class="small text-muted">{{ _l(payment_provider.description) }}</p>
+        {% if(setting('marketplace_transaction_fee')) %}
+            <p class="small text-muted mb-1">{{ format_money(setting('marketplace_transaction_fee'), setting('currency')) }} {{ __("fee per transaction") }}</p>
+        {% endif %}
+
+        {% if(setting('marketplace_percentage_fee')) %}
+            <p class="small text-muted">{{ setting('marketplace_percentage_fee') }}% {{ __("of transaction cost") }}</p>
+        {% endif %}
+
+    </div>
+    <div class="col-sm-8">
+
+        {% if payment_provider.identifier %}
+            <p><a href="" class="btn disabled btn-secondary">{{ __("Connected to paypal with") }} -{{ auth_user()|json_decode() }}</a><br /><a href="{{ route('account.payments.unlink', payment_provider) }}" class="small"><i class="fa fa-refresh" aria-hidden="true"></i>{{ __("Unlink") }}</a></p>
+
+        {% else %}
+            <a href="{{ payment_provider.connect_url }}" class="btn btn-secondary"> {{ __("Enable :payment", {'payment': payment_provider.display_name} ) }}</a>
+        {% endif %}
+
+
+    </div>
+</div>

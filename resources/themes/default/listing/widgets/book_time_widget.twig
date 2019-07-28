@@ -131,13 +131,7 @@
 
                 {% if not error and selected_slot %}
                     {% if auth_check() %}
-						<button type="submit" class="btn btn-primary btn-block book"> {{__("Book") }} <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
-
-                        {% if listing.user.paypal_email and setting('paypal_enabled') %}
-							<br />
-							<a href="{{ route("paypal.start", {'listing': listing}) }}?{{ qs }}" class="btn btn-secondary btn-block paypal-btn {{ error?'disabled':'' }}" data-turbolinks="false"> <strong class="small font-weight-bold">{{ __("Check out with") }}</strong> <img class="img-fluid" style="height: 18px" src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_100x26.png" /></a>
-                        {% endif %}
-
+						<button type="submit" formaction="{{ route('checkout', { 'listing': listing  } ) }}" class="btn btn-primary btn-block book"> {{__("Book now") }} <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
                     {% else %}
 						<a href="{{route('login', {'action' : 'checkout'})}}" class="btn btn-primary btn-block pop"><i class="mdi mdi-share mr-1" ></i> {{ __("Book") }}</a>
 						<div class="webui-popover-content">
@@ -201,9 +195,6 @@
         flatpickr("#calendar_value", calendar_params);
         $('#form-selector').on('elementAdded.ic', function(){
             flatpickr("#calendar_value", calendar_params);
-            if (typeof setup_stripe === 'function') {
-            setup_stripe();
-			}
         });
 
         var scroll_top = 0;

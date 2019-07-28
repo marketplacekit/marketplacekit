@@ -32,10 +32,6 @@ class EventServiceProvider extends ServiceProvider
         'Illuminate\Auth\Events\Login' => [
             'App\Listeners\LogSuccessfulLogin',
         ],
-        \SocialiteProviders\Manager\SocialiteWasCalled::class => [
-            'SocialiteProviders\PayPal\PayPalExtendSocialite@handle',
-            'SocialiteProviders\PayPalSandbox\PayPalSandboxExtendSocialite@handle',
-        ],
     ];
 
     /**

@@ -16,4 +16,8 @@ class PaymentGateway extends Model
 		'metadata' => 'json',
     ];
 
+    public function payment_provider() {
+        return $this->belongsTo('App\Models\PaymentProvider');
+    }
+
 }

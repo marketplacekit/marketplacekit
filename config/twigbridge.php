@@ -221,6 +221,7 @@ return [
             'get_localized_url',
             'recaptcha',
 			'current_website',
+			'get_query_string',
         ],
 
         /*

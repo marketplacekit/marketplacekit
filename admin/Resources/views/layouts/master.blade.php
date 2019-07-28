@@ -96,8 +96,8 @@
         <div id="sidebar-wrapper">
             <ul class="sidebar-menu">
                 <li class="sidebar-brand">
-                    <a href="#">
-                        Start Bootstrap
+                    <a href="/">
+                        MARKETPLACE::KIT
                     </a>
                 </li>
         @role('admin')
@@ -123,6 +123,11 @@
         <li class="{{ active(['*themes*']) }}">
             <a href="/panel/themes"><i class="fa fa-paint-brush"></i> Themes </a>
         </li>
+		
+		<li class="{{ active(['*payments*']) }}">
+            <a href="/panel/payments"><i class="fa fa-cc-stripe"></i> Payments </a>
+        </li>
+		
         <li class="{{ active(['*settings*', '*fields*', '*pricing-models*']) }}">
             <a href="/panel/settings"><i class="fa fa-cogs"></i> Settings </a>
         </li>

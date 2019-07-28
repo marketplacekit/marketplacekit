@@ -40,6 +40,9 @@ class RouteServiceProvider extends ServiceProvider
 		Route::bind('user', function($value, $route) {
 			return \App\Models\User::where('slug', $value)->firstOrFail();
 		});
+        Route::bind('checkout_session', function($value, $route) {
+            return \App\Models\CheckoutSession::where('id', $value)->firstOrFail();
+        });
         Route::bind('purchase-history', function($value, $route) {
             $id = Hashids::connection('order')->decode($value)[0];
             return \App\Models\Order::findOrFail($id);

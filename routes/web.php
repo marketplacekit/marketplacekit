@@ -23,6 +23,7 @@ Route::get('/test', function () {
 
 
 include "admin.php";
+include "payments.php";
 
 Route::get('/cp', function () {
     if(env('DEMO_PANEL')) {
@@ -58,7 +59,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => 'jai
 		Route::get('/{listing}/{slug}/verify', 'ListingController@verify')->middleware('auth.ajax')->name('listing.verify');
 		Route::get('/{listing}/{slug}/star', 'ListingController@star')->middleware('auth.ajax')->name('listing.star');
 		Route::get('/{listing}/{slug}/edit', 'ListingController@edit')->name('listing.edit');
-		Route::get('/{listing}/{slug}/availability', 'AvailabilityController@availability')->name('listing.availability');
+		#Route::get('/{listing}/{slug}/availability', 'AvailabilityController@availability')->name('listing.availability');
 		Route::any('/{id}/update', 'ListingController@update')->name('listing.update');
 
 	});
@@ -78,6 +79,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => 'jai
 
 		Route::resource('listings', 'ListingsController');
         Route::resource('orders', 'OrdersController');
+
+        Route::get('payments/{id}/unlink', 'BankAccountController@unlink')->name('payments.unlink');
         Route::resource('bank-account', 'BankAccountController');
 
         Route::get('paypal/connect', 'PayPalController@connect')->name('paypal.connect');
@@ -109,8 +112,11 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => 'jai
 		#Route::get('/listings/{id}/session', array('as' => 'create', 'uses' => 'CreateController@session'));
 
 		//CHECKOUT
-		Route::get('/checkout/{listing}', 'CheckoutController@index')->name('checkout');
-		Route::any('/checkout/process/{listing}', 'CheckoutController@process')->name('checkout.process');
+        Route::get('/checkout/error', 'CheckoutController@error_page')->name('checkout.error');
+        Route::get('/checkout/{listing}', 'CheckoutController@index')->name('checkout');
+        Route::post('/checkout/{listing}', 'CheckoutController@store')->name('checkout.store');
+        Route::get('/checkout/{session}/callback', 'CheckoutController@callback')->name('checkout.callback');
+        Route::any('/checkout/process/{listing}', 'CheckoutController@process')->name('checkout.process');
 		#Route::any('/checkout/test', 'CheckoutController@test')->name('checkout.test');
 		#Route::resource('stripe', 'StripeController');
 		#Route::any('/stripe/connect', 'StripeController@connect')->name('stripe.connect');

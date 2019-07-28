@@ -76,7 +76,7 @@
 							{% endif %}
                         </div>
                         <div class="col-5 mt-1 text-right">
-                            <span>{{item.price}}</span>
+                            <span>{{format_money(item.price, listing.currency)}}</span>
                         </div>
                     </div>
                     {% endfor %}
@@ -103,14 +103,8 @@
 		<div class="card-footer">
 
             {% if listing.user.can_accept_payments  %}
-                {% if auth_check() and listing.user.can_accept_payments  %}
-                    <button type="submit" {{error?'disabled':''}} class="btn btn-primary btn-block book"> {{ __("Buy now") }} <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
-
-                    {% if listing.user.paypal_email and setting('paypal_enabled') %}
-                        <br />
-                        <a href="{{ route("paypal.start", {'listing': listing}) }}?{{ qs }}" class="btn btn-secondary btn-block paypal-btn {{ error?'disabled':'' }}" data-turbolinks="false"> <strong class="small font-weight-bold">{{ __("Check out with") }}</strong> <img class="img-fluid" style="height: 18px" src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_100x26.png" /></a>
-                    {% endif %}
-
+                {% if auth_check()  %}
+                    <button type="submit" {{error?'disabled':''}} class="btn btn-primary btn-block book"  formaction="{{ route('checkout', { 'listing': listing  } ) }}"> {{ __("Book now") }} <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
                 {% else %}
                     <a href="{{route('login', {'action' : 'checkout'})}}" class="btn btn-primary btn-block pop"><i class="mdi mdi-share mr-1" ></i> {{ __("Buy now") }} <i class="mdi mdi-chevron-right" aria-hidden="true"></i></a >
 
@@ -181,10 +175,8 @@
 
     $('#form-selector').on('elementAdded.ic', function(){
         setup_calendar();
-        setup_stripe();
     });
 
     setup_calendar();
-    setup_stripe();
 
 </script>

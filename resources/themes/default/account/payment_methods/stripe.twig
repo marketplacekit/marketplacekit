@@ -1,0 +1,231 @@
+<div class="row">
+    <div class="col-sm-4">
+        <div class="custom-control custom-radio">
+            <input type="radio" id="customRadio1" checked name="customRadio" class="custom-control-input">
+            <label class="custom-control-label" for="customRadio1">{{ __("Bank account") }}</label>
+        </div>
+
+        <p class="small text-muted">{{ __("Adding a bank account will enable users to pay you using their credit/debit card.") }}</p>
+        {% if(setting('marketplace_transaction_fee')) %}
+            <p class="small text-muted mb-1">{{ format_money(setting('marketplace_transaction_fee'), setting('currency')) }} {{ __("fee per transaction") }}</p>
+        {% endif %}
+
+        {% if(setting('marketplace_percentage_fee')) %}
+            <p class="small text-muted">{{ setting('marketplace_percentage_fee') }}% {{ __("of transaction cost") }}</p>
+        {% endif %}
+
+    </div>
+    <div id="bank_account_vue" class="col-sm-8">
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <select name="country" class="form-control bg-light" ic-indicator="#indicator" ic-get-from="{{ route('account.bank-account.index') }}" ic-target="#bank-account-form" ic-select-from-response="#bank-account-form">
+                    {% for option in countries %}
+                        <option value="{{ option.id }}" {% if option.id == country %}selected{% endif %}>{{ option.label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <i id="indicator" class="fa fa-spinner fa-spin" style="display:none"></i>
+
+        {{ form_open({'route' : 'account.bank-account.store', 'id':'bank-account-form'}) }}
+
+        {{ form_hidden('country', country) }}
+        {{ form_hidden('currency', currency) }}
+
+        <div class="alert alert-danger" role="alert" id="error_message" style="display:none"></div>
+        <div class="form-row mb-2">
+            <div class="form-group col-md-6">
+                {{ form_text('first_name', individual.first_name, {'class': 'form-control', 'placeholder': __('First name')}) }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form_text('last_name', individual.last_name, {'class': 'form-control', 'placeholder': __('Last name')}) }}
+            </div>
+        </div>
+
+        <div class="form-row mb-2">
+            <div class="form-group col-md-12">
+                {{ form_text('address_line_1', individual.address.line1, {'class': 'form-control', 'placeholder': __('Street address line 1')}) }}
+            </div>
+        </div>
+
+
+        <div class="form-row mb-2">
+            <div class="form-group col-md-4">
+                {{ form_text('city', individual.address.city, {'class': 'form-control', 'placeholder': __('City')}) }}
+            </div>
+            {% if 'state' not in exclude_fields %}
+                <div class="form-group col-md-4">
+                    {{ form_text('state', individual.address.state, {'class': 'form-control', 'placeholder': __('State')}) }}
+                </div>
+            {%  endif %}
+            <div class="form-group col-md-4">
+                {{ form_text('postal_code', individual.address.postal_code, {'class': 'form-control', 'placeholder': __('Postal code')}) }}
+            </div>
+        </div>
+
+        <div class="form-row mb-2">
+            <div class="form-group col-md-4">
+                {{ form_select('dob_day', days, individual.dob.day, {'class': 'form-control', 'placeholder': __('Birth Date')}) }}
+            </div>
+            <div class="form-group col-md-4">
+                {{ form_select('dob_month', months, individual.dob.month, {'class': 'form-control', 'placeholder': __('Birth Month')}) }}
+            </div>
+            <div class="form-group col-md-4">
+                {{ form_select('dob_year', years, individual.dob.year, {'class': 'form-control', 'placeholder': __('Birth Year')}) }}
+            </div>
+        </div>
+
+
+
+        {% for extra_field in extra_fields %}
+            <div class="form-row mb-2">
+                <div class="form-group col-md-12">
+                    {{ form_text(extra_field.id, null, {'class': 'form-control', 'placeholder': extra_field.label}) }}
+                </div>
+            </div>
+        {% endfor %}
+
+        {% if 'ssn_last_4' not in exclude_fields %}
+            <div class="form-row mb-2">
+                <div class="form-group col-md-12">
+                    {{ form_text('ssn_last_4', null, {'class': 'form-control', 'placeholder': __('Last 4 digits of the social security number')}) }}
+                </div>
+            </div>
+        {%  endif %}
+
+        <div class="card card-body bg-light" id="bank-details">
+            {% if account %}
+                <a href="#" class="toggle-bank-details text-muted small float-right" style="position: absolute; top: 4px; right: 10px;">{{ __("CHANGE BANK DETAILS") }}</a>
+            {% else %}
+                <strong class="text-muted small float-right" style="position: absolute; top: 4px; right: 10px;">{{ __("BANK DETAILS") }}</strong>
+            {% endif %}
+
+            <div class="alert alert-danger" role="alert" id="bank_error_message" style="display:none"></div>
+
+            <div class="form-group">
+                <label for="inputAddress">{{ __("Account holder's name") }}</label>
+                <input type="text" class="form-control" required id="account_holder_name" name="account_holder_name" placeholder="{{ __("Name as on bank account") }}" value="{{ external_account.account_holder_name }}" {% if account %}disabled{% endif %}>
+                {% if account %}
+                    <p class="text-muted small mb-0 pb-0">{{ __("Last 4 digits of account number") }}: {{ external_account.last4 }}</p>
+                {% endif %}
+            </div>
+
+            {% for field in fields %}
+                <div class="form-row bank-fields " {% if account %}style="display: none"{% endif %}>
+                    <div class="form-group col-md-12">
+                        <label class="">{{ field.label }}</label>
+                        <input class="form-control" id="{{ field.id }}" required type="text" placeholder="" autocomplete="off" {% if account %}disabled{% endif %}>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <br />
+        <p>{{ __("By clicking, you agree to <a href='/pages/terms-and-conditions'>our terms</a> and the <a href='https://stripe.com/gb/connect-account/legal'>Stripe Connected Account Agreement</a>.") | raw}}</p>
+
+        <div class="form-group row">
+            <div class="col-sm-9">
+                <button class="btn btn-primary submit" type="submit">{{ __("Save preferences") }} <i id="indicator-btn" class="fa fa-spinner fa-spin" style="display:none"></i></button>
+            </div>
+        </div>
+
+        </form>
+
+        <script>
+
+            function submit_form(params) {
+                //send query to server
+                $.each($('#bank-account-form').serializeArray(), function() {
+                    params[this.name] = this.value;
+                });
+                $.ajax({
+                    type: "POST",
+                    url: '{{ route('account.bank-account.store') }}',
+                    data: params,
+                    success: function(result){
+                        if(result.status) {
+                            window.location.href = result.redirect;
+                        } else {
+                            $("#indicator-btn").hide();
+                            $("#error_message").html(result.error).show();
+                        }
+                    },
+                    dataType: 'json'
+                });
+            }
+
+            $(".toggle-bank-details").click(function(e){
+                e.preventDefault();
+                var is_disabled = $("#account_holder_name").prop("disabled");
+                $("#bank-details input").prop("disabled", !is_disabled);
+                if(is_disabled) {
+                    $(".bank-fields").show();
+                } else {
+                    $(".bank-fields").hide();
+                }
+            });
+
+            $("#bank-account-form").submit(function(e){
+                e.preventDefault();
+                $("#indicator-btn").show();
+                $("#error_message").hide();
+                $("#bank_error_message").hide();
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
+                var country = $('[name=country]').val();
+                var routing_number = null;
+
+                if (country == 'BR') {
+                    routing_number = $("#bank_code").val() + $("#branch_code").val();
+                } else if (country == 'CA') {
+                    routing_number = $("#institution_number").val() + $("#transit_number").val();                
+				} else if (country == 'AU') {
+                    routing_number = $("#bank_code").val() + $("#branch_code").val();
+                } else if (country == 'HK') {
+                    routing_number = $("#clearing_code").val() + '-' + $("#branch_code").val();
+                } else if (country == 'JP') {
+                    routing_number = $("#bank_code").val() + '-' + $("#branch_code").val();
+                } else if (country == 'SG') {
+                    routing_number = $("#bank_code").val() + '-' + $("#branch_code").val();
+                } else {
+                    routing_number = $("#routing_number").val();
+                }
+
+                var submit_bank_account = $("#account_holder_name").prop("disabled");
+                if(submit_bank_account) {
+                    submit_form({'country': country});
+                } else {
+console.log(routing_number);
+                    stripe.createToken('bank_account', {
+                        country: country,
+                        currency: $('[name=currency]').val(),
+                        routing_number: routing_number,
+                        account_number: $("#account_number").val(),
+                        account_holder_name: $("#account_holder_name").val(),
+                        account_holder_type: 'individual',
+                    }).then(function (result) {
+
+                        // Handle result.error or result.token
+                        console.log(result);
+                        if ('error' in result) {
+                            $("#indicator-btn").hide();
+                            $("#bank_error_message").html(result.error.message).show();
+                        } else {
+                            submit_form({'external_account': result.token.id, 'country': country});
+                        }
+
+                    });
+                }
+            });
+        </script>
+
+
+    </div>
+
+
+</div>

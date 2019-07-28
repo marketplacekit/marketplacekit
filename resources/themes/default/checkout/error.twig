@@ -1,0 +1,39 @@
+{% extends "layouts.app" %}
+    {% block navbar %}
+
+    {% endblock %}
+
+    {% block footer %}
+
+    {% endblock %}
+
+{% block content %}
+
+
+    <div class="bg-white window-height" data-turbolinks="false">
+
+
+
+        <div class="container-fluid mt-1" id="checkout-page" style="max-width: 600px">
+            <div class="text-center mb-3">
+                <img src="{{ setting('logo', '../../logo.png') }}" title="{{ setting('site_title') }}" style="max-height: 60px" />
+            </div>
+
+
+            <div class="row mt-4"  >
+                <div class="col-sm-12"  >
+
+                    {% include 'notifications' %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ message }}
+                    </div>
+                    <a href="/"><i class="fa fa-angle-left" aria-hidden="true"></i> Back home</a>
+                </div>
+            </div>
+            </div>
+
+
+    </div>
+
+
+{% endblock %}
