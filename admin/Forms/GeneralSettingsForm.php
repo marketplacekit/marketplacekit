@@ -99,32 +99,6 @@ class GeneralSettingsForm extends Form
             'selected' => $this->getData('currency'),
             'empty_value' => '-- SELECT --'
         ]);
-        $this->add('stripe_publishable_key', 'text', [
-            'rules' => '',
-            'default_value' => $this->getData('stripe_publishable_key')
-        ]);
-        $this->add('stripe_secret_key', 'text', [
-            'rules' => '',
-            'attr' => ['placeholder' => 'XXXXXXXXXXXXXX']
-        ]);
-
-
-        $this->add('paypal_enabled', 'checkbox', [
-            'value' => 1,
-            'checked' => (bool) $this->getData('custom_homepage', 1)
-        ]);
-        $this->add('paypal_mode', 'select', [
-            'choices' => ['sandbox' => 'sandbox', 'live' => 'live'],
-            'selected' => $this->getData('paypal_mode', 'sandbox'),
-            'empty_value' => '-- SELECT --'
-        ]);
-        $this->add('paypal_email', 'text', ['default_value' => $this->getData('paypal_email')]);
-        $this->add('paypal_user', 'text', ['default_value' => $this->getData('paypal_user')]);
-        $this->add('paypal_password', 'text', ['default_value' => $this->getData('paypal_password')]);
-        $this->add('paypal_signature', 'text', ['default_value' => $this->getData('paypal_signature')]);
-        $this->add('paypal_client_id', 'text', ['default_value' => $this->getData('paypal_client_id')]);
-        $this->add('paypal_client_secret', 'text', ['default_value' => $this->getData('paypal_client_secret')]);
-
         $this->add('marketplace_transaction_fee', 'text', [
             'rules' => '',
             'default_value' => $this->getData('marketplace_transaction_fee')

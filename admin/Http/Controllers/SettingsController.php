@@ -112,26 +112,11 @@ class SettingsController extends Controller
             Setting::set($key, $input);
         }
         Setting::save();
-        $checkboxes = ['show_map', 'show_grid', 'show_list', 'listings_require_verification', 'enable_geo_search', 'custom_homepage', 'show_search_sidebar', 'paypal_enabled', 'single_listing_per_user'];
+        $checkboxes = ['show_map', 'show_grid', 'show_list', 'listings_require_verification', 'enable_geo_search', 'custom_homepage', 'show_search_sidebar', 'single_listing_per_user'];
         #dd($request->has('show_list'));
         foreach($checkboxes as $checkbox) {
             Setting::set($checkbox, $request->has($checkbox));
         }
-        Setting::save();
-
-        if($request->input('stripe_secret_key')) {
-            try {
-                \Stripe\Stripe::setApiKey($request->input('stripe_secret_key'));
-                \Stripe\Balance::retrieve();
-
-                Setting::set('stripe_secret_key', Crypt::encryptString($request->input('stripe_secret_key')));
-
-            } catch(\Exception $e) {
-                alert()->danger($e->getMessage());
-                return redirect()->route('panel.settings.index');
-            }
-        }
-
         Setting::save();
 
         $this->sync();
