@@ -12,6 +12,7 @@ use Theme;
 use Zip;
 use File;
 use Zipper;
+use Illuminate\Support\Str;
 
 class ThemesController extends Controller
 {
@@ -63,18 +64,21 @@ class ThemesController extends Controller
         #$theme_name = str_slug(pathinfo($request->theme->getClientOriginalName(), PATHINFO_FILENAME), '_');
         try {
 
-            $theme_info = json_decode(Zipper::make($request->file('theme'))->getFileContent('theme/theme.json'));
+            $zip = Zipper::make($request->file('theme'));
+
+            $files = collect($zip->listFiles());
+            $theme_json = $files->flatten()->filter(function($file) {
+                return Str::endsWith($file, 'theme.json');
+            })->first();
+            $theme_info = json_decode($zip->getFileContent($theme_json));
             $theme_name = $theme_info->name;
 
             //check if theme exists
             $themes = \App::make('igaster.themes');
             $themes = collect(json_decode(json_encode($themes->scanJsonFiles())));
 
-            if(Zipper::make($request->file('theme'))->contains('public/'))
-                Zipper::make($request->file('theme'))->folder('public')->extractTo(public_path('themes/'.$theme_name));
-
-            if(Zipper::make($request->file('theme'))->contains('theme/'))
-                Zipper::make($request->file('theme'))->folder('theme')->extractTo(resource_path('themes/'.$theme_name));
+            $zip->folder($theme_name.'/public/themes/'.$theme_name)->extractTo(public_path('themes/'.$theme_name));
+            $zip->folder($theme_name.'/resources/themes/'.$theme_name)->extractTo(resource_path('themes/'.$theme_name));
 
             alert()->success("Successfully added $theme_name theme");
 

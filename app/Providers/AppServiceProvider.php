@@ -64,7 +64,7 @@ class AppServiceProvider extends ServiceProvider
                     setting(['enable_geo_search' => false]);
                     setting(['show_map' => false]);
                     if (setting('default_view') == 'map' && !env("DEMO")) {
-                        setting(['default_view' => 'grid']);
+                        //setting(['default_view' => 'grid']);
                     }
                 }
             }

@@ -30,7 +30,7 @@
                             <span class="input-group-text"><i class="fa fa-puzzle-piece" aria-hidden="true"></i></span>
                         </div>
                         <div class="custom-file">
-                            <input type="file" class="custom-file-input" name="addon" id="inputGroupFile01">
+                            <input type="file" accept=".zip" class="custom-file-input" name="addon" id="inputGroupFile01">
                             <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
                         </div>
                     </div>
