@@ -145,6 +145,6 @@
             "url": "https://packages.marketplacekit.com"
         }
 	],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }
