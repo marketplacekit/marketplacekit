@@ -22,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
         /*Setting::extend('mystore', function($app) {
             return $app->make('App\Support\MyStore');
         });*/
+        error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
 
         $this->app['translator']->addJsonPath(storage_path('app/resources/lang')); //now we can translate without changing the core
 
