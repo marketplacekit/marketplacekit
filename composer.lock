@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "2ed38b2794a6c9dcf461178c7781c2e1",
+    "content-hash": "d024be899391d34240358a06a687bc72",
     "packages": [
         {
             "name": "amelia/backblaze",
@@ -516,28 +516,28 @@
         },
         {
             "name": "barryvdh/laravel-translation-manager",
-            "version": "dev-master",
+            "version": "v0.5.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/barryvdh/laravel-translation-manager.git",
-                "reference": "857334ea6ffa2511982442495460c9c3ff096160"
+                "reference": "994f7bfa060cfe75830d4141b3a8bac71bbf4c4d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-translation-manager/zipball/857334ea6ffa2511982442495460c9c3ff096160",
-                "reference": "857334ea6ffa2511982442495460c9c3ff096160",
+                "url": "https://api.github.com/repos/barryvdh/laravel-translation-manager/zipball/994f7bfa060cfe75830d4141b3a8bac71bbf4c4d",
+                "reference": "994f7bfa060cfe75830d4141b3a8bac71bbf4c4d",
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": "5.5.x|5.6.x|5.7.x",
-                "illuminate/translation": "5.5.x|5.6.x|5.7.x",
+                "illuminate/support": "5.5.x|5.6.x|5.7.x|5.8.x",
+                "illuminate/translation": "5.5.x|5.6.x|5.7.x|5.8.x",
                 "php": ">=7",
                 "symfony/finder": "~3.0|~4.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4-dev"
+                    "dev-master": "0.5-dev"
                 },
                 "laravel": {
                     "providers": [
@@ -566,7 +566,7 @@
                 "translations",
                 "translator"
             ],
-            "time": "2018-08-31T13:25:15+00:00"
+            "time": "2019-02-26T20:01:39+00:00"
         },
         {
             "name": "bentools/cartesian-product",
@@ -3871,6 +3871,84 @@
             "time": "2017-11-17T11:28:33+00:00"
         },
         {
+            "name": "marketplacekit/laravel-modules",
+            "version": "3.3.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/marketplacekit/laravel-modules.git",
+                "reference": "39dc201e403d192c3ea9f76c155e97966864c3be"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/marketplacekit/laravel-modules/zipball/39dc201e403d192c3ea9f76c155e97966864c3be",
+                "reference": "39dc201e403d192c3ea9f76c155e97966864c3be",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.7",
+                "laravel/framework": "5.6.*",
+                "mockery/mockery": "~1.0",
+                "orchestra/testbench": "^3.6",
+                "phpstan/phpstan": "^0.9.2",
+                "phpunit/phpunit": "~7.0",
+                "spatie/phpunit-snapshot-assertions": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Nwidart\\Modules\\LaravelModulesServiceProvider"
+                    ],
+                    "aliases": {
+                        "Module": "Nwidart\\Modules\\Facades\\Module"
+                    }
+                },
+                "branch-alias": {
+                    "dev-master": "3.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Nwidart\\Modules\\": "src"
+                },
+                "files": [
+                    "src/helpers.php"
+                ]
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Nwidart\\Modules\\Tests\\": "tests",
+                    "Modules\\Recipe\\": "tests/stubs/valid/Recipe"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Widart",
+                    "email": "n.widart@gmail.com",
+                    "homepage": "https://nicolaswidart.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Laravel Module management",
+            "keywords": [
+                "laravel",
+                "module",
+                "modules",
+                "nwidart",
+                "rad"
+            ],
+            "support": {
+                "source": "https://github.com/marketplacekit/laravel-modules/tree/3.0"
+            },
+            "time": "2019-07-16T21:51:28+00:00"
+        },
+        {
             "name": "maxmind-db/reader",
             "version": "v1.3.0",
             "source": {
@@ -4504,76 +4582,6 @@
                 "php"
             ],
             "time": "2018-07-15T17:25:16+00:00"
-        },
-        {
-            "name": "nwidart/laravel-modules",
-            "version": "3.3.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/nWidart/laravel-modules.git",
-                "reference": "a7ec8a5871e57d337b7d37bbeb246fb99c41c703"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/nWidart/laravel-modules/zipball/a7ec8a5871e57d337b7d37bbeb246fb99c41c703",
-                "reference": "a7ec8a5871e57d337b7d37bbeb246fb99c41c703",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.1"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.7",
-                "laravel/framework": "5.6.*",
-                "mockery/mockery": "~1.0",
-                "orchestra/testbench": "^3.6",
-                "phpstan/phpstan": "^0.9.2",
-                "phpunit/phpunit": "~7.0",
-                "spatie/phpunit-snapshot-assertions": "^1.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Nwidart\\Modules\\LaravelModulesServiceProvider"
-                    ],
-                    "aliases": {
-                        "Module": "Nwidart\\Modules\\Facades\\Module"
-                    }
-                },
-                "branch-alias": {
-                    "dev-master": "3.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Nwidart\\Modules\\": "src"
-                },
-                "files": [
-                    "src/helpers.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Nicolas Widart",
-                    "email": "n.widart@gmail.com",
-                    "homepage": "https://nicolaswidart.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Laravel Module management",
-            "keywords": [
-                "laravel",
-                "module",
-                "modules",
-                "nwidart",
-                "rad"
-            ],
-            "time": "2018-07-13T15:36:59+00:00"
         },
         {
             "name": "overtrue/laravel-follow",
@@ -10184,13 +10192,14 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "stability-flags": {
         "amelia/backblaze": 20,
         "jrean/laravel-user-verification": 20,
         "kodeine/laravel-meta": 20,
         "nahid/talk": 20,
         "spiritix/lada-cache": 20,
+        "tymon/jwt-auth": 5,
         "urodoz/truncate-html": 0
     },
     "prefer-stable": true,
