@@ -40,8 +40,11 @@ class PageController extends Controller
         $data = [];
         $data['page'] = $page;
 
-        MetaTag::set('title', $page->title);
-        MetaTag::set('description', $page->content);
+        //MetaTag::set('title', $page->title);
+        //MetaTag::set('description', $page->content);
+        MetaTag::set('title', $page->seo_title?$page->seo_title:$page->title);
+        MetaTag::set('description', $page->seo_meta_description);
+        MetaTag::set('keywords', $page->seo_meta_keywords);
 
         return view('page', $data);
     }

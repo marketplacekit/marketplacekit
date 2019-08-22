@@ -29,6 +29,28 @@ class PageForm extends Form
             'rules' => ''
         ]);
 
+        $this->add('seo_title', 'text', [
+            'rules' => '',
+            'attr' => [
+                'class' => 'form-control',
+            ],
+        ]);
+
+        $this->add('seo_meta_description', 'text', [
+            'rules' => '',
+            'attr' => [
+                'class' => 'form-control',
+            ],
+        ]);
+
+        $this->add('seo_meta_keywords', 'textarea', [
+            'rules' => '',
+            'attr' => [
+                'class' => 'form-control',
+                'style' => 'height: 60px',
+            ],
+        ]);
+
         $this->add('submit', 'submit', ['attr' => ['class' => 'btn btn-primary']]);
     }
 }
