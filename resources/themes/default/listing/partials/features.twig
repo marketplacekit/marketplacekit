@@ -1,0 +1,32 @@
+{% if listing.meta %}
+    <div class="card mt-3 mb-3">
+        <div class="card-header">
+            {{ __('Features') }}
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-borderless">
+                <tbody>
+                {% for filter in filters %}
+                    {% if listing.meta[filter.field] %}
+                        <tr>
+                            <th scope="row" style="width: 50%">{{ _l(filter.name) }}</th>
+                            <td style="width: 50%">{% if filter.form_input_meta.values is iterable %}
+                                    <ul class="list-unstyled">
+                                        {% for option in filter.form_input_meta.values %}
+                                            {% if option.value in listing.meta[filter.field] %}
+                                                <li>{{ _l(option.label) }}</li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    {{ listing.meta[filter.field] }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endif %}

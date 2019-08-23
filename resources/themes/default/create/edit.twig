@@ -114,7 +114,12 @@
 
                     <div class="card-body">
 
-                        <input type="submit" value="{{ __('Save listing')  }}" class="btn  btn-primary float-right">
+                        {% if not listing.is_published %}
+                            <input type="submit" value="{{ __('Save listing')  }}" class="btn btn-primary float-left">
+                            <input type="submit" name="publish" value="{{ __('Publish')  }}" class="btn btn-danger float-right">
+                        {% else %}
+                            <input type="submit" value="{{ __('Save listing')  }}" class="btn btn-primary float-right">
+                        {% endif %}
 
                     </div>
 
