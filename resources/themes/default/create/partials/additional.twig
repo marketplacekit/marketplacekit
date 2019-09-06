@@ -9,7 +9,7 @@
 <script>
 var formData = {{ listings_form | json_encode() | raw }};
 
-document.addEventListener("turbolinks:load", function() {
+document.addEventListener("DOMContentLoaded", function() {
     var formRenderOpts = {
             dataType: 'json',
             formData: {{ listings_form | json_encode() | raw  }}

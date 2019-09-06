@@ -29,6 +29,6 @@ class PurchaseEmail
     public function handle(OrderPlaced $event)
     {
         //
-        Mail::to($event->order->user->email)->send(new PurchaseItem($event->order));
+        Mail::to($event->order->listing->user->email)->send(new PurchaseItem($event->order));
     }
 }
