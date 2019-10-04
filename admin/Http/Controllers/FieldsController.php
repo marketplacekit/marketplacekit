@@ -58,7 +58,7 @@ class FieldsController extends Controller
         $filter = new Filter();
         $filter->name = $request->get('name');
         $filter->field = $request->get('field');
-        $filter->position = $request->get('position', 1000);
+        $filter->position = intval($request->get('position', 1000));
         $filter->is_category_specific = $request->get('is_category_specific');
         $filter->is_searchable =  $request->get('is_searchable');
         $filter->is_hidden =  0;

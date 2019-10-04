@@ -14,12 +14,15 @@ class FilterForm extends Form
     public function buildForm()
     {
 		$this->add('name', 'text', [
+            'rules' => 'required|min:5',
             'attr' => [
                 'disabled' => ($this->getFormOption('method') != 'POST')?'disabled':false
             ]
         ]);
         $this->add('field', 'hidden');
-        $this->add('position', 'text');
+        $this->add('position', 'text', [
+            'rules' => 'numeric',
+        ]);
 
         $categories = Category::nested()->get();
         $categories = flatten($categories, 0);
