@@ -96,7 +96,11 @@ class PagesController extends Controller
      * Remove the specified resource from storage.
      * @return Response
      */
-    public function destroy()
+    public function destroy($id)
     {
+        $page = PageTranslation::findOrFail($id);
+        $page->delete();
+        alert()->success('Successfully deleted');
+        return redirect()->route('panel.pages.index', ['locale' => $page->locale]);
     }
 }

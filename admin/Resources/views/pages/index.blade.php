@@ -33,7 +33,7 @@
                 <td>{{str_limit($item->title, 40)}} @if(!$item->visible)<i class="small text-muted">(hidden)</i>@endif</td>
                 <td>{{$item->slug}}</td>
                 <td>
-                    <a href="" class="text-muted float-right ml-2"><i class="fa fa-remove"></i></a>
+                    <a href="" ic-target="#main" ic-select-from-response="#main" ic-delete-from="{{ route('panel.pages.destroy', $item->id) }}" ic-confirm="Are you sure?" class="text-muted float-right ml-2"><i class="fa fa-remove"></i></a>
                     <a href="{{route('panel.pages.edit', $item->id)}}" class="text-muted float-right"><i class="fa fa-pencil"></i></a>
                 </td>
             </tr>
