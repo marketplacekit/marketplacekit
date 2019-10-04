@@ -13,7 +13,7 @@ use Jrean\UserVerification\Traits\VerifiesUsers;
 use Jrean\UserVerification\Facades\UserVerification;
 use Illuminate\Http\Request;
 use MetaTag;
-
+use App\Models\Role;
 class RegisterController extends Controller
 {
     /*
@@ -85,12 +85,19 @@ class RegisterController extends Controller
         return '/path';
     }
 
-
     public function showRegistrationForm()
     {
         MetaTag::set('title', __("Register"));
         session()->put('from', request('redirect')?:url()->previous());
-        return view('auth.register');
+
+        $roles = Role::get();
+        $selectable_roles = [];
+        foreach($roles as $role) {
+            if($role->getMeta('selectable'))
+                $selectable_roles[$role->id] = $role;
+        }
+
+        return view('auth.register', compact('selectable_roles'));
     }
 
     /**
@@ -117,6 +124,13 @@ class RegisterController extends Controller
         UserVerification::send($user, __('Welcome and Email Verification'));
 
         $user->assignRole('member'); //make a member
+        if($request->has('role')) {
+            $role = Role::find($request->input('role'));
+            if($role->getMeta('selectable')) {
+                $user->assignRole($role);
+                $user->save();
+            }
+        }
 
         return $this->registered($request, $user)
             ?: redirect(route("email-verification.index"));
