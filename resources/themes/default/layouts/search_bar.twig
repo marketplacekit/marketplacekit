@@ -22,7 +22,7 @@
                         </div>
 
                         {% if setting('enable_geo_search') %}
-                        <div class="col-4 pl-1 d-none d-sm-block">{{ session_get('location') }}
+                        <div class="col-4 pl-1 d-none d-sm-block">
                             {{ form_input('text', 'location', input_get('location', session_get('location')), {'class' : 'form-control', 'id' : 'location-search', 'placeholder' : __('London, England')}) }}
                             {{ form_hidden('lat', input_get('lat', session_get('lat')), {'class': 'lat'}) }}
                             {{ form_hidden('lng', input_get('lng', session_get('lng')), {'class': 'lng'}) }}
