@@ -1,4 +1,4 @@
-{% if setting('enable_geo_search') %}
+{% if setting('enable_geo_search') and input_get('location', session_get('location')) %}
 <div class="">
     <h6 class="mt-0 text-capitalize">{{ _l(facet.name) }}</h6>
 
