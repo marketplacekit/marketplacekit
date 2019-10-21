@@ -22,7 +22,7 @@
                         </div>
 
                         {% if setting('enable_geo_search') %}
-                        <div class="col-4 pl-1 d-none d-sm-block">
+                        <div class="col-4 pl-1 d-none d-sm-block">{{ session_get('location') }}
                             {{ form_input('text', 'location', input_get('location', session_get('location')), {'class' : 'form-control', 'id' : 'location-search', 'placeholder' : __('London, England')}) }}
                             {{ form_hidden('lat', input_get('lat', session_get('lat')), {'class': 'lat'}) }}
                             {{ form_hidden('lng', input_get('lng', session_get('lng')), {'class': 'lng'}) }}
@@ -33,15 +33,27 @@
 
                                 google.maps.event.addListener(autocomplete, 'place_changed', function() {
                                     var place = autocomplete.getPlace();
-                                    $(".lat").val(place.geometry.location.lat());
-                                    $(".lng").val(place.geometry.location.lng());
+                                    if (place.name == "") {
+                                        $(".lat").val('');
+                                        $(".lng").val('');
+                                        $(".bounds").val('');
+                                        $(".distance").val('-1');
+                                    } else {
+                                        $(".lat").val(place.geometry.location.lat());
+                                        $(".lng").val(place.geometry.location.lng());
 
 
-                                    console.log(place.geometry.viewport.getSouthWest().lat());
-                                    $('.bounds').val(place.geometry.viewport.getSouthWest().lat() + "," + place.geometry.viewport.getSouthWest().lng() + ','+ place.geometry.viewport.getNorthEast().lat() + "," + place.geometry.viewport.getNorthEast().lng());
-                                    $('.distance').val(1);
-
+                                        console.log(place.geometry.viewport.getSouthWest().lat());
+                                        $('.bounds').val(place.geometry.viewport.getSouthWest().lat() + "," + place.geometry.viewport.getSouthWest().lng() + ',' + place.geometry.viewport.getNorthEast().lat() + "," + place.geometry.viewport.getNorthEast().lng());
+                                        $('.distance').val(1);
+                                    }
                                     $("#top-search").submit();
+                                });
+                                $("#location-search").change( function() {
+                                    $(".lat").val('');
+                                    $(".lng").val('');
+                                    $(".bounds").val('');
+                                    $(".distance").val('-1');
                                 });
                             </script>
                         </div>

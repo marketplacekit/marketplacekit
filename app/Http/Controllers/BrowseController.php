@@ -165,11 +165,12 @@ class BrowseController extends Controller
 
 
             } else {
-                if($request->input($filter->field)) {
+                if($filter->field && $request->input($filter->field)) {
                     $listings = $listings->where('meta->' . $filter->field, $request->input($filter->field));
                     $is_filtered = true;
                 }
             }
+
         }
 
         $category_id = $request->get('category', 0) ? :0; //get the category
@@ -250,6 +251,7 @@ class BrowseController extends Controller
                     new Point($swLat, $neLon),
                     new Point($swLat, $swLon),
                 ])]);
+
                 if($request->input('distance') >= 0) {
                     $listings = $listings->within('location', $polygon);
                 }
