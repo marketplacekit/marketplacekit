@@ -156,28 +156,42 @@ var options = {
 };
 @if($form->getFormOption('method') != 'POST')
 	@if($form->getModel()->form_input_meta)
-		options.formData = '<?= json_encode([($form->getModel()->form_input_meta)]) ?>';
+        options.formData = @json([($form->getModel()->form_input_meta)], JSON_PRETTY_PRINT);
 	@else
 		//options.formData = {};
 	@endif
 @endif
 
-var formBuilder = $(document.getElementById('fb-editor')).formBuilder(options);
-console.log(formBuilder);
 
+var formBuilder = $(document.getElementById('fb-editor')).formBuilder(options);
+function show_form() {
+    @if($form->getFormOption('method') == 'POST')
+    $('#fb-editor').hide();
+    @else
+    @if($form->getModel()->form_input_meta)
+    $('.toggle-form')[0].click();
+    @else
+    $('#form_ui').val('text')
+    changeFormElement($('#form_ui').val());
+    @endif
+    @endif
+}
 
 setTimeout(function(){
-    @if($form->getFormOption('method') == 'POST')
-        $('#fb-editor').hide();
-    @else
-		@if($form->getModel()->form_input_meta)
-			$('.toggle-form')[0].click();
-		@else
-			$('#form_ui').val('text')
-			changeFormElement($('#form_ui').val());
-		@endif
-    @endif
-}, 200)
+    show_form();
+}, 800)
+
+setTimeout(function(){
+    if($('.form-elements').length == 0) {
+        show_form();
+    }
+}, 1800)
+
+setTimeout(function(){
+    if($('.form-elements').length == 0) {
+        show_form();
+    }
+}, 3000)
 
 </script>
 
