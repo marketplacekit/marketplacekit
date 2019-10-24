@@ -111,10 +111,6 @@ function format_money($price, $currency) {
 	$placement = 'before';
 	try {
 		$currency = new \Gerardojbaez\Money\Currency($currency);
-		$currency->setSymbolPlacement($placement);
-		if($price > 1000) {
-			$currency->setPrecision(0);
-		}
 		$money = new \Gerardojbaez\Money\Money($price, $currency);
 		return $money->format();
 	} catch(\Exception $e) {
