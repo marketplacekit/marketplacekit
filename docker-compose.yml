@@ -1,0 +1,62 @@
+version: "3.7"
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    command: nginx -g "daemon off;"
+    volumes:
+      - .:/var/www/html/app
+    links:
+      - php
+    ports:
+      - "8080:80"
+
+  php:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    command: php-fpm
+    env_file:
+      - .env
+    volumes:
+      - .:/var/www/html/app
+    links:
+      - db
+      - cache
+    ports:
+      - "9000:9000"
+    environment:
+      APP_ENV: local
+      APP_DEBUG: 'true'
+      APP_KEY: ${APP_KEY}
+      APP_LOCALE: en
+      APP_FALLBACK_LOCALE: en
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_DATABASE: marketplacekit
+      DB_USERNAME: market
+      DB_PASSWORD: secret
+      CACHE_DRIVER: memcached
+      MEMCACHED_HOST: cache
+      REDIS_HOST: redis
+
+  # TODO add worker container to handle laravel queues
+  # worker:
+  #   build: Dockerfile
+
+  db:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: marketplacekit
+      MYSQL_USER: market
+      MYSQL_PASSWORD: secret
+
+  cache:
+    image: memcached
+
+  redis:
+    image: redis
