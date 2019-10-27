@@ -47,7 +47,7 @@ class ResetPassword extends Notification
     {
         $locale = $notifiable->locale?:'en';
         return (new MailMessage)->markdown("emails.$locale.reset_password", [
-            'url' => url(config('app.url').route('password.reset', $this->token, false)),
+            'url' => url(route('password.reset', $this->token, false)),
             'name' => $this->notifiable->name,
         ]);
     }
