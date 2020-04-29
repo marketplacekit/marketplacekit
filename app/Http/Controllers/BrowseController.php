@@ -131,7 +131,6 @@ class BrowseController extends Controller
             $is_filtered = true;
         }
 
-		$category_id = $request->get('category', 0) ? :0; //get the category
         foreach($filters as $filter) {
             if($filter->default){
                 continue;
